@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>나의 하루 다이어리</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExNSIgZmlsbD0iI2Y1ZjBlOCIvPgogIDx0ZXh0IHg9IjI1NiIgeT0iMzQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjMwMCI+8J+TljwvdGV4dD4KPC9zdmc+">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExNSIgZmlsbD0iI2Y1ZjBlOCIvPgogIDx0ZXh0IHg9IjI1NiIgeT0iMzQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjMwMCI+8J+TljwvdGV4dD4KPC9zdmc+">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="나의 하루">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f5f0e8">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --bg2: #ede7d9;
+  --surface: #faf7f2;
+  --surface2: #f0ebe0;
+  --surface3: #e8e0d0;
+  --ink: #2c2416;
+  --ink2: #5a4e3a;
+  --ink3: #8a7d68;
+  --ink4: #b5a990;
+  --accent: #8b5e3c;
+  --accent2: #c4813a;
+  --green: #5a7a52;
+  --blue: #4a6882;
+  --red: #9a4a3a;
+  --purple: #6a5080;
+  --gold: #c4a035;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 2px 12px rgba(44,36,22,0.10);
+  --shadow-lg: 0 8px 32px rgba(44,36,22,0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Sans KR', sans-serif;
+  min-height: 100vh;
+  padding-bottom: 100px;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(139,94,60,0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(196,160,53,0.04) 0%, transparent 40%);
+}
+
+/* ── 헤더 ── */
+header {
+  background: var(--surface);
+  border-bottom: 1.5px solid var(--surface3);
+  padding: 18px 20px 14px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 1px 8px rgba(44,36,22,0.08);
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; }
+.header-title {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 1.4rem; font-weight: 800;
+  color: var(--accent); letter-spacing: -0.5px;
+}
+.header-date { font-size: 0.78rem; color: var(--ink3); margin-top: 2px; }
+.header-actions { display: flex; gap: 8px; }
+.icon-btn {
+  background: var(--surface2); border: 1.5px solid var(--surface3);
+  border-radius: 10px; width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; cursor: pointer; transition: all 0.15s;
+  color: var(--ink2);
+}
+.icon-btn:active { background: var(--surface3); }
+
+/* ── 탭 ── */
+.tabs {
+  display: flex; background: var(--surface);
+  border-bottom: 1.5px solid var(--surface3);
+  overflow-x: auto; scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 1; min-width: 72px; padding: 12px 6px;
+  text-align: center; font-size: 0.75rem; font-weight: 700;
+  color: var(--ink4); cursor: pointer;
+  border-bottom: 2.5px solid transparent;
+  transition: all 0.2s; white-space: nowrap;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(139,94,60,0.05); }
+.tab-icon { font-size: 1rem; display: block; margin-bottom: 2px; }
+
+/* ── 페이지 ── */
+.page { display: none; padding: 14px; }
+.page.active { display: block; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── 카드 ── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px; margin-bottom: 12px;
+  border: 1.5px solid var(--surface3);
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 0.85rem; font-weight: 700;
+  color: var(--ink3); margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+
+/* ── 폼 ── */
+label {
+  display: block; font-size: 0.78rem;
+  color: var(--ink3); margin-bottom: 5px; margin-top: 13px;
+  font-weight: 500;
+}
+label:first-of-type { margin-top: 0; }
+input, select, textarea {
+  width: 100%; background: var(--bg);
+  border: 1.5px solid var(--surface3);
+  border-radius: var(--radius-sm);
+  color: var(--ink); font-size: 0.95rem;
+  padding: 11px 13px; outline: none;
+  transition: border-color 0.2s;
+  font-family: 'Noto Sans KR', sans-serif;
+  -webkit-appearance: none; appearance: none;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--surface); }
+textarea { resize: vertical; min-height: 90px; line-height: 1.7; }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a7d68' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 13px center;
+  background-color: var(--bg); padding-right: 34px;
+}
+
+/* ── 버튼 ── */
+.btn {
+  display: block; width: 100%; padding: 13px;
+  border: none; border-radius: var(--radius-sm);
+  font-size: 0.92rem; font-weight: 700; cursor: pointer;
+  transition: all 0.18s; font-family: 'Noto Sans KR', sans-serif;
+  letter-spacing: -0.3px;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:active { background: #7a5232; transform: scale(0.98); }
+.btn-ghost { background: var(--surface2); color: var(--ink2); border: 1.5px solid var(--surface3); }
+.btn-ghost:active { background: var(--surface3); }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-sm { display: inline-block; width: auto; padding: 8px 14px; font-size: 0.82rem; }
+.btn-row { display: flex; gap: 8px; margin-top: 16px; }
+.btn-row .btn { flex: 1; }
+
+/* ── 달력 ── */
+.cal-nav-row {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 12px;
+}
+.cal-nav {
+  background: var(--surface2); border: 1.5px solid var(--surface3);
+  border-radius: 50%; width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; cursor: pointer; color: var(--ink2);
+  transition: background 0.15s;
+}
+.cal-nav:active { background: var(--surface3); }
+.cal-month-title {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 1.15rem; font-weight: 800; color: var(--ink);
+}
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+.cal-dow {
+  text-align: center; font-size: 0.7rem; font-weight: 700;
+  color: var(--ink4); padding: 5px 0;
+}
+.cal-dow:first-child { color: var(--red); }
+.cal-dow:last-child { color: var(--blue); }
+.cal-cell {
+  background: var(--bg); border-radius: 8px;
+  min-height: 52px; padding: 4px;
+  cursor: pointer; transition: background 0.13s;
+  position: relative; overflow: hidden;
+  border: 1px solid transparent;
+}
+.cal-cell:active { background: var(--surface2); }
+.cal-cell.empty { background: transparent; cursor: default; border-color: transparent; }
+.cal-cell.today { background: rgba(139,94,60,0.1); border-color: var(--accent); }
+.cal-cell.selected { background: var(--accent); }
+.cal-cell.selected .day-num { color: #fff !important; }
+.cal-cell.selected .dot-row span { background: rgba(255,255,255,0.7) !important; }
+.day-num {
+  font-size: 0.78rem; font-weight: 700;
+  display: block; line-height: 1;
+}
+.cal-cell.sun .day-num { color: var(--red); }
+.cal-cell.sat .day-num { color: var(--blue); }
+.dot-row { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 3px; }
+.dot { width: 4px; height: 4px; border-radius: 50%; }
+.dot-schedule { background: var(--accent2); }
+.dot-diary    { background: var(--green); }
+.dot-word     { background: var(--purple); }
+
+/* ── 날짜별 일정 패널 ── */
+.day-panel { animation: fadeIn 0.18s ease; }
+.day-panel-title {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 1rem; font-weight: 800;
+  color: var(--accent); margin-bottom: 10px;
+}
+
+/* ── 일정 아이템 ── */
+.schedule-item {
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px; margin-bottom: 7px;
+  border-left: 3.5px solid var(--accent2);
+  cursor: pointer; transition: background 0.13s;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.schedule-item:active { background: var(--surface3); }
+.si-time {
+  font-size: 0.72rem; font-weight: 700; color: var(--accent2);
+  background: rgba(196,129,58,0.12);
+  padding: 2px 7px; border-radius: 5px;
+  white-space: nowrap; margin-top: 2px; flex-shrink: 0;
+}
+.si-body { flex: 1; min-width: 0; }
+.si-title { font-size: 0.88rem; font-weight: 700; }
+.si-meta { font-size: 0.75rem; color: var(--ink3); margin-top: 2px; }
+.cat-badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  padding: 2px 7px; border-radius: 5px; margin-right: 4px;
+}
+.cat-업무 { background: rgba(74,104,130,0.15); color: var(--blue); }
+.cat-개인 { background: rgba(90,122,82,0.15); color: var(--green); }
+.cat-약속 { background: rgba(196,160,53,0.15); color: var(--gold); }
+.cat-기념일 { background: rgba(154,74,58,0.15); color: var(--red); }
+.cat-기타 { background: rgba(138,125,104,0.15); color: var(--ink3); }
+
+/* ── 일기/말씀 아이템 ── */
+.diary-item {
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px; margin-bottom: 8px;
+  border-left: 3.5px solid var(--green);
+  cursor: pointer; transition: background 0.13s;
+}
+.diary-item:active { background: var(--surface3); }
+.word-item { border-left-color: var(--purple); }
+.di-date { font-size: 0.72rem; color: var(--ink4); margin-bottom: 3px; }
+.di-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 3px; }
+.di-preview {
+  font-size: 0.8rem; color: var(--ink3); line-height: 1.5;
+  overflow: hidden; display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.mood-badge {
+  font-size: 0.75rem; display: inline-block;
+  margin-left: 6px; vertical-align: middle;
+}
+
+/* ── 말씀 서브탭 ── */
+.subtabs {
+  display: flex; gap: 6px; margin-bottom: 12px;
+}
+.subtab {
+  flex: 1; padding: 9px 6px;
+  border: 1.5px solid var(--surface3);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink4); font-size: 0.76rem; font-weight: 700;
+  cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+  transition: all 0.15s;
+}
+.subtab.active {
+  background: rgba(106,80,128,0.1);
+  border-color: var(--purple); color: var(--purple);
+}
+.wsection { display: none; }
+.wsection.active { display: block; }
+
+/* ── 통독표 ── */
+.plan-summary-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+}
+.plan-stat {
+  background: var(--bg); border-radius: var(--radius-sm);
+  padding: 10px; text-align: center; border: 1px solid var(--surface3);
+}
+.plan-stat-label { font-size: 0.68rem; color: var(--ink4); margin-bottom: 3px; }
+.plan-stat-val { font-size: 0.9rem; font-weight: 700; color: var(--ink); }
+.plan-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid var(--surface3);
+}
+.plan-row:last-child { border-bottom: none; }
+.plan-row.today-row { background: rgba(139,94,60,0.06); border-radius: 8px; padding: 9px 8px; margin: 0 -8px; }
+.pr-date { font-size: 0.72rem; color: var(--ink4); min-width: 68px; }
+.pr-range { font-size: 0.82rem; font-weight: 600; flex: 1; }
+.pr-badge {
+  font-size: 0.68rem; font-weight: 700; padding: 2px 8px;
+  border-radius: 5px; white-space: nowrap;
+}
+.pr-done { background: rgba(90,122,82,0.15); color: var(--green); }
+.pr-today { background: rgba(139,94,60,0.15); color: var(--accent); }
+
+/* ── 문장수집 ── */
+.sentence-item {
+  background: var(--surface2);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 11px 13px; margin-bottom: 8px;
+  cursor: pointer; transition: background 0.13s;
+}
+.sentence-item:active { background: var(--surface3); }
+.sent-text {
+  font-family: 'Nanum Myeongjo', serif;
+  font-style: italic; font-size: 0.88rem; line-height: 1.7;
+  color: var(--ink2); margin-bottom: 5px;
+  overflow: hidden; display: -webkit-box;
+  -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+}
+.sent-meta { font-size: 0.72rem; color: var(--ink4); }
+
+/* ── 필터 ── */
+.filter-row {
+  display: flex; gap: 6px; margin-bottom: 12px;
+  overflow-x: auto; scrollbar-width: none; padding-bottom: 2px;
+}
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-chip {
+  flex-shrink: 0; padding: 6px 13px; border-radius: 20px;
+  border: 1.5px solid var(--surface3);
+  background: var(--surface); color: var(--ink4);
+  font-size: 0.76rem; font-weight: 700;
+  cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+  transition: all 0.13s; white-space: nowrap;
+}
+.filter-chip.active { border-color: var(--accent); color: var(--accent); background: rgba(139,94,60,0.08); }
+
+/* ── 섹션 라벨 ── */
+.section-label {
+  font-size: 0.7rem; font-weight: 700; color: var(--ink4);
+  text-transform: uppercase; letter-spacing: 0.8px;
+  margin: 14px 0 7px; padding-left: 2px;
+}
+
+/* ── 구분선 ── */
+.divider { height: 1px; background: var(--surface3); margin: 14px 0; }
+
+/* ── 모달 ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(44,36,22,0.55); z-index: 200;
+  align-items: flex-end; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border-radius: 20px 20px 0 0;
+  padding: 18px 18px 32px; width: 100%;
+  max-height: 90vh; overflow-y: auto;
+  animation: slideUp 0.25s cubic-bezier(.32,.72,0,1);
+  border-top: 1.5px solid var(--surface3);
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-handle {
+  width: 36px; height: 4px; background: var(--surface3);
+  border-radius: 2px; margin: 0 auto 16px;
+}
+.modal-title {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 1.05rem; font-weight: 800;
+  color: var(--accent); margin-bottom: 14px;
+}
+
+/* ── 데이터 내보내기 ── */
+.export-btn {
+  background: var(--surface2); border: 1.5px solid var(--surface3);
+  border-radius: var(--radius-sm); padding: 13px;
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; width: 100%; margin-bottom: 8px;
+  font-family: 'Noto Sans KR', sans-serif; transition: background 0.13s;
+}
+.export-btn:active { background: var(--surface3); }
+.export-icon { font-size: 1.3rem; }
+.export-info { text-align: left; }
+.export-name { font-size: 0.88rem; font-weight: 700; color: var(--ink); }
+.export-desc { font-size: 0.75rem; color: var(--ink3); margin-top: 1px; }
+
+/* ── FAB ── */
+.fab {
+  position: fixed; bottom: 24px; right: 18px;
+  width: 52px; height: 52px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 50%;
+  font-size: 1.5rem; cursor: pointer; z-index: 50;
+  box-shadow: 0 4px 18px rgba(139,94,60,0.4);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s;
+}
+.fab:active { transform: scale(0.93); }
+
+/* ── 토스트 ── */
+.toast {
+  position: fixed; bottom: 88px; left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--ink); color: #fff;
+  padding: 10px 20px; border-radius: 24px;
+  font-size: 0.85rem; font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  opacity: 0; transition: all 0.28s; z-index: 999;
+  white-space: nowrap; font-family: 'Noto Sans KR', sans-serif;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.ok { background: var(--green); }
+.toast.err { background: var(--red); }
+
+/* ── 빈 상태 ── */
+.empty { text-align: center; padding: 32px 16px; color: var(--ink4); }
+.empty .icon { font-size: 2.5rem; margin-bottom: 10px; }
+.empty p { font-size: 0.85rem; line-height: 1.6; }
+
+/* ── 로딩/스피너 없음 (로컬이라 즉시) ── */
+
+/* ── 통독표 설정 편집 ── */
+#plan-edit-wrap { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="header-title">✦ 나의 하루</div>
+      <div class="header-date" id="header-date"></div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="switchTab('settings')" title="설정">⚙️</button>
+    </div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('cal')"><span class="tab-icon">🗓</span>달력</div>
+  <div class="tab" onclick="switchTab('schedule')"><span class="tab-icon">📋</span>일정</div>
+  <div class="tab" onclick="switchTab('diary')"><span class="tab-icon">📓</span>일기</div>
+  <div class="tab" onclick="switchTab('word')"><span class="tab-icon">✝️</span>말씀</div>
+  <div class="tab" onclick="switchTab('settings')"><span class="tab-icon">⚙️</span>설정</div>
+</div>
+
+<!-- ══ 달력 탭 ══ -->
+<div class="page active" id="page-cal">
+  <div class="card">
+    <div class="cal-nav-row">
+      <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+      <span class="cal-month-title" id="cal-title"></span>
+      <button class="cal-nav" onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="cal-grid" id="cal-grid">
+      <div class="cal-dow">일</div><div class="cal-dow">월</div>
+      <div class="cal-dow">화</div><div class="cal-dow">수</div>
+      <div class="cal-dow">목</div><div class="cal-dow">금</div>
+      <div class="cal-dow">토</div>
+    </div>
+  </div>
+  <div id="day-panel"></div>
+</div>
+
+<!-- ══ 일정 탭 ══ -->
+<div class="page" id="page-schedule">
+  <div class="filter-row" id="sched-filter-row">
+    <button class="filter-chip active" onclick="setSchedFilter('전체')">전체</button>
+    <button class="filter-chip" onclick="setSchedFilter('업무')">💼 업무</button>
+    <button class="filter-chip" onclick="setSchedFilter('개인')">🙂 개인</button>
+    <button class="filter-chip" onclick="setSchedFilter('약속')">🤝 약속</button>
+    <button class="filter-chip" onclick="setSchedFilter('기념일')">🎉 기념일</button>
+    <button class="filter-chip" onclick="setSchedFilter('기타')">📌 기타</button>
+  </div>
+  <div id="schedule-list"></div>
+</div>
+
+<!-- ══ 일기 탭 ══ -->
+<div class="page" id="page-diary">
+  <div id="diary-list"></div>
+</div>
+
+<!-- ══ 말씀 탭 ══ -->
+<div class="page" id="page-word">
+  <div class="subtabs">
+    <button class="subtab active" onclick="switchWordTab('list')">📜 묵상 목록</button>
+    <button class="subtab" onclick="switchWordTab('sent')">✍️ 문장수집</button>
+    <button class="subtab" onclick="switchWordTab('plan')">📖 통독표</button>
+  </div>
+
+  <!-- 묵상 목록 -->
+  <div class="wsection active" id="ws-list">
+    <div id="word-list"></div>
+  </div>
+
+  <!-- 문장 수집 -->
+  <div class="wsection" id="ws-sent">
+    <div id="sent-list"></div>
+  </div>
+
+  <!-- 통독표 -->
+  <div class="wsection" id="ws-plan">
+    <div class="card" id="plan-summary-card">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span>📖 통독 설정</span>
+        <button class="btn btn-sm btn-ghost" onclick="togglePlanEdit()">⚙️ 변경</button>
+      </div>
+      <div id="plan-summary"></div>
+    </div>
+    <div id="plan-edit-wrap">
+      <div class="card">
+        <div class="card-title">⚙️ 통독표 설정</div>
+        <label>시작일</label>
+        <input type="date" id="p-start">
+        <label>시작 책 구분</label>
+        <select id="p-testament" onchange="updatePlanBooks()">
+          <option value="old">구약</option>
+          <option value="new">신약</option>
+        </select>
+        <label>시작 책</label>
+        <select id="p-book"></select>
+        <label>시작 장</label>
+        <input type="number" id="p-chap" value="1" min="1">
+        <div class="divider"></div>
+        <label>하루 분량 (장)</label>
+        <input type="number" id="p-perday" placeholder="예) 5" min="1">
+        <label>전체 기간 (일)</label>
+        <input type="number" id="p-total" placeholder="예) 365" min="1">
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="togglePlanEdit()">취소</button>
+          <button class="btn btn-primary" onclick="savePlan()">저장</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 통독 계획표</div>
+      <div id="plan-table"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 설정 탭 ══ -->
+<div class="page" id="page-settings">
+  <div class="card">
+    <div class="card-title">💾 데이터 관리</div>
+    <p style="font-size:0.82rem;color:var(--ink3);margin-bottom:14px;line-height:1.7">
+      모든 데이터는 이 기기의 브라우저에 저장됩니다.<br>
+      백업을 위해 정기적으로 내보내기를 권장해요.
+    </p>
+    <button class="export-btn" onclick="exportData()">
+      <span class="export-icon">📤</span>
+      <div class="export-info">
+        <div class="export-name">데이터 내보내기</div>
+        <div class="export-desc">JSON 파일로 저장 (백업용)</div>
+      </div>
+    </button>
+    <button class="export-btn" onclick="document.getElementById('import-file').click()">
+      <span class="export-icon">📥</span>
+      <div class="export-info">
+        <div class="export-name">데이터 불러오기</div>
+        <div class="export-desc">JSON 백업 파일 복원</div>
+      </div>
+    </button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+  <div class="card">
+    <div class="card-title">ℹ️ 앱 정보</div>
+    <p style="font-size:0.82rem;color:var(--ink3);line-height:1.8">
+      나의 하루 다이어리 v1.0<br>
+      일정 · 일기 · 말씀묵상 통합 기록 앱<br>
+      <span style="color:var(--ink4);font-size:0.76rem">데이터: 브라우저 localStorage 저장</span>
+    </p>
+  </div>
+</div>
+
+<!-- ══ 일정 추가/수정 모달 ══ -->
+<div class="modal-overlay" id="sched-modal" onclick="closeModal('sched-modal',event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="sched-modal-title">일정 추가</div>
+    <label>날짜</label>
+    <input type="date" id="sm-date">
+    <label>시간 <span style="color:var(--ink4);font-weight:400">(선택)</span></label>
+    <input type="time" id="sm-time">
+    <label>내용</label>
+    <input type="text" id="sm-content" placeholder="일정 내용을 입력하세요">
+    <label>카테고리</label>
+    <select id="sm-cat">
+      <option value="업무">💼 업무</option>
+      <option value="개인">🙂 개인</option>
+      <option value="약속">🤝 약속</option>
+      <option value="기념일">🎉 기념일</option>
+      <option value="기타">📌 기타</option>
+    </select>
+    <label>메모 <span style="color:var(--ink4);font-weight:400">(선택)</span></label>
+    <input type="text" id="sm-memo" placeholder="간단한 메모">
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('sched-modal')">취소</button>
+      <button class="btn btn-primary" id="sched-save-btn" onclick="saveSchedule()">저장</button>
+    </div>
+    <div style="margin-top:8px" id="sched-delete-wrap">
+      <button class="btn btn-danger" onclick="deleteSchedule()">🗑️ 삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 일기 추가/수정 모달 ══ -->
+<div class="modal-overlay" id="diary-modal" onclick="closeModal('diary-modal',event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="diary-modal-title">일기 작성</div>
+    <label>날짜</label>
+    <input type="date" id="dm-date">
+    <label>제목</label>
+    <input type="text" id="dm-title" placeholder="오늘의 제목">
+    <label>내용</label>
+    <textarea id="dm-content" placeholder="오늘 하루를 기록하세요..." style="min-height:130px"></textarea>
+    <label>기분</label>
+    <select id="dm-mood">
+      <option value="😊 좋음">😊 좋음</option>
+      <option value="😐 보통">😐 보통</option>
+      <option value="😔 나쁨">😔 나쁨</option>
+      <option value="😤 화남">😤 화남</option>
+      <option value="😴 피곤">😴 피곤</option>
+    </select>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('diary-modal')">취소</button>
+      <button class="btn btn-primary" onclick="saveDiary()">저장</button>
+    </div>
+    <div style="margin-top:8px" id="diary-delete-wrap">
+      <button class="btn btn-danger" onclick="deleteDiary()">🗑️ 삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 말씀묵상 추가/수정 모달 ══ -->
+<div class="modal-overlay" id="word-modal" onclick="closeModal('word-modal',event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="word-modal-title">말씀 묵상</div>
+    <label>날짜</label>
+    <input type="date" id="wm-date">
+    <label>읽은 범위</label>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="wm-book" style="flex:2"></select>
+      <input type="number" id="wm-from" placeholder="장" min="1" style="flex:1;text-align:center">
+      <span style="color:var(--ink4);font-size:0.85rem;white-space:nowrap">~</span>
+      <input type="number" id="wm-to" placeholder="장" min="1" style="flex:1;text-align:center">
+    </div>
+    <label>말씀 구절</label>
+    <textarea id="wm-verse" placeholder="마음에 닿은 말씀을 적어보세요" style="min-height:70px"></textarea>
+    <label>묵상</label>
+    <textarea id="wm-meditation" placeholder="받은 은혜와 깨달음..." style="min-height:110px"></textarea>
+    <label>기도</label>
+    <textarea id="wm-prayer" placeholder="오늘의 기도..." style="min-height:80px"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('word-modal')">취소</button>
+      <button class="btn btn-primary" onclick="saveWord()">저장</button>
+    </div>
+    <div style="margin-top:8px" id="word-delete-wrap">
+      <button class="btn btn-danger" onclick="deleteWord()">🗑️ 삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 문장 수집 모달 ══ -->
+<div class="modal-overlay" id="sent-modal" onclick="closeModal('sent-modal',event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✍️ 문장 수집</div>
+    <label>출처 (책/말씀)</label>
+    <input type="text" id="sentm-source" placeholder="예) 시편 23편, 멈추면 비로소 보이는 것들">
+    <label>문장</label>
+    <textarea id="sentm-text" placeholder="기록하고 싶은 문장..." style="min-height:110px"></textarea>
+    <label>메모 <span style="color:var(--ink4);font-weight:400">(선택)</span></label>
+    <input type="text" id="sentm-memo" placeholder="느낀 점, 생각...">
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('sent-modal')">취소</button>
+      <button class="btn btn-primary" onclick="saveSentence()">저장</button>
+    </div>
+    <div style="margin-top:8px" id="sent-delete-wrap">
+      <button class="btn btn-danger" onclick="deleteSentence()">🗑️ 삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 상세 보기 모달 (일기/말씀) ══ -->
+<div class="modal-overlay" id="detail-modal" onclick="closeModal('detail-modal',event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="detail-modal-title"></div>
+    <div id="detail-modal-body"></div>
+    <div class="divider"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost" style="flex:1" onclick="editFromDetail()">✏️ 수정</button>
+      <button class="btn btn-danger" style="flex:1" onclick="deleteFromDetail()">🗑️ 삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab-btn" onclick="fabAction()">+</button>
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// 성경 데이터 (가톨릭 성경 기준)
+// ══════════════════════════════════════
+const BIBLE = {
+  old: [
+    {n:'창세기',c:50},{n:'탈출기',c:40},{n:'레위기',c:27},{n:'민수기',c:36},{n:'신명기',c:34},
+    {n:'여호수아기',c:24},{n:'판관기',c:21},{n:'룻기',c:4},{n:'사무엘기 상',c:31},{n:'사무엘기 하',c:24},
+    {n:'열왕기 상',c:22},{n:'열왕기 하',c:25},{n:'역대기 상',c:29},{n:'역대기 하',c:36},
+    {n:'에즈라기',c:10},{n:'느헤미야기',c:13},{n:'토빗기',c:14},{n:'유딧기',c:16},
+    {n:'에스테르기',c:16},{n:'마카베오기 상',c:16},{n:'마카베오기 하',c:15},
+    {n:'욥기',c:42},{n:'시편',c:150},{n:'잠언',c:31},{n:'코헬렛',c:12},{n:'아가',c:8},
+    {n:'지혜서',c:19},{n:'집회서',c:51},{n:'이사야서',c:66},{n:'예레미야서',c:52},
+    {n:'애가',c:5},{n:'바룩서',c:6},{n:'에제키엘서',c:48},{n:'다니엘서',c:14},
+    {n:'호세아서',c:14},{n:'요엘서',c:4},{n:'아모스서',c:9},{n:'오바드야서',c:1},
+    {n:'요나서',c:4},{n:'미카서',c:7},{n:'나훔서',c:3},{n:'하바쿡서',c:3},
+    {n:'스바니야서',c:3},{n:'하까이서',c:2},{n:'즈카르야서',c:14},{n:'말라키서',c:4}
+  ],
+  new: [
+    {n:'마태오 복음서',c:28},{n:'마르코 복음서',c:16},{n:'루카 복음서',c:24},
+    {n:'요한 복음서',c:21},{n:'사도행전',c:28},{n:'로마서',c:16},
+    {n:'1코린토서',c:16},{n:'2코린토서',c:13},{n:'갈라티아서',c:6},{n:'에페소서',c:6},
+    {n:'필리피서',c:4},{n:'콜로새서',c:4},{n:'1테살로니카서',c:5},{n:'2테살로니카서',c:3},
+    {n:'1티모테오서',c:6},{n:'2티모테오서',c:4},{n:'티토서',c:3},{n:'필레몬서',c:1},
+    {n:'히브리서',c:13},{n:'야고보서',c:5},{n:'1베드로서',c:5},{n:'2베드로서',c:3},
+    {n:'1요한서',c:5},{n:'2요한서',c:1},{n:'3요한서',c:1},{n:'유다서',c:1},{n:'요한 묵시록',c:22}
+  ]
+};
+
+const ALL_BOOKS = [...BIBLE.old, ...BIBLE.new];
+
+function buildChapterList(testament) {
+  const books = testament === 'old' ? BIBLE.old : BIBLE.new;
+  const list = [];
+  books.forEach(b => { for(let c=1;c<=b.c;c++) list.push({book:b.n,chap:c}); });
+  return list;
+}
+
+// ══════════════════════════════════════
+// 데이터 저장소 (localStorage)
+// ══════════════════════════════════════
+const KEYS = { schedules:'myharu_schedules', diaries:'myharu_diaries', words:'myharu_words', sentences:'myharu_sentences', plan:'myharu_plan' };
+
+function load(key) { try { return JSON.parse(localStorage.getItem(key)||'[]'); } catch{ return []; } }
+function loadObj(key) { try { return JSON.parse(localStorage.getItem(key)||'{}'); } catch{ return {}; } }
+function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+let schedules = load(KEYS.schedules);
+let diaries   = load(KEYS.diaries);
+let words     = load(KEYS.words);
+let sentences = load(KEYS.sentences);
+let plan      = loadObj(KEYS.plan);
+
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+// ══════════════════════════════════════
+// 초기화
+// ══════════════════════════════════════
+const now = new Date();
+// 로컬 시간 기준 오늘 날짜 (toISOString은 UTC라 한국에서 하루 밀릴 수 있음)
+function localDateStr(d) {
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+const todayStr = localDateStr(now);
+let calYear  = now.getFullYear();
+let calMonth = now.getMonth();
+let selectedDate = todayStr;
+let currentTab = 'cal';
+let schedFilter = '전체';
+let wordTab = 'list';
+let editingId = { sched:null, diary:null, word:null, sent:null };
+let detailType = null, detailId = null;
+
+window.onload = () => {
+  const today = todayStr;
+  document.getElementById('header-date').textContent =
+    now.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+
+  // 폼 기본값
+  ['sm-date','dm-date','wm-date'].forEach(id => document.getElementById(id).value = today);
+
+  // 책 목록 채우기
+  populateBookSel('wm-book', 'all');
+  populateBookSel('p-book', 'old');
+
+  renderCalendar();
+  renderDayPanel(selectedDate);
+  renderScheduleList();
+  renderDiaryList();
+  renderWordList();
+  renderSentList();
+  renderPlan();
+};
+
+// ══════════════════════════════════════
+// 탭 / 서브탭
+// ══════════════════════════════════════
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const tabs = ['cal','schedule','diary','word','settings'];
+    t.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+
+  const fab = document.getElementById('fab-btn');
+  const fabMap = {cal:'+', schedule:'📋', diary:'✏️', word:'✝️', settings:''};
+  fab.textContent = fabMap[tab] || '+';
+  fab.style.display = tab === 'settings' ? 'none' : 'flex';
+}
+
+function switchWordTab(tab) {
+  wordTab = tab;
+  document.querySelectorAll('.subtab').forEach((b,i) => {
+    b.classList.toggle('active', ['list','sent','plan'][i] === tab);
+  });
+  document.querySelectorAll('.wsection').forEach(s => s.classList.remove('active'));
+  document.getElementById('ws-'+tab).classList.add('active');
+}
+
+function fabAction() {
+  const today = localDateStr(new Date());
+  if(currentTab==='cal' || currentTab==='schedule') openSchedModal(null, selectedDate);
+  else if(currentTab==='diary') openDiaryModal(null, today);
+  else if(currentTab==='word') {
+    if(wordTab==='sent') openSentModal(null);
+    else openWordModal(null, today);
+  }
+}
+
+// ══════════════════════════════════════
+// 달력
+// ══════════════════════════════════════
+function renderCalendar() {
+  document.getElementById('cal-title').textContent = `${calYear}년 ${calMonth+1}월`;
+  const grid = document.getElementById('cal-grid');
+  while(grid.children.length > 7) grid.removeChild(grid.lastChild);
+
+  const today = todayStr;
+  const firstDay = new Date(calYear,calMonth,1).getDay();
+  const lastDate = new Date(calYear,calMonth+1,0).getDate();
+
+  for(let i=0;i<firstDay;i++){
+    const e=document.createElement('div'); e.className='cal-cell empty'; grid.appendChild(e);
+  }
+  for(let d=1;d<=lastDate;d++){
+    const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dow=(firstDay+d-1)%7;
+    const cell=document.createElement('div');
+    cell.className='cal-cell'+(dow===0?' sun':'')+(dow===6?' sat':'')+
+      (dateStr===today?' today':'')+(dateStr===selectedDate?' selected':'');
+    cell.onclick=()=>selectDate(dateStr);
+
+    const num=document.createElement('span');
+    num.className='day-num'; num.textContent=d; cell.appendChild(num);
+
+    const hasSched = schedules.some(s=>s.date===dateStr);
+    const hasDiary = diaries.some(d2=>d2.date===dateStr);
+    const hasWord  = words.some(w=>w.date===dateStr);
+    if(hasSched||hasDiary||hasWord){
+      const dots=document.createElement('div'); dots.className='dot-row';
+      if(hasSched){const dt=document.createElement('span');dt.className='dot dot-schedule';dots.appendChild(dt);}
+      if(hasDiary){const dt=document.createElement('span');dt.className='dot dot-diary';dots.appendChild(dt);}
+      if(hasWord) {const dt=document.createElement('span');dt.className='dot dot-word'; dots.appendChild(dt);}
+      cell.appendChild(dots);
+    }
+    grid.appendChild(cell);
+  }
+}
+
+function changeMonth(dir){
+  calMonth+=dir;
+  if(calMonth<0){calMonth=11;calYear--;}
+  if(calMonth>11){calMonth=0;calYear++;}
+  renderCalendar();
+  document.getElementById('day-panel').innerHTML='';
+}
+
+function selectDate(dateStr){
+  selectedDate=dateStr;
+  renderCalendar();
+  renderDayPanel(dateStr);
+}
+
+function renderDayPanel(dateStr){
+  const el=document.getElementById('day-panel');
+  const d=new Date(dateStr);
+  const dows=['일','월','화','수','목','금','토'];
+  const label=`${d.getMonth()+1}월 ${d.getDate()}일 (${dows[d.getDay()]})`;
+
+  const dayScheds=schedules.filter(s=>s.date===dateStr)
+    .sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
+  const dayDiaries=diaries.filter(d2=>d2.date===dateStr);
+  const dayWords=words.filter(w=>w.date===dateStr);
+
+  if(!dayScheds.length&&!dayDiaries.length&&!dayWords.length){
+    el.innerHTML=`<div class="empty"><div class="icon">🌿</div><p>${label}<br>기록이 없습니다</p></div>`;
+    return;
+  }
+
+  let html=`<div class="day-panel"><div class="day-panel-title">${label}</div>`;
+
+  if(dayScheds.length){
+    html+=`<div class="section-label">📋 일정</div>`;
+    html+=dayScheds.map(s=>`
+      <div class="schedule-item" onclick="openSchedModal('${s.id}')">
+        ${s.time?`<span class="si-time">${s.time}</span>`:''}
+        <div class="si-body">
+          <div class="si-title">${s.content}</div>
+          <div class="si-meta">
+            <span class="cat-badge cat-${s.category}">${s.category}</span>
+            ${s.memo||''}
+          </div>
+        </div>
+      </div>`).join('');
+  }
+  if(dayDiaries.length){
+    html+=`<div class="section-label">📓 일기</div>`;
+    html+=dayDiaries.map(d2=>`
+      <div class="diary-item" onclick="openDiaryModal('${d2.id}')">
+        <div class="di-title">${d2.title||'제목 없음'}<span class="mood-badge">${d2.mood||''}</span></div>
+        <div class="di-preview">${d2.content||''}</div>
+      </div>`).join('');
+  }
+  if(dayWords.length){
+    html+=`<div class="section-label">✝️ 말씀</div>`;
+    html+=dayWords.map(w=>`
+      <div class="diary-item word-item" onclick="openWordModal('${w.id}')">
+        <div class="di-title">📖 ${w.range||''}</div>
+        ${w.verse?`<div class="di-preview" style="font-style:italic">"${w.verse}"</div>`:''}
+      </div>`).join('');
+  }
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+// ══════════════════════════════════════
+// 일정 CRUD
+// ══════════════════════════════════════
+function openSchedModal(id, dateDefault){
+  editingId.sched = id;
+  const del = document.getElementById('sched-delete-wrap');
+  document.getElementById('sched-modal-title').textContent = id ? '일정 수정' : '일정 추가';
+  del.style.display = id ? 'block' : 'none';
+
+  if(id){
+    const s = schedules.find(x=>x.id===id);
+    if(!s) return;
+    document.getElementById('sm-date').value    = s.date||'';
+    document.getElementById('sm-time').value    = s.time||'';
+    document.getElementById('sm-content').value = s.content||'';
+    document.getElementById('sm-cat').value     = s.category||'기타';
+    document.getElementById('sm-memo').value    = s.memo||'';
+  } else {
+    document.getElementById('sm-date').value    = dateDefault || selectedDate;
+    document.getElementById('sm-time').value    = '';
+    document.getElementById('sm-content').value = '';
+    document.getElementById('sm-cat').value     = '개인';
+    document.getElementById('sm-memo').value    = '';
+  }
+  document.getElementById('sched-modal').classList.add('open');
+}
+
+function saveSchedule(){
+  const date    = document.getElementById('sm-date').value;
+  const content = document.getElementById('sm-content').value.trim();
+  if(!date||!content){ showToast('날짜와 내용을 입력하세요','err'); return; }
+
+  const item = {
+    id:       editingId.sched || genId(),
+    date, time: document.getElementById('sm-time').value,
+    content,  category: document.getElementById('sm-cat').value,
+    memo:     document.getElementById('sm-memo').value.trim()
+  };
+  if(editingId.sched){
+    const idx=schedules.findIndex(x=>x.id===editingId.sched);
+    if(idx>=0) schedules[idx]=item;
+  } else { schedules.push(item); }
+  save(KEYS.schedules, schedules);
+  closeModal('sched-modal');
+  showToast('✅ 일정 저장!','ok');
+  renderCalendar(); renderDayPanel(date); renderScheduleList();
+}
+
+function deleteSchedule(){
+  if(!editingId.sched) return;
+  if(!confirm('이 일정을 삭제할까요?')) return;
+  schedules = schedules.filter(x=>x.id!==editingId.sched);
+  save(KEYS.schedules, schedules);
+  closeModal('sched-modal');
+  showToast('삭제됐습니다','ok');
+  renderCalendar(); renderDayPanel(selectedDate); renderScheduleList();
+}
+
+function renderScheduleList(){
+  const el=document.getElementById('schedule-list');
+  let filtered = schedFilter==='전체' ? schedules : schedules.filter(s=>s.category===schedFilter);
+  filtered = [...filtered].sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||''));
+
+  if(!filtered.length){
+    el.innerHTML='<div class="empty"><div class="icon">📭</div><p>일정이 없습니다</p></div>'; return;
+  }
+  let lastDate='';
+  el.innerHTML=filtered.map(s=>{
+    const header=s.date!==lastDate?`<div class="section-label">${s.date}</div>`:'';
+    lastDate=s.date;
+    return `${header}<div class="schedule-item" onclick="openSchedModal('${s.id}')">
+      ${s.time?`<span class="si-time">${s.time}</span>`:''}
+      <div class="si-body">
+        <div class="si-title">${s.content}</div>
+        <div class="si-meta"><span class="cat-badge cat-${s.category}">${s.category}</span>${s.memo||''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setSchedFilter(f){
+  schedFilter=f;
+  document.querySelectorAll('#sched-filter-row .filter-chip').forEach(b=>{
+    b.classList.toggle('active', b.textContent.includes(f)||(f==='전체'&&b.textContent==='전체'));
+  });
+  renderScheduleList();
+}
+
+// ══════════════════════════════════════
+// 일기 CRUD
+// ══════════════════════════════════════
+function openDiaryModal(id, dateDefault){
+  editingId.diary=id;
+  document.getElementById('diary-modal-title').textContent = id?'일기 수정':'일기 작성';
+  document.getElementById('diary-delete-wrap').style.display = id?'block':'none';
+  if(id){
+    const d=diaries.find(x=>x.id===id); if(!d) return;
+    document.getElementById('dm-date').value    = d.date||'';
+    document.getElementById('dm-title').value   = d.title||'';
+    document.getElementById('dm-content').value = d.content||'';
+    document.getElementById('dm-mood').value    = d.mood||'😐 보통';
+  } else {
+    document.getElementById('dm-date').value    = dateDefault||selectedDate;
+    document.getElementById('dm-title').value   = '';
+    document.getElementById('dm-content').value = '';
+    document.getElementById('dm-mood').value    = '😊 좋음';
+  }
+  document.getElementById('diary-modal').classList.add('open');
+}
+
+function saveDiary(){
+  const date    = document.getElementById('dm-date').value;
+  const content = document.getElementById('dm-content').value.trim();
+  if(!date||!content){ showToast('날짜와 내용을 입력하세요','err'); return; }
+  const item={
+    id: editingId.diary||genId(), date,
+    title:   document.getElementById('dm-title').value.trim(),
+    content, mood: document.getElementById('dm-mood').value
+  };
+  if(editingId.diary){ const idx=diaries.findIndex(x=>x.id===editingId.diary); if(idx>=0) diaries[idx]=item; }
+  else diaries.push(item);
+  save(KEYS.diaries,diaries);
+  closeModal('diary-modal'); showToast('📓 일기 저장!','ok');
+  renderCalendar(); renderDayPanel(date); renderDiaryList();
+}
+
+function deleteDiary(){
+  if(!editingId.diary||!confirm('삭제할까요?')) return;
+  diaries=diaries.filter(x=>x.id!==editingId.diary);
+  save(KEYS.diaries,diaries); closeModal('diary-modal');
+  showToast('삭제됐습니다','ok');
+  renderCalendar(); renderDayPanel(selectedDate); renderDiaryList();
+}
+
+function renderDiaryList(){
+  const el=document.getElementById('diary-list');
+  const sorted=[...diaries].sort((a,b)=>b.date.localeCompare(a.date));
+  if(!sorted.length){ el.innerHTML='<div class="empty"><div class="icon">📖</div><p>아직 일기가 없어요</p></div>'; return; }
+  el.innerHTML=sorted.map(d=>`
+    <div class="diary-item" onclick="openDiaryModal('${d.id}')">
+      <div class="di-date">${d.date}</div>
+      <div class="di-title">${d.title||'제목 없음'}<span class="mood-badge">${d.mood||''}</span></div>
+      <div class="di-preview">${d.content||''}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// 말씀묵상 CRUD
+// ══════════════════════════════════════
+function populateBookSel(selId, testament){
+  const sel=document.getElementById(selId);
+  const books=testament==='all'?ALL_BOOKS:(BIBLE[testament]||ALL_BOOKS);
+  sel.innerHTML=books.map(b=>`<option value="${b.n}">${b.n}</option>`).join('');
+}
+
+function openWordModal(id, dateDefault){
+  editingId.word=id;
+  document.getElementById('word-modal-title').textContent=id?'말씀 수정':'말씀 묵상';
+  document.getElementById('word-delete-wrap').style.display=id?'block':'none';
+  if(id){
+    const w=words.find(x=>x.id===id); if(!w) return;
+    document.getElementById('wm-date').value       = w.date||'';
+    document.getElementById('wm-book').value       = w.book||ALL_BOOKS[0].n;
+    document.getElementById('wm-from').value       = w.from||'';
+    document.getElementById('wm-to').value         = w.to||'';
+    document.getElementById('wm-verse').value      = w.verse||'';
+    document.getElementById('wm-meditation').value = w.meditation||'';
+    document.getElementById('wm-prayer').value     = w.prayer||'';
+  } else {
+    document.getElementById('wm-date').value       = dateDefault||selectedDate;
+    document.getElementById('wm-from').value       = '';
+    document.getElementById('wm-to').value         = '';
+    document.getElementById('wm-verse').value      = '';
+    document.getElementById('wm-meditation').value = '';
+    document.getElementById('wm-prayer').value     = '';
+  }
+  document.getElementById('word-modal').classList.add('open');
+}
+
+function saveWord(){
+  const date = document.getElementById('wm-date').value;
+  if(!date){ showToast('날짜를 입력하세요','err'); return; }
+  const book = document.getElementById('wm-book').value;
+  const from = document.getElementById('wm-from').value;
+  const to   = document.getElementById('wm-to').value;
+  let range  = book+(from?` ${from}장`:'')+(to&&to!==from?`~${to}장`:'');
+
+  const item={
+    id: editingId.word||genId(), date, book, from, to, range,
+    verse:      document.getElementById('wm-verse').value.trim(),
+    meditation: document.getElementById('wm-meditation').value.trim(),
+    prayer:     document.getElementById('wm-prayer').value.trim()
+  };
+  if(editingId.word){ const idx=words.findIndex(x=>x.id===editingId.word); if(idx>=0) words[idx]=item; }
+  else words.push(item);
+  save(KEYS.words,words);
+  closeModal('word-modal'); showToast('✝️ 묵상 저장!','ok');
+  renderCalendar(); renderDayPanel(date); renderWordList();
+}
+
+function deleteWord(){
+  if(!editingId.word||!confirm('삭제할까요?')) return;
+  words=words.filter(x=>x.id!==editingId.word);
+  save(KEYS.words,words); closeModal('word-modal');
+  showToast('삭제됐습니다','ok');
+  renderCalendar(); renderDayPanel(selectedDate); renderWordList();
+}
+
+function renderWordList(){
+  const el=document.getElementById('word-list');
+  const sorted=[...words].sort((a,b)=>b.date.localeCompare(a.date));
+  if(!sorted.length){ el.innerHTML='<div class="empty"><div class="icon">✝️</div><p>묵상 기록이 없어요<br>첫 묵상을 작성해보세요</p></div>'; return; }
+  el.innerHTML=sorted.map(w=>`
+    <div class="diary-item word-item" onclick="openWordModal('${w.id}')">
+      <div class="di-date">${w.date}</div>
+      <div class="di-title">📖 ${w.range||w.book||''}</div>
+      ${w.verse?`<div class="di-preview" style="font-style:italic">"${w.verse}"</div>`:''}
+      ${w.meditation?`<div class="di-preview">${w.meditation}</div>`:''}
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// 문장 수집 CRUD
+// ══════════════════════════════════════
+function openSentModal(id){
+  editingId.sent=id;
+  document.getElementById('sent-delete-wrap').style.display=id?'block':'none';
+  if(id){
+    const s=sentences.find(x=>x.id===id); if(!s) return;
+    document.getElementById('sentm-source').value=s.source||'';
+    document.getElementById('sentm-text').value  =s.text||'';
+    document.getElementById('sentm-memo').value  =s.memo||'';
+  } else {
+    document.getElementById('sentm-source').value='';
+    document.getElementById('sentm-text').value  ='';
+    document.getElementById('sentm-memo').value  ='';
+  }
+  document.getElementById('sent-modal').classList.add('open');
+}
+
+function saveSentence(){
+  const text=document.getElementById('sentm-text').value.trim();
+  if(!text){ showToast('문장을 입력하세요','err'); return; }
+  const item={
+    id: editingId.sent||genId(),
+    source: document.getElementById('sentm-source').value.trim(),
+    text, memo: document.getElementById('sentm-memo').value.trim(),
+    savedAt: localDateStr(new Date())
+  };
+  if(editingId.sent){ const idx=sentences.findIndex(x=>x.id===editingId.sent); if(idx>=0) sentences[idx]=item; }
+  else sentences.push(item);
+  save(KEYS.sentences,sentences);
+  closeModal('sent-modal'); showToast('✍️ 문장 저장!','ok');
+  renderSentList();
+}
+
+function deleteSentence(){
+  if(!editingId.sent||!confirm('삭제할까요?')) return;
+  sentences=sentences.filter(x=>x.id!==editingId.sent);
+  save(KEYS.sentences,sentences); closeModal('sent-modal');
+  showToast('삭제됐습니다','ok'); renderSentList();
+}
+
+function renderSentList(){
+  const el=document.getElementById('sent-list');
+  const sorted=[...sentences].sort((a,b)=>b.savedAt.localeCompare(a.savedAt));
+  if(!sorted.length){ el.innerHTML='<div class="empty"><div class="icon">✍️</div><p>수집한 문장이 없어요</p></div>'; return; }
+
+  let lastSrc='';
+  el.innerHTML=sorted.map(s=>{
+    const header=s.source&&s.source!==lastSrc?`<div class="section-label">📌 ${s.source}</div>`:'';
+    if(s.source) lastSrc=s.source;
+    return `${header}<div class="sentence-item" onclick="openSentModal('${s.id}')">
+      <div class="sent-text">"${s.text}"</div>
+      ${s.memo?`<div class="sent-meta">${s.memo}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════
+// 통독표
+// ══════════════════════════════════════
+function updatePlanBooks(){
+  const t=document.getElementById('p-testament').value;
+  populateBookSel('p-book', t);
+}
+
+function togglePlanEdit(){
+  const wrap=document.getElementById('plan-edit-wrap');
+  const isOpen=wrap.style.display!=='none';
+  wrap.style.display=isOpen?'none':'block';
+  if(!isOpen && plan.startDate){
+    document.getElementById('p-start').value   = plan.startDate||'';
+    document.getElementById('p-testament').value = plan.testament||'old';
+    updatePlanBooks();
+    document.getElementById('p-book').value    = plan.startBook||'';
+    document.getElementById('p-chap').value    = plan.startChap||1;
+    document.getElementById('p-perday').value  = plan.perDay||'';
+    document.getElementById('p-total').value   = plan.totalDays||'';
+  }
+}
+
+function savePlan(){
+  const startDate  = document.getElementById('p-start').value;
+  const testament  = document.getElementById('p-testament').value;
+  const startBook  = document.getElementById('p-book').value;
+  const startChap  = document.getElementById('p-chap').value||'1';
+  const perDay     = document.getElementById('p-perday').value;
+  const totalDays  = document.getElementById('p-total').value;
+  if(!startDate||!startBook){ showToast('시작일과 책을 선택하세요','err'); return; }
+  if(!perDay&&!totalDays){ showToast('하루 분량 또는 전체 기간을 입력하세요','err'); return; }
+  plan={startDate,testament,startBook,startChap,perDay,totalDays};
+  save(KEYS.plan,plan);
+  document.getElementById('plan-edit-wrap').style.display='none';
+  showToast('📖 통독표 저장!','ok');
+  renderPlan();
+}
+
+function renderPlan(){
+  renderPlanSummary();
+  renderPlanTable();
+}
+
+function renderPlanSummary(){
+  const el=document.getElementById('plan-summary');
+  if(!plan.startDate){ el.innerHTML='<p style="font-size:0.82rem;color:var(--ink4)">설정된 통독표가 없습니다.<br>⚙️ 변경 버튼으로 설정하세요.</p>'; return; }
+  el.innerHTML=`<div class="plan-summary-grid">
+    <div class="plan-stat"><div class="plan-stat-label">시작일</div><div class="plan-stat-val">${plan.startDate}</div></div>
+    <div class="plan-stat"><div class="plan-stat-label">시작 위치</div><div class="plan-stat-val">${plan.startBook} ${plan.startChap}장</div></div>
+    ${plan.perDay?`<div class="plan-stat"><div class="plan-stat-label">하루 분량</div><div class="plan-stat-val">${plan.perDay}장</div></div>`:''}
+    ${plan.totalDays?`<div class="plan-stat"><div class="plan-stat-label">전체 기간</div><div class="plan-stat-val">${plan.totalDays}일</div></div>`:''}
+  </div>`;
+}
+
+function renderPlanTable(){
+  const el=document.getElementById('plan-table');
+  if(!plan.startDate){ el.innerHTML=''; return; }
+
+  const chList=buildChapterList(plan.testament||'old');
+  let startIdx=chList.findIndex(c=>c.book===plan.startBook&&c.chap===parseInt(plan.startChap));
+  if(startIdx<0) startIdx=0;
+
+  let chapPerDay=parseInt(plan.perDay)||0;
+  if(!chapPerDay&&plan.totalDays){
+    chapPerDay=Math.ceil((chList.length-startIdx)/parseInt(plan.totalDays));
+  }
+  if(!chapPerDay) chapPerDay=5;
+
+  const remaining=chList.length-startIdx;
+  const daysNeeded=Math.ceil(remaining/chapPerDay);
+  const startD=new Date(plan.startDate); startD.setHours(0,0,0,0);
+  const today=new Date(); today.setHours(0,0,0,0);
+  const endD=new Date(startD); endD.setDate(endD.getDate()+daysNeeded-1);
+
+  el.innerHTML=`<div style="background:rgba(139,94,60,0.07);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:0.8rem;color:var(--accent)">
+    하루 ${chapPerDay}장 · 완독 예상: ${endD.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'})}
+  </div>`;
+
+  const maxRows=Math.min(parseInt(plan.totalDays)||daysNeeded, 60);
+  let idx=startIdx, rows='';
+  for(let day=0;day<maxRows&&idx<chList.length;day++){
+    const d=new Date(startD); d.setDate(d.getDate()+day);
+    const dateStr=d.toLocaleDateString('ko-KR',{month:'numeric',day:'numeric',weekday:'short'});
+    const from=chList[idx];
+    const toIdx=Math.min(idx+chapPerDay-1,chList.length-1);
+    const to=chList[toIdx];
+    const rangeStr=from.book===to.book
+      ?(from.chap===to.chap?`${from.book} ${from.chap}장`:`${from.book} ${from.chap}~${to.chap}장`)
+      :`${from.book} ${from.chap}장~${to.book} ${to.chap}장`;
+    const isPast=d<today;
+    const isToday=d.toDateString()===today.toDateString();
+    rows+=`<div class="plan-row${isToday?' today-row':''}">
+      <div class="pr-date">${dateStr}</div>
+      <div class="pr-range">${rangeStr}</div>
+      ${isPast?'<span class="pr-badge pr-done">✓</span>':(isToday?'<span class="pr-badge pr-today">오늘</span>':'')}
+    </div>`;
+    idx=toIdx+1;
+  }
+  el.innerHTML+=rows;
+  if(maxRows<daysNeeded) el.innerHTML+=`<div style="text-align:center;padding:10px;font-size:0.76rem;color:var(--ink4)">이후 ${daysNeeded-maxRows}일치 생략</div>`;
+}
+
+// ══════════════════════════════════════
+// 모달 / 공통
+// ══════════════════════════════════════
+function closeModal(id, e){
+  if(e&&e.target!==document.getElementById(id)) return;
+  document.getElementById(id).classList.remove('open');
+}
+
+// ══════════════════════════════════════
+// 데이터 내보내기 / 불러오기
+// ══════════════════════════════════════
+function exportData(){
+  const data={schedules,diaries,words,sentences,plan,exportedAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`나의하루_백업_${localDateStr(new Date())}.json`;
+  a.click(); URL.revokeObjectURL(a.href);
+  showToast('📤 백업 파일 저장!','ok');
+}
+
+function importData(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(!confirm('현재 데이터를 덮어씁니다. 계속할까요?')) return;
+      schedules=data.schedules||[]; save(KEYS.schedules,schedules);
+      diaries  =data.diaries  ||[]; save(KEYS.diaries,diaries);
+      words    =data.words    ||[]; save(KEYS.words,words);
+      sentences=data.sentences||[]; save(KEYS.sentences,sentences);
+      plan     =data.plan     ||{}; save(KEYS.plan,plan);
+      renderCalendar(); renderDayPanel(selectedDate);
+      renderScheduleList(); renderDiaryList(); renderWordList(); renderSentList(); renderPlan();
+      showToast('📥 불러오기 완료!','ok');
+    }catch{ showToast('파일 형식 오류','err'); }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ══════════════════════════════════════
+// 토스트
+// ══════════════════════════════════════
+let _tt;
+function showToast(msg, type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show'+(type?' '+type:'');
+  clearTimeout(_tt); _tt=setTimeout(()=>t.className='toast',2600);
+}
+</script>
+</body>
+</html>
