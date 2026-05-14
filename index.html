@@ -428,6 +428,22 @@ select {
 
 /* ── 통독표 설정 편집 ── */
 #plan-edit-wrap { display: none; }
+
+/* ── 토글 스위치 ── */
+.toggle-switch {
+  width: 48px; height: 26px; border-radius: 13px;
+  background: var(--surface3); cursor: pointer;
+  position: relative; transition: background 0.2s; flex-shrink: 0;
+}
+.toggle-switch.on { background: var(--accent); }
+.toggle-knob {
+  position: absolute; top: 3px; left: 3px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #fff; transition: transform 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch.on .toggle-knob { transform: translateX(22px); }
+
 </style>
 </head>
 <body>
@@ -444,12 +460,14 @@ select {
   </div>
 </header>
 
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('cal')"><span class="tab-icon">🗓</span>달력</div>
-  <div class="tab" onclick="switchTab('schedule')"><span class="tab-icon">📋</span>일정</div>
-  <div class="tab" onclick="switchTab('diary')"><span class="tab-icon">📓</span>일기</div>
-  <div class="tab" onclick="switchTab('word')"><span class="tab-icon">✝️</span>말씀</div>
-  <div class="tab" onclick="switchTab('settings')"><span class="tab-icon">⚙️</span>설정</div>
+<div class="tabs" id="main-tabs">
+  <div class="tab active" data-tab="cal" onclick="switchTab('cal')"><span class="tab-icon">🗓</span>달력</div>
+  <div class="tab" data-tab="schedule" onclick="switchTab('schedule')"><span class="tab-icon">📋</span>일정</div>
+  <div class="tab" data-tab="diary" onclick="switchTab('diary')"><span class="tab-icon">📓</span>일기</div>
+  <div class="tab" data-tab="word" onclick="switchTab('word')"><span class="tab-icon">✝️</span>말씀</div>
+  <div class="tab" data-tab="diet" onclick="switchTab('diet')"><span class="tab-icon">🥗</span>건강</div>
+  <div class="tab" data-tab="help" onclick="switchTab('help')"><span class="tab-icon">❓</span>도움말</div>
+  <div class="tab" data-tab="settings" onclick="switchTab('settings')"><span class="tab-icon">⚙️</span>설정</div>
 </div>
 
 <!-- ══ 달력 탭 ══ -->
@@ -550,6 +568,26 @@ select {
 <!-- ══ 설정 탭 ══ -->
 <div class="page" id="page-settings">
   <div class="card">
+    <div class="card-title">🗂️ 탭 표시 설정</div>
+    <p style="font-size:0.82rem;color:var(--ink3);margin-bottom:14px;line-height:1.7">
+      사용하지 않는 탭을 숨길 수 있습니다.<br>달력·일정·설정·도움말 탭은 항상 표시됩니다.
+    </p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <label style="display:flex;align-items:center;justify-content:space-between;margin:0;font-size:0.92rem;color:var(--ink2);font-weight:600">
+        <span>📓 일기 탭</span>
+        <div class="toggle-switch" id="toggle-diary" onclick="toggleTabVisibility('diary')"><div class="toggle-knob"></div></div>
+      </label>
+      <label style="display:flex;align-items:center;justify-content:space-between;margin:0;font-size:0.92rem;color:var(--ink2);font-weight:600">
+        <span>✝️ 말씀 탭</span>
+        <div class="toggle-switch" id="toggle-word" onclick="toggleTabVisibility('word')"><div class="toggle-knob"></div></div>
+      </label>
+      <label style="display:flex;align-items:center;justify-content:space-between;margin:0;font-size:0.92rem;color:var(--ink2);font-weight:600">
+        <span>🥗 건강 탭</span>
+        <div class="toggle-switch" id="toggle-diet" onclick="toggleTabVisibility('diet')"><div class="toggle-knob"></div></div>
+      </label>
+    </div>
+  </div>
+  <div class="card">
     <div class="card-title">💾 데이터 관리</div>
     <p style="font-size:0.82rem;color:var(--ink3);margin-bottom:14px;line-height:1.7">
       모든 데이터는 이 기기의 브라우저에 저장됩니다.<br>
@@ -574,8 +612,8 @@ select {
   <div class="card">
     <div class="card-title">ℹ️ 앱 정보</div>
     <p style="font-size:0.82rem;color:var(--ink3);line-height:1.8">
-      나의 하루 다이어리 v1.0<br>
-      일정 · 일기 · 말씀묵상 통합 기록 앱<br>
+      나의 하루 다이어리 v1.1<br>
+      일정 · 일기 · 말씀묵상 · 건강 통합 기록 앱<br>
       <span style="color:var(--ink4);font-size:0.76rem">데이터: 브라우저 localStorage 저장</span>
     </p>
   </div>
@@ -706,6 +744,162 @@ select {
   </div>
 </div>
 
+<!-- ══ 건강 탭 ══ -->
+<div class="page" id="page-diet">
+
+  <!-- 시작일 설정 카드 -->
+  <div class="card" id="diet-startdate-card" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0">
+      <div>
+        <div class="card-title" style="margin-bottom:2px">📅 기록 시작일</div>
+        <div id="diet-startdate-display" style="font-size:0.82rem;color:var(--ink3)">설정되지 않음</div>
+      </div>
+      <button class="btn btn-sm btn-ghost" onclick="toggleStartDateEdit()">✏️ 변경</button>
+    </div>
+    <div id="diet-startdate-edit" style="display:none;margin-top:12px">
+      <input type="date" id="diet-startdate-input">
+      <div class="btn-row" style="margin-top:10px">
+        <button class="btn btn-ghost" onclick="toggleStartDateEdit()">취소</button>
+        <button class="btn btn-primary" onclick="saveStartDate()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+    <div class="card" style="padding:14px;text-align:center;margin-bottom:0">
+      <div style="font-size:0.72rem;color:var(--ink3);margin-bottom:4px">현재</div>
+      <div style="font-size:1.3rem;font-weight:700;color:var(--accent)" id="diet-cur">--</div>
+      <div style="font-size:0.7rem;color:var(--ink3)">kg</div>
+    </div>
+    <div class="card" style="padding:14px;text-align:center;margin-bottom:0">
+      <div style="font-size:0.72rem;color:var(--ink3);margin-bottom:4px">최저</div>
+      <div style="font-size:1.3rem;font-weight:700;color:var(--green)" id="diet-min">--</div>
+      <div style="font-size:0.7rem;color:var(--ink3)">kg</div>
+    </div>
+    <div class="card" style="padding:14px;text-align:center;margin-bottom:0">
+      <div style="font-size:0.72rem;color:var(--ink3);margin-bottom:4px">총 변화</div>
+      <div style="font-size:1.3rem;font-weight:700" id="diet-diff-stat">--</div>
+      <div style="font-size:0.7rem;color:var(--ink3)">kg</div>
+    </div>
+  </div>
+
+  <div class="card" id="diet-chart-card" style="display:none;margin-bottom:14px">
+    <div class="card-title">몸무게 변화 추이</div>
+    <div style="position:relative;height:180px"><canvas id="dietChart"></canvas></div>
+  </div>
+  <button class="btn btn-ghost" id="diet-chart-btn" style="margin-bottom:14px;font-size:0.88rem" onclick="toggleDietChart()">📊 차트 보기</button>
+
+  <div id="diet-date-scroll" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:14px"></div>
+
+  <div class="card" id="diet-entry-card">
+    <div class="card-title" id="diet-entry-label">날짜</div>
+    <label>⚖️ 기상 몸무게 (kg)</label>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input type="number" id="diet-weight" step="0.1" min="30" max="200" placeholder="예: 62.5" style="flex:1">
+      <div id="diet-diff-badge" style="min-width:64px;text-align:center;padding:12px 8px;border-radius:10px;background:var(--surface2);color:var(--ink3);font-size:0.9rem;font-weight:700">--</div>
+    </div>
+    <label style="margin-top:16px">🍽️ 식사 기록</label>
+    <div style="position:relative;margin-bottom:8px">
+      <span style="position:absolute;top:13px;left:13px;font-size:0.75rem;color:var(--ink3);pointer-events:none;z-index:1">6~12시</span>
+      <input type="text" id="diet-breakfast" placeholder="아침 식사 내용" style="padding-left:54px">
+    </div>
+    <div style="position:relative;margin-bottom:8px">
+      <span style="position:absolute;top:13px;left:13px;font-size:0.75rem;color:var(--ink3);pointer-events:none;z-index:1">12~18시</span>
+      <input type="text" id="diet-lunch" placeholder="점심 식사 내용" style="padding-left:60px">
+    </div>
+    <div style="position:relative">
+      <span style="position:absolute;top:13px;left:13px;font-size:0.75rem;color:var(--ink3);pointer-events:none;z-index:1">18~23시</span>
+      <input type="text" id="diet-dinner" placeholder="저녁 식사 내용" style="padding-left:60px">
+    </div>
+    <label style="margin-top:16px">💧 물 섭취량 (L)</label>
+    <input type="number" id="diet-water" step="0.1" min="0" max="10" placeholder="예: 1.5">
+    <label style="margin-top:16px">🏃 운동</label>
+    <input type="text" id="diet-exercise" placeholder="예: 걷기 30분, 홈트">
+    <label style="margin-top:16px">📝 메모</label>
+    <textarea id="diet-memo" style="min-height:68px" placeholder="오늘 몸 상태, 다짐 등..."></textarea>
+    <div style="margin-top:18px">
+      <button class="btn btn-primary" id="diet-save-btn" onclick="saveDietEntry()">💾 저장하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 도움말 탭 ══ -->
+<div class="page" id="page-help">
+  <div class="card">
+    <div class="card-title">📱 앱 소개</div>
+    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.8">
+      <b>나의 하루</b>는 일정·일기·말씀묵상·건강을 한 곳에서 기록하는 개인 다이어리 앱입니다.<br>
+      모든 데이터는 이 기기의 브라우저에만 저장되며, 외부 서버로 전송되지 않습니다.
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-title">🗓️ 달력 탭</div>
+    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
+      • 달력에서 날짜를 탭하면 해당 날의 일정·일기·말씀 기록을 확인할 수 있습니다.<br>
+      • ‹ › 버튼으로 월을 이동합니다.<br>
+      • 날짜 아래 색상 점: 🟠 일정 / 🟢 일기 / 🟣 말씀<br>
+      • 우측 하단 <b>+</b> 버튼으로 일정을 빠르게 추가합니다.
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 일정 탭</div>
+    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
+      • 전체 일정을 날짜순으로 조회합니다.<br>
+      • 상단 필터 칩으로 카테고리별 필터링이 가능합니다.<br>
+      • 카테고리: 💼 업무 / 🙂 개인 / 🤝 약속 / 🎉 기념일 / 📌 기타<br>
+      • 일정을 탭하면 수정 또는 삭제할 수 있습니다.
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-title">📓 일기 탭</div>
+    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
+      • 날짜별로 일기를 작성합니다.<br>
+      • 제목·내용·기분을 기록할 수 있습니다.<br>
+      • 기분: 😊 좋음 / 😐 보통 / 😔 나쁨 / 😤 화남 / 😴 피곤<br>
+      • 우측 하단 ✏️ 버튼으로 새 일기를 작성합니다.
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-title">✝️ 말씀 탭</div>
+    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
+      • <b>묵상 목록</b>: 성경 말씀 묵상을 날짜별로 기록합니다. 읽은 범위·구절·묵상·기도를 적을 수 있습니다.<br>
+      • <b>문장수집</b>: 성경이나 책에서 마음에 닿은 문장을 모아둡니다.<br>
+      • <b>통독표</b>: 시작일·시작 위치·하루 분량을 설정하면 자동으로 통독 계획표를 생성합니다.<br>
+      • 성경은 가톨릭 성경(73권) 기준입니다.
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-title">🥗 건강 탭</div>
+    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
+      • 날짜 탭을 선택해 해당 날의 기록을 입력합니다.<br>
+      • 기상 몸무게·식사(아침/점심/저녁)·물 섭취량·운동·메모를 기록합니다.<br>
+      • 전날 대비 체중 변화가 배지로 표시됩니다.<br>
+      • 📊 차트 보기로 몸무게 변화 추이를 그래프로 확인할 수 있습니다.<br>
+      • 날짜 탭은 시작일부터 오늘까지 + 이후 7일이 자동 생성됩니다.
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-title">⚙️ 설정 탭</div>
+    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
+      • <b>탭 표시 설정</b>: 사용하지 않는 탭(일기·말씀·건강)을 숨기거나 다시 표시할 수 있습니다.<br>
+      • <b>데이터 내보내기</b>: 전체 데이터를 JSON 파일로 저장합니다 (백업용).<br>
+      • <b>데이터 불러오기</b>: 저장해 둔 JSON 백업 파일을 복원합니다.
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-title">💡 자주 묻는 질문</div>
+    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
+      <b>Q. 데이터가 사라졌어요.</b><br>
+      브라우저 캐시/쿠키 삭제 시 localStorage 데이터도 함께 삭제됩니다.<br>
+      설정 탭에서 정기적으로 백업하는 것을 권장합니다.<br><br>
+      <b>Q. 다른 기기에서도 쓸 수 있나요?</b><br>
+      데이터 내보내기 후 다른 기기에서 불러오기를 사용하세요.<br><br>
+      <b>Q. 탭이 보이지 않아요.</b><br>
+      설정 탭에서 탭 표시 설정을 확인해보세요.
+    </p>
+  </div>
+</div>
+
 <!-- FAB -->
 <button class="fab" id="fab-btn" onclick="fabAction()">+</button>
 
@@ -753,7 +947,7 @@ function buildChapterList(testament) {
 // ══════════════════════════════════════
 // 데이터 저장소 (localStorage)
 // ══════════════════════════════════════
-const KEYS = { schedules:'myharu_schedules', diaries:'myharu_diaries', words:'myharu_words', sentences:'myharu_sentences', plan:'myharu_plan' };
+const KEYS = { schedules:'myharu_schedules', diaries:'myharu_diaries', words:'myharu_words', sentences:'myharu_sentences', plan:'myharu_plan', diet:'myharu_diet', tabSettings:'myharu_tabSettings', dietStart:'myharu_dietStart' };
 
 function load(key) { try { return JSON.parse(localStorage.getItem(key)||'[]'); } catch{ return []; } }
 function loadObj(key) { try { return JSON.parse(localStorage.getItem(key)||'{}'); } catch{ return {}; } }
@@ -804,6 +998,9 @@ window.onload = () => {
   renderWordList();
   renderSentList();
   renderPlan();
+
+  // 탭 표시 설정 적용
+  applyTabSettings();
 };
 
 // ══════════════════════════════════════
@@ -811,17 +1008,18 @@ window.onload = () => {
 // ══════════════════════════════════════
 function switchTab(tab) {
   currentTab = tab;
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    const tabs = ['cal','schedule','diary','word','settings'];
-    t.classList.toggle('active', tabs[i] === tab);
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tab);
   });
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-'+tab).classList.add('active');
 
   const fab = document.getElementById('fab-btn');
-  const fabMap = {cal:'+', schedule:'📋', diary:'✏️', word:'✝️', settings:''};
-  fab.textContent = fabMap[tab] || '+';
-  fab.style.display = tab === 'settings' ? 'none' : 'flex';
+  const fabMap = {cal:'+', schedule:'📋', diary:'✏️', word:'✝️', diet:'', help:'', settings:''};
+  fab.textContent = fabMap[tab] !== undefined ? fabMap[tab] : '+';
+  fab.style.display = (tab === 'settings' || tab === 'help' || tab === 'diet') ? 'none' : 'flex';
+
+  if (tab === 'diet') initDietTab();
 }
 
 function switchWordTab(tab) {
@@ -1343,7 +1541,7 @@ function closeModal(id, e){
 // 데이터 내보내기 / 불러오기
 // ══════════════════════════════════════
 function exportData(){
-  const data={schedules,diaries,words,sentences,plan,exportedAt:new Date().toISOString()};
+  const data={schedules,diaries,words,sentences,plan,diet:dietRows,exportedAt:new Date().toISOString()};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -1364,8 +1562,10 @@ function importData(e){
       words    =data.words    ||[]; save(KEYS.words,words);
       sentences=data.sentences||[]; save(KEYS.sentences,sentences);
       plan     =data.plan     ||{}; save(KEYS.plan,plan);
+      if(data.diet){ dietRows=data.diet; save(KEYS.diet,dietRows); }
       renderCalendar(); renderDayPanel(selectedDate);
       renderScheduleList(); renderDiaryList(); renderWordList(); renderSentList(); renderPlan();
+      if(currentTab==='diet') initDietTab();
       showToast('📥 불러오기 완료!','ok');
     }catch{ showToast('파일 형식 오류','err'); }
   };
@@ -1373,9 +1573,272 @@ function importData(e){
   e.target.value='';
 }
 
+
 // ══════════════════════════════════════
-// 토스트
+// 탭 표시 설정
 // ══════════════════════════════════════
+const TOGGLEABLE_TABS = ['diary','word','diet'];
+let tabSettings = (() => {
+  try { return JSON.parse(localStorage.getItem(KEYS.tabSettings)||'{}'); } catch{ return {}; }
+})();
+// 기본값: 모두 ON
+TOGGLEABLE_TABS.forEach(t => { if(tabSettings[t] === undefined) tabSettings[t] = true; });
+
+function applyTabSettings() {
+  TOGGLEABLE_TABS.forEach(name => {
+    const on = tabSettings[name];
+    const tabEl = document.querySelector(`.tab[data-tab="${name}"]`);
+    if(tabEl) tabEl.style.display = on ? '' : 'none';
+    const toggleEl = document.getElementById('toggle-'+name);
+    if(toggleEl) toggleEl.classList.toggle('on', on);
+  });
+}
+
+function toggleTabVisibility(name) {
+  tabSettings[name] = !tabSettings[name];
+  localStorage.setItem(KEYS.tabSettings, JSON.stringify(tabSettings));
+  applyTabSettings();
+  // 현재 탭이 숨겨지면 달력으로
+  if(!tabSettings[name] && currentTab === name) switchTab('cal');
+  showToast(tabSettings[name] ? `✅ ${getTabLabel(name)} 탭 표시` : `🙈 ${getTabLabel(name)} 탭 숨김`, 'ok');
+}
+
+function getTabLabel(name) {
+  return {diary:'일기', word:'말씀', diet:'건강'}[name] || name;
+}
+
+// ══════════════════════════════════════
+// 🥗 건강 탭 (localStorage 기반)
+// ══════════════════════════════════════
+let dietRows     = [];
+let dietCurIdx   = 0;
+let dietChartInst = null;
+let dietChartOpen = false;
+let dietInitialized = false;
+let dietStartDate = localStorage.getItem(KEYS.dietStart) || '';
+
+function buildDietRows() {
+  const saved = (() => { try { return JSON.parse(localStorage.getItem(KEYS.diet)||'[]'); } catch{ return []; } })();
+  const savedMap = {};
+  saved.forEach(r => savedMap[r.date] = r);
+  const rows = [];
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  // 시작일 결정: 설정값이 있으면 사용, 없으면 오늘 기준 -15일
+  let start;
+  if(dietStartDate) {
+    start = new Date(dietStartDate); start.setHours(0,0,0,0);
+    // 시작일이 오늘보다 미래면 오늘로 대체
+    if(start > today) start = new Date(today);
+  } else {
+    start = new Date(today); start.setDate(start.getDate() - 15);
+  }
+
+  // 시작일 ~ 오늘 + 7일
+  const end = new Date(today); end.setDate(end.getDate() + 7);
+
+  for(let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
+    const ds = localDateStr(new Date(d));
+    rows.push(savedMap[ds] || { date:ds, weight:null, breakfast:'', lunch:'', dinner:'', water:null, exercise:'', memo:'' });
+  }
+
+  // diff 계산
+  for(let i=1;i<rows.length;i++){
+    if(rows[i].weight!==null && rows[i-1].weight!==null)
+      rows[i].diff = rows[i].weight - rows[i-1].weight;
+    else rows[i].diff = null;
+  }
+  rows[0].diff = null;
+  return rows;
+}
+
+function initDietTab() {
+  dietRows = buildDietRows();
+  renderStartDateDisplay();
+  const todayDs = localDateStr(new Date());
+  dietCurIdx = dietRows.findIndex(r => r.date === todayDs);
+  if(dietCurIdx < 0) dietCurIdx = Math.max(0, dietRows.length - 8); // 오늘 없으면 마지막에서 7일 전
+  renderDiet();
+  dietInitialized = true;
+}
+
+// ── 시작일 설정 ──
+function renderStartDateDisplay() {
+  const el = document.getElementById('diet-startdate-display');
+  if(!dietStartDate) {
+    el.textContent = '설정되지 않음 (기본: 오늘 기준 15일 전)';
+  } else {
+    const d = new Date(dietStartDate);
+    const DOW = ['일','월','화','수','목','금','토'];
+    el.textContent = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 (${DOW[d.getDay()]})`;
+  }
+}
+
+function toggleStartDateEdit() {
+  const editEl = document.getElementById('diet-startdate-edit');
+  const isOpen = editEl.style.display !== 'none';
+  editEl.style.display = isOpen ? 'none' : 'block';
+  if(!isOpen) {
+    document.getElementById('diet-startdate-input').value = dietStartDate || localDateStr(new Date());
+  }
+}
+
+function saveStartDate() {
+  const val = document.getElementById('diet-startdate-input').value;
+  if(!val) { showToast('날짜를 선택해주세요', 'err'); return; }
+  dietStartDate = val;
+  localStorage.setItem(KEYS.dietStart, val);
+  toggleStartDateEdit();
+  // 날짜 범위 재생성
+  dietRows = buildDietRows();
+  renderStartDateDisplay();
+  const todayDs = localDateStr(new Date());
+  dietCurIdx = dietRows.findIndex(r => r.date === todayDs);
+  if(dietCurIdx < 0) dietCurIdx = Math.max(0, dietRows.length - 8);
+  renderDiet();
+  showToast('✅ 시작일 저장!', 'ok');
+}
+
+
+function renderDiet() {
+  renderStartDateDisplay();
+  renderDietSummary();
+  renderDietDateTabs();
+  renderDietEntry();
+  if(dietChartOpen) renderDietChart();
+}
+
+function renderDietSummary() {
+  const weights = dietRows.filter(r => r.weight !== null).map(r => r.weight);
+  const cur  = dietRows[dietCurIdx]?.weight;
+  const min  = weights.length ? Math.min(...weights) : null;
+  const first = weights[0], last = weights[weights.length-1];
+  const diff = weights.length >= 2 ? last - first : null;
+
+  document.getElementById('diet-cur').textContent = cur !== null && cur !== undefined ? cur.toFixed(1) : '--';
+  document.getElementById('diet-min').textContent = min !== null ? min.toFixed(1) : '--';
+  const diffEl = document.getElementById('diet-diff-stat');
+  if(diff !== null){
+    const sign = diff > 0 ? '+' : '';
+    diffEl.textContent = sign + diff.toFixed(1);
+    diffEl.style.color = diff > 0 ? 'var(--red)' : 'var(--green)';
+  } else { diffEl.textContent='--'; diffEl.style.color='var(--ink3)'; }
+}
+
+function renderDietDateTabs() {
+  const DOW = ['일','월','화','수','목','금','토'];
+  const container = document.getElementById('diet-date-scroll');
+  container.innerHTML = dietRows.map((row, i) => {
+    const d = new Date(row.date);
+    const day = d.getDate(), dow = DOW[d.getDay()];
+    const isActive = i === dietCurIdx, hasData = row.weight !== null;
+    const bg = isActive ? 'var(--accent)' : 'var(--surface)';
+    const border = isActive ? 'var(--accent)' : hasData ? 'rgba(139,94,60,0.3)' : 'var(--surface3)';
+    const textCol = isActive ? '#fff' : hasData ? 'var(--accent)' : 'var(--ink)';
+    const dimCol  = isActive ? 'rgba(255,255,255,0.75)' : 'var(--ink3)';
+    return `<div onclick="selectDietDate(${i})" style="flex:0 0 auto;min-width:52px;border-radius:10px;padding:8px 10px;text-align:center;cursor:pointer;border:1.5px solid ${border};background:${bg}">
+      <div style="font-size:0.7rem;color:${dimCol}">${dow}</div>
+      <div style="font-size:1rem;font-weight:700;color:${textCol}">${day}</div>
+    </div>`;
+  }).join('');
+  setTimeout(() => {
+    const tabs = container.querySelectorAll('div');
+    if(tabs[dietCurIdx]) tabs[dietCurIdx].scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+  }, 80);
+}
+
+function renderDietEntry() {
+  const row = dietRows[dietCurIdx];
+  const d = new Date(row.date);
+  const DOW = ['일','월','화','수','목','금','토'];
+  document.getElementById('diet-entry-label').textContent = `📅 ${d.getMonth()+1}월 ${d.getDate()}일 (${DOW[d.getDay()]})`;
+  document.getElementById('diet-weight').value    = row.weight    !== null ? row.weight    : '';
+  document.getElementById('diet-breakfast').value = row.breakfast || '';
+  document.getElementById('diet-lunch').value     = row.lunch     || '';
+  document.getElementById('diet-dinner').value    = row.dinner    || '';
+  document.getElementById('diet-water').value     = row.water     !== null ? row.water     : '';
+  document.getElementById('diet-exercise').value  = row.exercise  || '';
+  document.getElementById('diet-memo').value      = row.memo      || '';
+
+  const badge = document.getElementById('diet-diff-badge');
+  const diff = row.diff;
+  if(diff !== null && !isNaN(diff)){
+    const sign = diff > 0 ? '+' : '';
+    badge.textContent      = sign + diff.toFixed(1);
+    badge.style.background = diff > 0 ? 'rgba(154,74,58,0.15)' : 'rgba(90,122,82,0.15)';
+    badge.style.color      = diff > 0 ? 'var(--red)' : 'var(--green)';
+  } else {
+    badge.textContent='--'; badge.style.background='var(--surface2)'; badge.style.color='var(--ink3)';
+  }
+}
+
+function selectDietDate(i) {
+  dietCurIdx = i;
+  renderDietDateTabs();
+  renderDietEntry();
+}
+
+function toggleDietChart() {
+  dietChartOpen = !dietChartOpen;
+  document.getElementById('diet-chart-card').style.display = dietChartOpen ? 'block' : 'none';
+  document.getElementById('diet-chart-btn').textContent    = dietChartOpen ? '📊 차트 닫기' : '📊 차트 보기';
+  if(dietChartOpen) renderDietChart();
+}
+
+function renderDietChart() {
+  // Chart.js 동적 로드
+  function doChart() {
+    const ctx = document.getElementById('dietChart');
+    if(!ctx) return;
+    const withW = dietRows.filter(r => r.weight !== null);
+    if(!withW.length){ return; }
+    const labels = withW.map(r => { const d=new Date(r.date); return `${d.getMonth()+1}/${d.getDate()}`; });
+    const values = withW.map(r => r.weight);
+    if(dietChartInst){ dietChartInst.destroy(); dietChartInst=null; }
+    dietChartInst = new Chart(ctx, {
+      type:'line',
+      data:{ labels, datasets:[{ data:values, borderColor:'var(--accent)', backgroundColor:'rgba(139,94,60,0.1)', borderWidth:2.5, pointRadius:5, pointBackgroundColor:'var(--accent)', tension:0.35, fill:true }] },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>c.parsed.y.toFixed(1)+' kg'}} }, scales:{ x:{ticks:{color:'var(--ink3)',font:{size:11},maxTicksLimit:10},grid:{color:'rgba(44,36,22,0.07)'}}, y:{ticks:{color:'var(--ink3)',font:{size:11},callback:v=>v+'kg'},grid:{color:'rgba(44,36,22,0.07)'}} } }
+    });
+  }
+  if(typeof Chart !== 'undefined') { doChart(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+  s.onload = doChart;
+  document.head.appendChild(s);
+}
+
+function saveDietEntry() {
+  const btn = document.getElementById('diet-save-btn');
+  btn.disabled = true; btn.textContent = '저장 중...';
+  const row = dietRows[dietCurIdx];
+  const wVal = document.getElementById('diet-weight').value;
+  const waVal = document.getElementById('diet-water').value;
+  row.weight    = wVal  !== '' ? Number(wVal)  : null;
+  row.breakfast = document.getElementById('diet-breakfast').value;
+  row.lunch     = document.getElementById('diet-lunch').value;
+  row.dinner    = document.getElementById('diet-dinner').value;
+  row.water     = waVal !== '' ? Number(waVal) : null;
+  row.exercise  = document.getElementById('diet-exercise').value;
+  row.memo      = document.getElementById('diet-memo').value;
+  // diff 재계산
+  if(dietCurIdx > 0 && row.weight !== null && dietRows[dietCurIdx-1].weight !== null)
+    row.diff = row.weight - dietRows[dietCurIdx-1].weight;
+  else row.diff = null;
+  // 다음 날 diff도 업데이트
+  if(dietCurIdx < dietRows.length-1 && dietRows[dietCurIdx+1].weight !== null && row.weight !== null)
+    dietRows[dietCurIdx+1].diff = dietRows[dietCurIdx+1].weight - row.weight;
+
+  // localStorage에 유효 데이터만 저장
+  const toSave = dietRows.filter(r => r.weight!==null || r.breakfast || r.lunch || r.dinner || r.water!==null || r.exercise || r.memo);
+  save(KEYS.diet, toSave);
+
+  showToast('✅ 저장 완료!', 'ok');
+  btn.disabled = false; btn.textContent = '💾 저장하기';
+  renderDiet();
+  if(dietChartOpen) renderDietChart();
+}
+
 let _tt;
 function showToast(msg, type=''){
   const t=document.getElementById('toast');
