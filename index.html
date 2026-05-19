@@ -1030,6 +1030,55 @@ let wordTab = 'list';
 let editingId = { sched:null, diary:null, word:null, sent:null };
 let detailType = null, detailId = null;
 
+// ── 일정 상세보기 ──────────────────────────────────────────
+function openSchedDetail(id) {
+  const s = schedules.find(x => x.id === id);
+  if (!s) return;
+  detailType = 'sched';
+  detailId = id;
+
+  const catEmoji = {업무:'💼',개인:'🙂',약속:'🤝',기념일:'🎉',기타:'📌'};
+  const timeStr = s.time ? (s.endTime ? `${s.time} ~ ${s.endTime}` : s.time) : '';
+
+  document.getElementById('detail-modal-title').textContent = s.content;
+  document.getElementById('detail-modal-body').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--ink2)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:18px">📅</span>
+        <span>${s.date}${timeStr ? ' · ' + timeStr : ''}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:18px">${catEmoji[s.category]||'📌'}</span>
+        <span>${s.category}</span>
+      </div>
+      ${s.memo ? `<div style="display:flex;align-items:flex-start;gap:8px">
+        <span style="font-size:18px">📝</span>
+        <span>${s.memo}</span>
+      </div>` : ''}
+      ${s.link ? `<div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:18px">🔗</span>
+        <a href="${s.link}" target="_blank" style="color:var(--accent);word-break:break-all">${s.link}</a>
+      </div>` : ''}
+    </div>`;
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+function editFromDetail() {
+  closeModal('detail-modal');
+  if (detailType === 'sched') openSchedModal(detailId);
+}
+
+function deleteFromDetail() {
+  if (detailType === 'sched') {
+    if (!confirm('이 일정을 삭제할까요?')) return;
+    schedules = schedules.filter(x => x.id !== detailId);
+    save(KEYS.schedules, schedules);
+    closeModal('detail-modal');
+    showToast('삭제됐습니다', 'ok');
+    renderCalendar(); renderDayPanel(selectedDate);
+  }
+}
+
 window.onload = () => {
   const today = todayStr;
   document.getElementById('header-date').textContent =
@@ -1201,7 +1250,7 @@ function renderDayPanel(dateStr){
   if(dayScheds.length){
     html+=`<div class="section-label">📋 일정</div>`;
     html+=dayScheds.map(s=>`
-      <div class="schedule-item" onclick="openSchedModal('${s.id}')">
+      <div class="schedule-item" onclick="openSchedDetail('${s.id}')">
         ${s.time ? `<span class="si-time">${s.time}${s.endTime ? ' ~ '+s.endTime : ''}</span>` : ''}
         <div class="si-body">
           <div class="si-title">${s.content}</div>
