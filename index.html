@@ -461,6 +461,7 @@ select {
 .check-time { font-size:11px; color:var(--ink3); margin-top:2px; }
 .check-actions { display:flex; gap:4px; flex-shrink:0; }
 .check-btn { padding:5px 7px; border:none; border-radius:8px; background:var(--surface2); cursor:pointer; font-size:14px; }
+.check-btn.edit { background:rgba(26,115,232,0.1); }
 .check-btn.postpone { background:rgba(196,160,53,0.12); }
 .check-btn.delete { background:rgba(154,74,58,0.1); }
 /* 미루기 모달 */
@@ -490,7 +491,6 @@ select {
 
 <div class="tabs" id="main-tabs">
   <div class="tab active" data-tab="cal" onclick="switchTab('cal')"><span class="tab-icon">🗓</span>달력</div>
-  <div class="tab" data-tab="schedule" onclick="switchTab('schedule')"><span class="tab-icon">📋</span>일정</div>
   <div class="tab" data-tab="diary" onclick="switchTab('diary')"><span class="tab-icon">📓</span>일기</div>
   <div class="tab" data-tab="word" onclick="switchTab('word')"><span class="tab-icon">✝️</span>말씀</div>
   <div class="tab" data-tab="diet" onclick="switchTab('diet')"><span class="tab-icon">🥗</span>건강</div>
@@ -516,18 +516,7 @@ select {
   <div id="day-panel"></div>
 </div>
 
-<!-- ══ 일정 탭 ══ -->
-<div class="page" id="page-schedule">
-  <div class="filter-row" id="sched-filter-row">
-    <button class="filter-chip active" onclick="setSchedFilter('전체')">전체</button>
-    <button class="filter-chip" onclick="setSchedFilter('업무')">💼 업무</button>
-    <button class="filter-chip" onclick="setSchedFilter('개인')">🙂 개인</button>
-    <button class="filter-chip" onclick="setSchedFilter('약속')">🤝 약속</button>
-    <button class="filter-chip" onclick="setSchedFilter('기념일')">🎉 기념일</button>
-    <button class="filter-chip" onclick="setSchedFilter('기타')">📌 기타</button>
-  </div>
-  <div id="schedule-list"></div>
-</div>
+
 
 <!-- ══ 일기 탭 ══ -->
 <div class="page" id="page-diary">
@@ -627,7 +616,7 @@ select {
   <div class="card">
     <div class="card-title">🗂️ 탭 표시 설정</div>
     <p style="font-size:0.82rem;color:var(--ink3);margin-bottom:14px;line-height:1.7">
-      사용하지 않는 탭을 숨길 수 있습니다.<br>달력·일정·설정·도움말 탭은 항상 표시됩니다.
+      사용하지 않는 탭을 숨길 수 있습니다.<br>달력·설정·도움말 탭은 항상 표시됩니다.
     </p>
     <div style="display:flex;flex-direction:column;gap:10px">
       <label style="display:flex;align-items:center;justify-content:space-between;margin:0;font-size:0.92rem;color:var(--ink2);font-weight:600">
@@ -1073,7 +1062,7 @@ function switchTab(tab) {
   document.getElementById('page-'+tab).classList.add('active');
 
   const fab = document.getElementById('fab-btn');
-  const fabMap = {cal:'+', schedule:'📋', diary:'✏️', word:'✝️', diet:'', help:'', settings:''};
+  const fabMap = {cal:'+', diary:'✏️', word:'✝️', diet:'', help:'', settings:''};
   fab.textContent = fabMap[tab] !== undefined ? fabMap[tab] : '+';
   fab.style.display = (tab === 'settings' || tab === 'help' || tab === 'diet') ? 'none' : 'flex';
 
@@ -1092,7 +1081,7 @@ function switchWordTab(tab) {
 
 function fabAction() {
   const today = localDateStr(new Date());
-  if(currentTab==='cal' || currentTab==='schedule') openSchedModal(null, selectedDate);
+  if(currentTab==='cal') openSchedModal(null, selectedDate);
   else if(currentTab==='diary') openDiaryModal(null, today);
   else if(currentTab==='word') {
     if(wordTab==='sent') openSentModal(null);
@@ -1196,6 +1185,7 @@ function renderDayPanel(dateStr){
           ${c.time?`<div class="check-time">⏰ ${c.time}</div>`:''}
         </div>
         <div class="check-actions">
+          <button class="check-btn edit" onclick="openCheckEdit('${dateStr}',${i})" title="수정">✏️</button>
           <button class="check-btn postpone" onclick="openPostpone('${dateStr}',${i})" title="미루기">⏩</button>
           <button class="check-btn delete" onclick="deleteCheck('${dateStr}',${i})" title="삭제">🗑</button>
         </div>
@@ -1937,10 +1927,29 @@ let checkAddDate = '';
 let postponeDate = '';
 let postponeIdx  = -1;
 
+let checkEditIdx = null; // null이면 추가, 숫자면 수정
+
 function openCheckAdd(dateStr) {
   checkAddDate = dateStr;
+  checkEditIdx = null;
+  document.getElementById('check-modal-title').textContent = '✅ 할 일 추가';
+  document.getElementById('check-save-btn').textContent = '추가';
+  document.getElementById('check-delete-btn').style.display = 'none';
   document.getElementById('check-content-input').value = '';
   document.getElementById('check-time-input').value = '';
+  document.getElementById('check-modal').classList.add('open');
+}
+
+function openCheckEdit(dateStr, idx) {
+  checkAddDate = dateStr;
+  checkEditIdx = idx;
+  const c = (checks[dateStr] || [])[idx];
+  if(!c) return;
+  document.getElementById('check-modal-title').textContent = '✏️ 할 일 수정';
+  document.getElementById('check-save-btn').textContent = '저장';
+  document.getElementById('check-delete-btn').style.display = 'block';
+  document.getElementById('check-content-input').value = c.content || '';
+  document.getElementById('check-time-input').value = c.time || '';
   document.getElementById('check-modal').classList.add('open');
 }
 
@@ -1948,15 +1957,33 @@ function saveCheck() {
   const content = document.getElementById('check-content-input').value.trim();
   if(!content){ showToast('할 일을 입력하세요','err'); return; }
   if(!checks[checkAddDate]) checks[checkAddDate] = [];
-  checks[checkAddDate].push({
-    id: genId(),
-    content,
-    time: document.getElementById('check-time-input').value,
-    done: false
-  });
+  if(checkEditIdx !== null) {
+    // 수정
+    checks[checkAddDate][checkEditIdx].content = content;
+    checks[checkAddDate][checkEditIdx].time = document.getElementById('check-time-input').value;
+    showToast('✅ 수정됐어요!','ok');
+  } else {
+    // 추가
+    checks[checkAddDate].push({
+      id: genId(),
+      content,
+      time: document.getElementById('check-time-input').value,
+      done: false
+    });
+    showToast('✅ 추가됐어요!','ok');
+  }
   save(KEYS.checks, checks);
   closeModal('check-modal');
-  showToast('✅ 추가됐어요!','ok');
+  renderDayPanel(checkAddDate);
+}
+
+function deleteCheckEditing() {
+  if(checkEditIdx === null) return;
+  if(!confirm('삭제할까요?')) return;
+  checks[checkAddDate].splice(checkEditIdx, 1);
+  save(KEYS.checks, checks);
+  closeModal('check-modal');
+  showToast('삭제됐어요','ok');
   renderDayPanel(checkAddDate);
 }
 
@@ -2200,7 +2227,7 @@ if('serviceWorker' in navigator){
 <div class="modal-overlay" id="check-modal">
   <div class="modal-sheet">
     <div class="modal-header">
-      <span class="modal-title">✅ 할 일 추가</span>
+      <span class="modal-title" id="check-modal-title">✅ 할 일 추가</span>
       <button class="modal-close" onclick="closeModal('check-modal')">✕</button>
     </div>
     <div class="form-group">
@@ -2211,7 +2238,10 @@ if('serviceWorker' in navigator){
       <label class="form-label">시간 (선택)</label>
       <input type="time" id="check-time-input" class="form-input">
     </div>
-    <button class="btn-save" onclick="saveCheck()">추가</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn-save" id="check-save-btn" onclick="saveCheck()" style="flex:1">추가</button>
+      <button class="btn-delete" id="check-delete-btn" onclick="deleteCheckEditing()" style="display:none;background:var(--err,#e53935);color:#fff;border:none;border-radius:12px;padding:14px 18px;font-size:15px;cursor:pointer">🗑️ 삭제</button>
+    </div>
   </div>
 </div>
 
