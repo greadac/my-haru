@@ -804,7 +804,10 @@ select {
         <div class="card-title" style="margin-bottom:2px">📅 기록 시작일</div>
         <div id="diet-startdate-display" style="font-size:0.82rem;color:var(--ink3)">설정되지 않음</div>
       </div>
-      <button class="btn btn-sm btn-ghost" onclick="toggleStartDateEdit()">✏️ 변경</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm btn-ghost" style="background:rgba(52,168,83,0.12);color:var(--green)" onclick="syncDietFromSheet()">☁️ 시트</button>
+        <button class="btn btn-sm btn-ghost" onclick="toggleStartDateEdit()">✏️ 변경</button>
+      </div>
     </div>
     <div id="diet-startdate-edit" style="display:none;margin-top:12px">
       <input type="date" id="diet-startdate-input">
@@ -1949,6 +1952,60 @@ function renderDietChart() {
   s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
   s.onload = doChart;
   document.head.appendChild(s);
+}
+
+// ── 시트 → 건강 탭 동기화 ─────────────────────────────────
+async function syncDietFromSheet() {
+  const url = getGsUrl();
+  if (!url) { showToast('먼저 시트 URL을 저장해주세요', 'err'); return; }
+  showToast('시트에서 불러오는 중...', '');
+  try {
+    const res = await fetch(url + '?action=getDiet').then(r => r.json());
+    if (!res || !res.exists) { showToast('다이어트 시트가 없어요', 'err'); return; }
+    if (!res.rows || !res.rows.length) { showToast('데이터가 없어요', 'err'); return; }
+
+    const saved = (() => { try { return JSON.parse(localStorage.getItem(KEYS.diet)||'[]'); } catch { return []; } })();
+    const localMap = {};
+    saved.forEach(r => { localMap[r.date] = r; });
+
+    res.rows.forEach(r => {
+      if (!r.date) return;
+      const local = localMap[r.date] || {};
+      localMap[r.date] = {
+        date:      r.date,
+        weight:    r.weight !== null && r.weight !== '' ? Number(r.weight) : (local.weight ?? null),
+        breakfast: r.breakfast || local.breakfast || '',
+        lunch:     r.lunch     || local.lunch     || '',
+        dinner:    r.dinner    || local.dinner    || '',
+        water:     r.water !== null && r.water !== '' ? Number(r.water) : (local.water ?? null),
+        exercise:  r.exercise  || local.exercise  || '',
+        memo:      r.memo      || local.memo      || ''
+      };
+    });
+
+    // 시작일 자동 설정 (처음 불러올 때만)
+    const sortedDates = Object.keys(localMap).sort();
+    if (sortedDates.length && !dietStartDate) {
+      dietStartDate = sortedDates[0];
+      localStorage.setItem(KEYS.dietStart, dietStartDate);
+    }
+
+    const toSave = Object.values(localMap).filter(r =>
+      r.weight !== null || r.breakfast || r.lunch || r.dinner || r.water !== null || r.exercise || r.memo
+    );
+    save(KEYS.diet, toSave);
+
+    dietRows = buildDietRows();
+    renderStartDateDisplay();
+    const todayDs = localDateStr(new Date());
+    dietCurIdx = dietRows.findIndex(r => r.date === todayDs);
+    if (dietCurIdx < 0) dietCurIdx = Math.max(0, dietRows.length - 8);
+    renderDiet();
+
+    showToast(`☁️ ${res.rows.length}개 데이터를 불러왔어요!`, 'ok');
+  } catch(e) {
+    showToast('오류: ' + e.message, 'err');
+  }
 }
 
 function saveDietEntry() {
