@@ -1012,6 +1012,20 @@ let checks    = loadObj(KEYS.checks); // { 'YYYY-MM-DD': [{id,content,done,time}
 
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 
+// id 없는 기존 데이터 보정 (시트에서 불러온 항목 대응)
+(function fixMissingIds() {
+  let changed = false;
+  [schedules, diaries, words, sentences].forEach(arr => {
+    arr.forEach(item => { if (!item.id) { item.id = genId(); changed = true; } });
+  });
+  if (changed) {
+    save(KEYS.schedules, schedules);
+    save(KEYS.diaries, diaries);
+    save(KEYS.words, words);
+    save(KEYS.sentences, sentences);
+  }
+})();
+
 // ══════════════════════════════════════
 // 초기화
 // ══════════════════════════════════════
@@ -2322,7 +2336,11 @@ function mergeById(local, remote, key) {
   const map = {};
   local.forEach(item => { if (item[key]) map[item[key]] = item; });
   remote.forEach(item => {
-    if (!map[item[key]]) map[item[key]] = item;
+    if (!map[item[key]]) {
+      // 시트에서 온 항목에 id가 없으면 생성
+      if (!item.id) item.id = genId();
+      map[item[key]] = item;
+    }
   });
   // _rowIndex 없는 로컬 전용 항목도 유지
   const noKey = local.filter(item => !item[key]);
