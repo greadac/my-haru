@@ -1221,9 +1221,16 @@ function renderDayPanel(dateStr){
   let html=`<div class="day-panel"><div class="day-panel-title">${label}</div>`;
 
   // ── 체크리스트 ──
+  const isToday = dateStr === localDateStr(new Date());
   html+=`<div class="section-label" style="display:flex;justify-content:space-between;align-items:center">
     <span>✅ 체크리스트 ${dayChecks.length?`<span style="font-size:11px;opacity:0.7">${doneCount}/${dayChecks.length}</span>`:''}</span>
-    <button class="btn-add-check-sm" onclick="openCheckAdd('${dateStr}')">+ 추가</button>
+    <div style="display:flex;gap:6px;align-items:center">
+      ${isToday ? `
+        <button class="btn-add-check-sm" style="background:rgba(26,115,232,0.12);color:var(--accent)" onclick="importTodayChecks()" title="오늘 일정 → 체크리스트">📋 일정</button>
+        <button class="btn-add-check-sm" style="background:rgba(52,168,83,0.12);color:var(--green)" onclick="importSheetChecks()" title="시트에서 오늘 체크리스트 불러오기">☁️ 시트</button>
+      ` : ''}
+      <button class="btn-add-check-sm" onclick="openCheckAdd('${dateStr}')">+ 추가</button>
+    </div>
   </div>`;
   if(dayChecks.length){
     const pct = dayChecks.length ? Math.round(doneCount/dayChecks.length*100) : 0;
@@ -2026,6 +2033,79 @@ function deleteCheckEditing() {
   closeModal('check-modal');
   showToast('삭제됐어요','ok');
   renderDayPanel(checkAddDate);
+}
+
+// ── 오늘 일정 → 체크리스트 가져오기 ──────────────────────
+async function importTodayChecks() {
+  const today = localDateStr(new Date());
+  const url = getGsUrl();
+  if (!url) {
+    // 시트 없이 로컬 일정에서 가져오기
+    const todayScheds = schedules.filter(s => s.date === today);
+    if (!todayScheds.length) { showToast('오늘 일정이 없어요', 'err'); return; }
+    if (!checks[today]) checks[today] = [];
+    let added = 0;
+    todayScheds.forEach(s => {
+      const exists = checks[today].find(c => c._schedId === s.id);
+      if (!exists) {
+        checks[today].push({ id: genId(), _schedId: s.id, content: s.content, time: s.time||'', done: false, source: '일정' });
+        added++;
+      }
+    });
+    save(KEYS.checks, checks);
+    renderDayPanel(today);
+    showToast(added ? `📋 ${added}개 일정을 가져왔어요!` : '이미 모두 추가됐어요', added ? 'ok' : '');
+    return;
+  }
+  // 시트에서 importTodaySchedules 호출
+  showToast('일정 불러오는 중...', '');
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'importSchedules' })
+    }).then(r => r.json());
+    if (res.success) {
+      // 시트에서 체크리스트 최신화
+      const checkRes = await fetch(url + `?action=getChecklist&date=${today}`).then(r => r.json());
+      if (checkRes.items && checkRes.items.length) {
+        if (!checks[today]) checks[today] = [];
+        checkRes.items.forEach(item => {
+          const exists = checks[today].find(c => c._rowIndex === item._rowIndex);
+          if (!exists) checks[today].push({ id: genId(), _rowIndex: item._rowIndex, content: item.title, time: item.time||'', done: item.done, source: item.source||'일정' });
+        });
+        save(KEYS.checks, checks);
+      }
+      renderDayPanel(today);
+      showToast(`📋 ${res.added}개 일정을 가져왔어요!`, 'ok');
+    } else {
+      showToast('오류: ' + (res.message||'실패'), 'err');
+    }
+  } catch(e) { showToast('오류: ' + e.message, 'err'); }
+}
+
+// ── 시트 → 오늘 체크리스트 불러오기 ──────────────────────
+async function importSheetChecks() {
+  const today = localDateStr(new Date());
+  const url = getGsUrl();
+  if (!url) { showToast('먼저 시트 URL을 저장해주세요', 'err'); return; }
+  showToast('시트에서 불러오는 중...', '');
+  try {
+    const res = await fetch(url + `?action=getChecklist&date=${today}`).then(r => r.json());
+    if (!res.items) { showToast('데이터를 받지 못했어요', 'err'); return; }
+    if (!checks[today]) checks[today] = [];
+    let added = 0;
+    res.items.forEach(item => {
+      const exists = checks[today].find(c => c._rowIndex === item._rowIndex);
+      if (!exists) {
+        checks[today].push({ id: genId(), _rowIndex: item._rowIndex, content: item.title, time: item.time||'', done: item.done, source: item.source||'시트' });
+        added++;
+      }
+    });
+    save(KEYS.checks, checks);
+    renderDayPanel(today);
+    showToast(added ? `☁️ ${added}개를 불러왔어요!` : '새로운 항목이 없어요', added ? 'ok' : '');
+  } catch(e) { showToast('오류: ' + e.message, 'err'); }
 }
 
 function toggleCheck(dateStr, idx) {
