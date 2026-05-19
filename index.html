@@ -672,8 +672,10 @@ select {
     <div class="modal-title" id="sched-modal-title">일정 추가</div>
     <label>날짜</label>
     <input type="date" id="sm-date">
-    <label>시간 <span style="color:var(--ink4);font-weight:400">(선택)</span></label>
+    <label>시작 시간 <span style="color:var(--ink4);font-weight:400">(선택)</span></label>
     <input type="time" id="sm-time">
+    <label>종료 시간 <span style="color:var(--ink4);font-weight:400">(선택)</span></label>
+    <input type="time" id="sm-endtime">
     <label>내용</label>
     <input type="text" id="sm-content" placeholder="일정 내용을 입력하세요">
     <label>카테고리</label>
@@ -684,6 +686,8 @@ select {
       <option value="기념일">🎉 기념일</option>
       <option value="기타">📌 기타</option>
     </select>
+    <label>URL <span style="color:var(--ink4);font-weight:400">(선택)</span></label>
+    <input type="url" id="sm-link" placeholder="https://...">
     <label>메모 <span style="color:var(--ink4);font-weight:400">(선택)</span></label>
     <input type="text" id="sm-memo" placeholder="간단한 메모">
     <div class="btn-row">
@@ -1198,14 +1202,16 @@ function renderDayPanel(dateStr){
     html+=`<div class="section-label">📋 일정</div>`;
     html+=dayScheds.map(s=>`
       <div class="schedule-item" onclick="openSchedModal('${s.id}')">
-        ${s.time?`<span class="si-time">${s.time}</span>`:''}
+        ${s.time ? `<span class="si-time">${s.time}${s.endTime ? ' ~ '+s.endTime : ''}</span>` : ''}
         <div class="si-body">
           <div class="si-title">${s.content}</div>
           <div class="si-meta">
             <span class="cat-badge cat-${s.category}">${s.category}</span>
-            ${s.memo||''}
+            ${s.memo ? `<span>${s.memo}</span>` : ''}
+            ${s.link ? `<a href="${s.link}" target="_blank" onclick="event.stopPropagation()" style="color:var(--accent);font-size:11px;margin-left:4px">🔗 링크</a>` : ''}
           </div>
         </div>
+        <span style="font-size:18px;color:var(--ink3);padding-left:6px">›</span>
       </div>`).join('');
   }
   if(dayDiaries.length){
@@ -1242,14 +1248,18 @@ function openSchedModal(id, dateDefault){
     if(!s) return;
     document.getElementById('sm-date').value    = s.date||'';
     document.getElementById('sm-time').value    = s.time||'';
+    document.getElementById('sm-endtime').value = s.endTime||'';
     document.getElementById('sm-content').value = s.content||'';
     document.getElementById('sm-cat').value     = s.category||'기타';
+    document.getElementById('sm-link').value    = s.link||'';
     document.getElementById('sm-memo').value    = s.memo||'';
   } else {
     document.getElementById('sm-date').value    = dateDefault || selectedDate;
     document.getElementById('sm-time').value    = '';
+    document.getElementById('sm-endtime').value = '';
     document.getElementById('sm-content').value = '';
     document.getElementById('sm-cat').value     = '개인';
+    document.getElementById('sm-link').value    = '';
     document.getElementById('sm-memo').value    = '';
   }
   document.getElementById('sched-modal').classList.add('open');
@@ -1263,7 +1273,9 @@ function saveSchedule(){
   const item = {
     id:       editingId.sched || genId(),
     date, time: document.getElementById('sm-time').value,
+    endTime:  document.getElementById('sm-endtime').value,
     content,  category: document.getElementById('sm-cat').value,
+    link:     document.getElementById('sm-link').value.trim(),
     memo:     document.getElementById('sm-memo').value.trim()
   };
   if(editingId.sched){
@@ -2204,7 +2216,7 @@ if('serviceWorker' in navigator){
 }
 </script>
 <!-- 체크리스트 추가 모달 -->
-<div class="modal-overlay" id="check-modal">
+<div class="modal-overlay" id="check-modal" onclick="closeModal('check-modal',event)">
   <div class="modal-sheet">
     <div class="modal-header">
       <span class="modal-title" id="check-modal-title">✅ 할 일 추가</span>
@@ -2226,7 +2238,7 @@ if('serviceWorker' in navigator){
 </div>
 
 <!-- 미루기 모달 -->
-<div class="modal-overlay" id="postpone-modal">
+<div class="modal-overlay" id="postpone-modal" onclick="closeModal('postpone-modal',event)">
   <div class="modal-sheet">
     <div class="modal-header">
       <span class="modal-title">⏩ 미루기 / 복사</span>
