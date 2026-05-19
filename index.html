@@ -1288,31 +1288,11 @@ function deleteSchedule(){
 
 function renderScheduleList(){
   const el=document.getElementById('schedule-list');
-  let filtered = schedFilter==='전체' ? schedules : schedules.filter(s=>s.category===schedFilter);
-  filtered = [...filtered].sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||''));
-
-  if(!filtered.length){
-    el.innerHTML='<div class="empty"><div class="icon">📭</div><p>일정이 없습니다</p></div>'; return;
-  }
-  let lastDate='';
-  el.innerHTML=filtered.map(s=>{
-    const header=s.date!==lastDate?`<div class="section-label">${s.date}</div>`:'';
-    lastDate=s.date;
-    return `${header}<div class="schedule-item" onclick="openSchedModal('${s.id}')">
-      ${s.time?`<span class="si-time">${s.time}</span>`:''}
-      <div class="si-body">
-        <div class="si-title">${s.content}</div>
-        <div class="si-meta"><span class="cat-badge cat-${s.category}">${s.category}</span>${s.memo||''}</div>
-      </div>
-    </div>`;
-  }).join('');
+  if(!el) return; // 일정 탭 제거됨
 }
 
 function setSchedFilter(f){
   schedFilter=f;
-  document.querySelectorAll('#sched-filter-row .filter-chip').forEach(b=>{
-    b.classList.toggle('active', b.textContent.includes(f)||(f==='전체'&&b.textContent==='전체'));
-  });
   renderScheduleList();
 }
 
