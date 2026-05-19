@@ -538,7 +538,6 @@ select {
   <div class="tab" data-tab="word" onclick="switchTab('word')"><span class="tab-icon">✝️</span>말씀</div>
   <div class="tab" data-tab="diet" onclick="switchTab('diet')"><span class="tab-icon">🥗</span>건강</div>
   <div class="tab" data-tab="bookmark" onclick="switchTab('bookmark')"><span class="tab-icon">🔖</span>즐겨찾기</div>
-  <div class="tab" data-tab="help" onclick="switchTab('help')"><span class="tab-icon">❓</span>도움말</div>
   <div class="tab" data-tab="settings" onclick="switchTab('settings')"><span class="tab-icon">⚙️</span>설정</div>
 </div>
 
@@ -660,7 +659,7 @@ select {
   <div class="card">
     <div class="card-title">🗂️ 탭 표시 설정</div>
     <p style="font-size:0.82rem;color:var(--ink3);margin-bottom:14px;line-height:1.7">
-      사용하지 않는 탭을 숨길 수 있습니다.<br>달력·설정·도움말 탭은 항상 표시됩니다.
+    사용하지 않는 탭을 숨길 수 있습니다.<br>달력·설정 탭은 항상 표시됩니다.
     </p>
     <div style="display:flex;flex-direction:column;gap:10px">
       <label style="display:flex;align-items:center;justify-content:space-between;margin:0;font-size:0.92rem;color:var(--ink2);font-weight:600">
@@ -706,6 +705,79 @@ select {
       일정 · 일기 · 말씀묵상 · 건강 통합 기록 앱<br>
       <span style="color:var(--ink4);font-size:0.76rem">데이터: 브라우저 localStorage 저장</span>
     </p>
+  </div>
+
+  <!-- 도움말 접이식 카드 -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="toggleHelp()">
+      <div class="card-title" style="margin-bottom:0">❓ 도움말</div>
+      <span id="help-arrow" style="font-size:18px;color:var(--ink3);transition:transform 0.2s">▼</span>
+    </div>
+    <div id="help-content" style="display:none;margin-top:16px">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">📱 앱 소개</div>
+          <p style="font-size:0.82rem;color:var(--ink2);line-height:1.8">
+            <b>나의 하루</b>는 일정·일기·말씀묵상·건강을 한 곳에서 기록하는 개인 다이어리 앱입니다.<br>
+            모든 데이터는 이 기기의 브라우저에만 저장되며, 외부 서버로 전송되지 않습니다.
+          </p>
+        </div>
+        <div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">🗓️ 달력 탭</div>
+          <p style="font-size:0.82rem;color:var(--ink2);line-height:1.9">
+            • 달력에서 날짜를 탭하면 해당 날의 일정·체크리스트를 확인할 수 있습니다.<br>
+            • ‹ › 버튼으로 월을 이동합니다.<br>
+            • 우측 하단 <b>+</b> 버튼으로 일정을 빠르게 추가합니다.<br>
+            • 일정 탭하면 상세보기·수정·삭제 가능합니다.
+          </p>
+        </div>
+        <div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">📓 일기 탭</div>
+          <p style="font-size:0.82rem;color:var(--ink2);line-height:1.9">
+            • 날짜별로 일기를 작성합니다.<br>
+            • 제목·내용·기분을 기록할 수 있습니다.<br>
+            • 우측 하단 ✏️ 버튼으로 새 일기를 작성합니다.
+          </p>
+        </div>
+        <div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">✝️ 말씀 탭</div>
+          <p style="font-size:0.82rem;color:var(--ink2);line-height:1.9">
+            • <b>묵상 목록</b>: 성경 말씀 묵상을 날짜별로 기록합니다.<br>
+            • <b>문장수집</b>: 마음에 닿은 문장을 모아둡니다.<br>
+            • <b>통독표</b>: 시작일·위치·하루 분량을 설정하면 자동으로 통독 계획표를 생성합니다.<br>
+            • 성경은 가톨릭 성경(73권) 기준입니다.
+          </p>
+        </div>
+        <div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">🥗 건강 탭</div>
+          <p style="font-size:0.82rem;color:var(--ink2);line-height:1.9">
+            • 날짜 탭을 선택해 해당 날의 기록을 입력합니다.<br>
+            • 기상 몸무게·식사·물 섭취량·운동·메모를 기록합니다.<br>
+            • 📊 차트 보기로 몸무게 변화 추이를 그래프로 확인할 수 있습니다.
+          </p>
+        </div>
+        <div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">🔖 즐겨찾기 탭</div>
+          <p style="font-size:0.82rem;color:var(--ink2);line-height:1.9">
+            • 자주 가는 사이트를 바로가기로 추가합니다.<br>
+            • 카테고리별로 그룹핑되며 검색도 가능합니다.<br>
+            • 아이콘에 마우스 올리면 ✏️ 수정 버튼이 나타납니다.
+          </p>
+        </div>
+        <div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">💡 자주 묻는 질문</div>
+          <p style="font-size:0.82rem;color:var(--ink2);line-height:1.9">
+            <b>Q. 데이터가 사라졌어요.</b><br>
+            브라우저 캐시/쿠키 삭제 시 데이터도 함께 삭제됩니다.<br>
+            설정 탭에서 정기적으로 백업하는 것을 권장해요.<br><br>
+            <b>Q. 다른 기기에서도 쓸 수 있나요?</b><br>
+            구글 시트 연동 또는 데이터 내보내기 후 불러오기를 사용하세요.<br><br>
+            <b>Q. 탭이 보이지 않아요.</b><br>
+            설정 탭에서 탭 표시 설정을 확인해보세요.
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -928,13 +1000,13 @@ select {
       <span style="position:absolute;top:50%;left:13px;transform:translateY(-50%);font-size:15px;pointer-events:none">🔍</span>
       <input type="text" id="bm-search" placeholder="사이트 검색..." class="form-input" style="padding-left:38px" oninput="renderBookmarks()">
     </div>
+    <button class="btn btn-sm btn-ghost" style="background:rgba(52,168,83,0.12);color:var(--green);white-space:nowrap" onclick="syncBookmarksFromSheet()">☁️</button>
     <button class="btn btn-primary" style="white-space:nowrap;padding:12px 16px" onclick="openBookmarkModal(null)">+ 추가</button>
   </div>
   <div id="bm-grid"></div>
 </div>
 
-<!-- 즐겨찾기 추가/수정 모달 -->
-<div class="modal-overlay" id="bm-modal" onclick="closeModal('bm-modal',event)">
+  <div class="modal-overlay" id="bm-modal" onclick="closeModal('bm-modal',event)">
   <div class="modal-sheet">
     <div class="modal-header">
       <span class="modal-title" id="bm-modal-title">🔖 즐겨찾기 추가</span>
@@ -960,80 +1032,6 @@ select {
       <button class="btn-save" id="bm-save-btn" onclick="saveBookmark()" style="flex:1">추가</button>
       <button id="bm-delete-btn" onclick="deleteBookmark()" style="display:none;background:var(--err,#e53935);color:#fff;border:none;border-radius:12px;padding:14px 18px;font-size:15px;cursor:pointer">🗑️</button>
     </div>
-  </div>
-</div>
-  <div class="card">
-    <div class="card-title">📱 앱 소개</div>
-    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.8">
-      <b>나의 하루</b>는 일정·일기·말씀묵상·건강을 한 곳에서 기록하는 개인 다이어리 앱입니다.<br>
-      모든 데이터는 이 기기의 브라우저에만 저장되며, 외부 서버로 전송되지 않습니다.
-    </p>
-  </div>
-  <div class="card">
-    <div class="card-title">🗓️ 달력 탭</div>
-    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
-      • 달력에서 날짜를 탭하면 해당 날의 일정·일기·말씀 기록을 확인할 수 있습니다.<br>
-      • ‹ › 버튼으로 월을 이동합니다.<br>
-      • 날짜 아래 색상 점: 🟠 일정 / 🟢 일기 / 🟣 말씀<br>
-      • 우측 하단 <b>+</b> 버튼으로 일정을 빠르게 추가합니다.
-    </p>
-  </div>
-  <div class="card">
-    <div class="card-title">📋 일정 탭</div>
-    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
-      • 전체 일정을 날짜순으로 조회합니다.<br>
-      • 상단 필터 칩으로 카테고리별 필터링이 가능합니다.<br>
-      • 카테고리: 💼 업무 / 🙂 개인 / 🤝 약속 / 🎉 기념일 / 📌 기타<br>
-      • 일정을 탭하면 수정 또는 삭제할 수 있습니다.
-    </p>
-  </div>
-  <div class="card">
-    <div class="card-title">📓 일기 탭</div>
-    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
-      • 날짜별로 일기를 작성합니다.<br>
-      • 제목·내용·기분을 기록할 수 있습니다.<br>
-      • 기분: 😊 좋음 / 😐 보통 / 😔 나쁨 / 😤 화남 / 😴 피곤<br>
-      • 우측 하단 ✏️ 버튼으로 새 일기를 작성합니다.
-    </p>
-  </div>
-  <div class="card">
-    <div class="card-title">✝️ 말씀 탭</div>
-    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
-      • <b>묵상 목록</b>: 성경 말씀 묵상을 날짜별로 기록합니다. 읽은 범위·구절·묵상·기도를 적을 수 있습니다.<br>
-      • <b>문장수집</b>: 성경이나 책에서 마음에 닿은 문장을 모아둡니다.<br>
-      • <b>통독표</b>: 시작일·시작 위치·하루 분량을 설정하면 자동으로 통독 계획표를 생성합니다.<br>
-      • 성경은 가톨릭 성경(73권) 기준입니다.
-    </p>
-  </div>
-  <div class="card">
-    <div class="card-title">🥗 건강 탭</div>
-    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
-      • 날짜 탭을 선택해 해당 날의 기록을 입력합니다.<br>
-      • 기상 몸무게·식사(아침/점심/저녁)·물 섭취량·운동·메모를 기록합니다.<br>
-      • 전날 대비 체중 변화가 배지로 표시됩니다.<br>
-      • 📊 차트 보기로 몸무게 변화 추이를 그래프로 확인할 수 있습니다.<br>
-      • 날짜 탭은 시작일부터 오늘까지 + 이후 7일이 자동 생성됩니다.
-    </p>
-  </div>
-  <div class="card">
-    <div class="card-title">⚙️ 설정 탭</div>
-    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
-      • <b>탭 표시 설정</b>: 사용하지 않는 탭(일기·말씀·건강)을 숨기거나 다시 표시할 수 있습니다.<br>
-      • <b>데이터 내보내기</b>: 전체 데이터를 JSON 파일로 저장합니다 (백업용).<br>
-      • <b>데이터 불러오기</b>: 저장해 둔 JSON 백업 파일을 복원합니다.
-    </p>
-  </div>
-  <div class="card">
-    <div class="card-title">💡 자주 묻는 질문</div>
-    <p style="font-size:0.85rem;color:var(--ink2);line-height:1.9">
-      <b>Q. 데이터가 사라졌어요.</b><br>
-      브라우저 캐시/쿠키 삭제 시 localStorage 데이터도 함께 삭제됩니다.<br>
-      설정 탭에서 정기적으로 백업하는 것을 권장합니다.<br><br>
-      <b>Q. 다른 기기에서도 쓸 수 있나요?</b><br>
-      데이터 내보내기 후 다른 기기에서 불러오기를 사용하세요.<br><br>
-      <b>Q. 탭이 보이지 않아요.</b><br>
-      설정 탭에서 탭 표시 설정을 확인해보세요.
-    </p>
   </div>
 </div>
 
@@ -1216,9 +1214,9 @@ function switchTab(tab) {
   document.getElementById('page-'+tab).classList.add('active');
 
   const fab = document.getElementById('fab-btn');
-  const fabMap = {cal:'+', diary:'✏️', word:'✝️', diet:'', bookmark:'', help:'', settings:''};
+  const fabMap = {cal:'+', diary:'✏️', word:'✝️', diet:'', bookmark:'', settings:''};
   fab.textContent = fabMap[tab] !== undefined ? fabMap[tab] : '+';
-  fab.style.display = (tab === 'settings' || tab === 'help' || tab === 'diet' || tab === 'bookmark') ? 'none' : 'flex';
+  fab.style.display = (tab === 'settings' || tab === 'bookmark') ? 'none' : 'flex';
 
   if (tab === 'diet') initDietTab();
   if (tab === 'bookmark') renderBookmarks();
@@ -2130,6 +2128,14 @@ function saveDietEntry() {
 let bookmarks = (() => { try { return JSON.parse(localStorage.getItem(KEYS.bookmarks)||'[]'); } catch { return []; } })();
 let bmEditId = null;
 
+function toggleHelp() {
+  const el = document.getElementById('help-content');
+  const arrow = document.getElementById('help-arrow');
+  const isOpen = el.style.display !== 'none';
+  el.style.display = isOpen ? 'none' : 'block';
+  arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
 function renderBookmarks() {
   const el = document.getElementById('bm-grid');
   if (!el) return;
@@ -2215,6 +2221,7 @@ function saveBookmark() {
   localStorage.setItem(KEYS.bookmarks, JSON.stringify(bookmarks));
   closeModal('bm-modal');
   renderBookmarks();
+  pushBookmarkToSheet(item);
   showToast(bmEditId ? '✅ 수정됐어요!' : '🔖 추가됐어요!', 'ok');
 }
 
@@ -2223,9 +2230,42 @@ function deleteBookmark() {
   if (!confirm('삭제할까요?')) return;
   bookmarks = bookmarks.filter(x => x.id !== bmEditId);
   localStorage.setItem(KEYS.bookmarks, JSON.stringify(bookmarks));
+  // 시트에서도 삭제
+  const url = getGsUrl();
+  if (url) fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({ action:'deleteBookmark', id: bmEditId }) }).catch(()=>{});
   closeModal('bm-modal');
   renderBookmarks();
   showToast('삭제됐어요', 'ok');
+}
+
+// 앱 → 시트 (즐겨찾기 추가/수정 시 자동 업로드)
+async function pushBookmarkToSheet(item) {
+  const url = getGsUrl();
+  if (!url) return;
+  try {
+    await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({ action:'addBookmark', ...item }) });
+  } catch(e) {}
+}
+
+// 시트 → 앱 (즐겨찾기 불러오기)
+async function syncBookmarksFromSheet() {
+  const url = getGsUrl();
+  if (!url) { showToast('먼저 시트 URL을 저장해주세요', 'err'); return; }
+  showToast('불러오는 중...', '');
+  try {
+    const res = await fetch(url + '?action=getBookmarks').then(r => r.json());
+    if (!res.items) { showToast('데이터를 받지 못했어요', 'err'); return; }
+    // 로컬과 병합 (id 기준, 시트 우선)
+    const localMap = {};
+    bookmarks.forEach(b => { localMap[b.id] = b; });
+    res.items.forEach(b => { if (b.id) localMap[b.id] = b; });
+    bookmarks = Object.values(localMap);
+    localStorage.setItem(KEYS.bookmarks, JSON.stringify(bookmarks));
+    renderBookmarks();
+    showToast(`☁️ ${res.items.length}개 불러왔어요!`, 'ok');
+  } catch(e) { showToast('오류: ' + e.message, 'err'); }
 }
 
 // ══════════════════════════════════════
