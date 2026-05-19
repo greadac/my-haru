@@ -2359,30 +2359,38 @@ async function syncToSheet() {
   if (!confirm('앱의 모든 데이터를 시트로 올릴까요?\n시트에 없는 항목이 추가됩니다.')) return;
   showToast('올리는 중...', '');
   try {
-    // 시트에 없는 항목만 추가 (새로 만든 항목 = _rowIndex 없음)
+    // 일정 (새 항목만)
     const newScheds = schedules.filter(s => !s._rowIndex);
     for (const s of newScheds) {
-      await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'addSchedule', ...s })
-      });
+      await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({ action:'addSchedule', ...s }) });
     }
+    // 일기 (새 항목만)
     const newDiaries = diaries.filter(d => !d._rowIndex);
     for (const d of newDiaries) {
-      await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'addDiary', ...d })
-      });
+      await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({ action:'addDiary', ...d }) });
     }
+    // 말씀일기 (새 항목만)
     const newWords = words.filter(w => !w._rowIndex);
     for (const w of newWords) {
-      await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'addWord', ...w })
-      });
+      await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({ action:'addWord', ...w }) });
+    }
+    // 건강(다이어트) - 데이터 있는 행 전체
+    const dietData = (() => { try { return JSON.parse(localStorage.getItem(KEYS.diet)||'[]'); } catch { return []; } })();
+    for (const r of dietData) {
+      await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({ action:'saveDietRow', ...r }) });
+    }
+    // 체크리스트 - 모든 날짜
+    const allChecks = [];
+    Object.entries(checks).forEach(([date, items]) => {
+      items.forEach(c => { if (c.content) allChecks.push({ date, title: c.content, time: c.time||'', done: c.done ? '✅' : '' }); });
+    });
+    for (const c of allChecks) {
+      await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({ action:'addChecklist', ...c }) });
     }
     showToast('✅ 시트로 올렸어요!', 'ok');
   } catch(e) {
