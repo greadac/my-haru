@@ -445,6 +445,35 @@ select {
 }
 .toggle-switch.on .toggle-knob { transform: translateX(22px); }
 
+.btn-primary-sm { padding:8px 14px; background:var(--accent); color:#fff; border:none; border-radius:8px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; }
+/* ── 체크리스트 ── */
+.btn-add-check { margin-top:12px; padding:8px 20px; background:var(--accent); color:#fff; border:none; border-radius:20px; font-family:inherit; font-size:13px; cursor:pointer; }
+.btn-add-check-sm { padding:4px 10px; background:var(--surface2); border:1px solid var(--surface3); border-radius:16px; font-size:11px; color:var(--ink2); cursor:pointer; font-family:inherit; }
+.check-progress-bar { height:6px; background:var(--surface3); border-radius:3px; overflow:hidden; margin:6px 0 10px; }
+.check-progress-fill { height:100%; background:var(--green); border-radius:3px; transition:width 0.3s; }
+.check-item { display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--surface); border-radius:10px; margin-bottom:6px; border:1px solid var(--surface3); transition:opacity 0.2s; }
+.check-item.done { opacity:0.55; }
+.check-circle { width:26px; height:26px; border-radius:50%; border:2px solid var(--ink4); background:none; cursor:pointer; font-size:13px; color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.15s; }
+.check-circle.checked { background:var(--green); border-color:var(--green); }
+.check-body { flex:1; min-width:0; }
+.check-content { font-size:14px; line-height:1.3; }
+.check-item.done .check-content { text-decoration:line-through; color:var(--ink3); }
+.check-time { font-size:11px; color:var(--ink3); margin-top:2px; }
+.check-actions { display:flex; gap:4px; flex-shrink:0; }
+.check-btn { padding:5px 7px; border:none; border-radius:8px; background:var(--surface2); cursor:pointer; font-size:14px; }
+.check-btn.postpone { background:rgba(196,160,53,0.12); }
+.check-btn.delete { background:rgba(154,74,58,0.1); }
+/* 미루기 모달 */
+.postpone-option { display:flex; gap:12px; align-items:center; padding:12px; background:var(--surface2); border-radius:12px; margin-bottom:12px; cursor:pointer; }
+.postpone-option:active { opacity:0.7; }
+.postpone-icon { font-size:24px; }
+.postpone-title { font-size:14px; font-weight:600; }
+.postpone-desc { font-size:11px; color:var(--ink3); margin-top:2px; }
+.postpone-section { margin-bottom:12px; }
+.postpone-label { font-size:13px; font-weight:600; color:var(--ink2); margin-bottom:6px; }
+.btn-blue { padding:8px 16px; background:var(--blue); color:#fff; border:none; border-radius:8px; font-family:inherit; font-size:13px; cursor:pointer; white-space:nowrap; }
+.btn-green { padding:8px 16px; background:var(--green); color:#fff; border:none; border-radius:8px; font-family:inherit; font-size:13px; cursor:pointer; white-space:nowrap; }
+.btn-cancel { width:100%; padding:12px; background:none; border:1px solid var(--surface3); border-radius:10px; font-family:inherit; font-size:14px; color:var(--ink2); cursor:pointer; margin-top:8px; }
 </style>
 </head>
 <body>
@@ -455,9 +484,7 @@ select {
       <div class="header-title">✦ 나의 하루</div>
       <div class="header-date" id="header-date"></div>
     </div>
-    <div class="header-actions">
-      <button class="icon-btn" onclick="switchTab('settings')" title="설정">⚙️</button>
-    </div>
+    <div class="header-actions"></div>
   </div>
 </header>
 
@@ -568,6 +595,35 @@ select {
 
 <!-- ══ 설정 탭 ══ -->
 <div class="page" id="page-settings">
+
+  <!-- 구글 시트 연동 카드 -->
+  <div class="card">
+    <div class="card-title">☁️ GOOGLE SHEETS 연동</div>
+    <div id="gs-status-bar" style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--surface2);border-radius:10px;margin-bottom:12px;font-size:13px;color:var(--ink2)">
+      <span id="gs-dot" style="width:10px;height:10px;border-radius:50%;background:var(--ink4);flex-shrink:0"></span>
+      <span id="gs-status-text">연동 안 됨</span>
+    </div>
+    <p style="font-size:11px;color:var(--ink3);margin-bottom:8px">Apps Script 웹앱 URL</p>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input type="text" id="gs-url-input" placeholder="https://script.google.com/macros/s/..." style="flex:1;font-size:12px">
+      <button class="btn-primary-sm" onclick="saveGsUrl()">저장</button>
+    </div>
+    <button class="export-btn" onclick="syncFromSheet()">
+      <span class="export-icon">🔄</span>
+      <div class="export-info">
+        <div class="export-name">시트에서 불러오기</div>
+        <div class="export-desc">Google Sheets → 앱 동기화</div>
+      </div>
+    </button>
+    <button class="export-btn" onclick="syncToSheet()">
+      <span class="export-icon">☁️</span>
+      <div class="export-info">
+        <div class="export-name">시트로 전체 올리기</div>
+        <div class="export-desc">앱 전체 데이터 → Google Sheets</div>
+      </div>
+    </button>
+  </div>
+
   <div class="card">
     <div class="card-title">🗂️ 탭 표시 설정</div>
     <p style="font-size:0.82rem;color:var(--ink3);margin-bottom:14px;line-height:1.7">
@@ -948,7 +1004,7 @@ function buildChapterList(testament) {
 // ══════════════════════════════════════
 // 데이터 저장소 (localStorage)
 // ══════════════════════════════════════
-const KEYS = { schedules:'myharu_schedules', diaries:'myharu_diaries', words:'myharu_words', sentences:'myharu_sentences', plan:'myharu_plan', diet:'myharu_diet', tabSettings:'myharu_tabSettings', dietStart:'myharu_dietStart' };
+const KEYS = { schedules:'myharu_schedules', diaries:'myharu_diaries', words:'myharu_words', sentences:'myharu_sentences', plan:'myharu_plan', diet:'myharu_diet', tabSettings:'myharu_tabSettings', dietStart:'myharu_dietStart', checks:'myharu_checks' };
 
 function load(key) { try { return JSON.parse(localStorage.getItem(key)||'[]'); } catch{ return []; } }
 function loadObj(key) { try { return JSON.parse(localStorage.getItem(key)||'{}'); } catch{ return {}; } }
@@ -959,6 +1015,7 @@ let diaries   = load(KEYS.diaries);
 let words     = load(KEYS.words);
 let sentences = load(KEYS.sentences);
 let plan      = loadObj(KEYS.plan);
+let checks    = loadObj(KEYS.checks); // { 'YYYY-MM-DD': [{id,content,done,time}] }
 
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 
@@ -1021,6 +1078,7 @@ function switchTab(tab) {
   fab.style.display = (tab === 'settings' || tab === 'help' || tab === 'diet') ? 'none' : 'flex';
 
   if (tab === 'diet') initDietTab();
+  if (tab === 'settings') initGsSettings();
 }
 
 function switchWordTab(tab) {
@@ -1071,8 +1129,10 @@ function renderCalendar() {
     const hasSched = schedules.some(s=>s.date===dateStr);
     const hasDiary = diaries.some(d2=>d2.date===dateStr);
     const hasWord  = words.some(w=>w.date===dateStr);
-    if(hasSched||hasDiary||hasWord){
+    const hasCheck = checks[dateStr]&&checks[dateStr].length>0;
+    if(hasSched||hasDiary||hasWord||hasCheck){
       const dots=document.createElement('div'); dots.className='dot-row';
+      if(hasCheck){const dt=document.createElement('span');dt.className='dot dot-schedule';dt.style.background='var(--green)';dots.appendChild(dt);}
       if(hasSched){const dt=document.createElement('span');dt.className='dot dot-schedule';dots.appendChild(dt);}
       if(hasDiary){const dt=document.createElement('span');dt.className='dot dot-diary';dots.appendChild(dt);}
       if(hasWord) {const dt=document.createElement('span');dt.className='dot dot-word'; dots.appendChild(dt);}
@@ -1107,12 +1167,42 @@ function renderDayPanel(dateStr){
   const dayDiaries=diaries.filter(d2=>d2.date===dateStr);
   const dayWords=words.filter(w=>w.date===dateStr);
 
-  if(!dayScheds.length&&!dayDiaries.length&&!dayWords.length){
-    el.innerHTML=`<div class="empty"><div class="icon">🌿</div><p>${label}<br>기록이 없습니다</p></div>`;
+  const dayChecks = checks[dateStr] || [];
+  const doneCount = dayChecks.filter(c=>c.done).length;
+
+  if(!dayScheds.length&&!dayDiaries.length&&!dayWords.length&&!dayChecks.length){
+    el.innerHTML=`<div class="empty"><div class="icon">🌿</div><p>${label}<br>기록이 없습니다</p>
+      <button class="btn-add-check" onclick="openCheckAdd('${dateStr}')">+ 할 일 추가</button></div>`;
     return;
   }
 
   let html=`<div class="day-panel"><div class="day-panel-title">${label}</div>`;
+
+  // ── 체크리스트 ──
+  html+=`<div class="section-label" style="display:flex;justify-content:space-between;align-items:center">
+    <span>✅ 체크리스트 ${dayChecks.length?`<span style="font-size:11px;opacity:0.7">${doneCount}/${dayChecks.length}</span>`:''}</span>
+    <button class="btn-add-check-sm" onclick="openCheckAdd('${dateStr}')">+ 추가</button>
+  </div>`;
+  if(dayChecks.length){
+    const pct = dayChecks.length ? Math.round(doneCount/dayChecks.length*100) : 0;
+    html+=`<div class="check-progress-bar"><div class="check-progress-fill" style="width:${pct}%"></div></div>`;
+    html+=dayChecks.map((c,i)=>`
+      <div class="check-item${c.done?' done':''}">
+        <button class="check-circle${c.done?' checked':''}" onclick="toggleCheck('${dateStr}',${i})">
+          ${c.done?'✓':''}
+        </button>
+        <div class="check-body">
+          <div class="check-content">${c.content}</div>
+          ${c.time?`<div class="check-time">⏰ ${c.time}</div>`:''}
+        </div>
+        <div class="check-actions">
+          <button class="check-btn postpone" onclick="openPostpone('${dateStr}',${i})" title="미루기">⏩</button>
+          <button class="check-btn delete" onclick="deleteCheck('${dateStr}',${i})" title="삭제">🗑</button>
+        </div>
+      </div>`).join('');
+  } else {
+    html+=`<div style="font-size:13px;color:var(--ink3);padding:8px 0">할 일을 추가해보세요</div>`;
+  }
 
   if(dayScheds.length){
     html+=`<div class="section-label">📋 일정</div>`;
@@ -1840,6 +1930,104 @@ function saveDietEntry() {
   if(dietChartOpen) renderDietChart();
 }
 
+// ══════════════════════════════════════
+// 체크리스트 CRUD + 미루기
+// ══════════════════════════════════════
+let checkAddDate = '';
+let postponeDate = '';
+let postponeIdx  = -1;
+
+function openCheckAdd(dateStr) {
+  checkAddDate = dateStr;
+  document.getElementById('check-content-input').value = '';
+  document.getElementById('check-time-input').value = '';
+  document.getElementById('check-modal').classList.add('open');
+}
+
+function saveCheck() {
+  const content = document.getElementById('check-content-input').value.trim();
+  if(!content){ showToast('할 일을 입력하세요','err'); return; }
+  if(!checks[checkAddDate]) checks[checkAddDate] = [];
+  checks[checkAddDate].push({
+    id: genId(),
+    content,
+    time: document.getElementById('check-time-input').value,
+    done: false
+  });
+  save(KEYS.checks, checks);
+  closeModal('check-modal');
+  showToast('✅ 추가됐어요!','ok');
+  renderDayPanel(checkAddDate);
+}
+
+function toggleCheck(dateStr, idx) {
+  if(!checks[dateStr]) return;
+  checks[dateStr][idx].done = !checks[dateStr][idx].done;
+  save(KEYS.checks, checks);
+  renderDayPanel(dateStr);
+}
+
+function deleteCheck(dateStr, idx) {
+  if(!confirm('삭제할까요?')) return;
+  checks[dateStr].splice(idx,1);
+  save(KEYS.checks, checks);
+  showToast('삭제됐어요','ok');
+  renderDayPanel(dateStr);
+}
+
+function openPostpone(dateStr, idx) {
+  postponeDate = dateStr;
+  postponeIdx  = idx;
+  const tomorrow = new Date(dateStr);
+  tomorrow.setDate(tomorrow.getDate()+1);
+  const tStr = localDateStr(tomorrow);
+  document.getElementById('postpone-item-name').textContent = checks[dateStr][idx].content;
+  document.getElementById('postpone-to-date').value = tStr;
+  document.getElementById('postpone-copy-date').value = tStr;
+  document.getElementById('postpone-modal').classList.add('open');
+}
+
+function postponeToTomorrow() {
+  const item = checks[postponeDate][postponeIdx];
+  const tomorrow = new Date(postponeDate);
+  tomorrow.setDate(tomorrow.getDate()+1);
+  const tStr = localDateStr(tomorrow);
+  if(!checks[tStr]) checks[tStr]=[];
+  checks[tStr].push({...item, done:false});
+  checks[postponeDate].splice(postponeIdx,1);
+  save(KEYS.checks, checks);
+  closeModal('postpone-modal');
+  showToast(`⏩ 내일로 미뤘어요`,'ok');
+  renderDayPanel(postponeDate);
+}
+
+function postponeToDate() {
+  const toDate = document.getElementById('postpone-to-date').value;
+  if(!toDate){ showToast('날짜를 선택하세요','err'); return; }
+  const item = checks[postponeDate][postponeIdx];
+  if(!checks[toDate]) checks[toDate]=[];
+  checks[toDate].push({...item, done:false});
+  checks[postponeDate].splice(postponeIdx,1);
+  save(KEYS.checks, checks);
+  closeModal('postpone-modal');
+  showToast(`⏩ ${toDate}로 미뤘어요`,'ok');
+  renderDayPanel(postponeDate);
+}
+
+function copyToDate() {
+  const toDate = document.getElementById('postpone-copy-date').value;
+  if(!toDate){ showToast('날짜를 선택하세요','err'); return; }
+  const item = checks[postponeDate][postponeIdx];
+  if(!checks[toDate]) checks[toDate]=[];
+  checks[toDate].push({...item, done:false});
+  save(KEYS.checks, checks);
+  closeModal('postpone-modal');
+  showToast(`📋 ${toDate}에 복사했어요`,'ok');
+}
+
+// 달력 도트에 체크리스트 반영
+function hasChecks(dateStr){ return checks[dateStr]&&checks[dateStr].length>0; }
+
 let _tt;
 function showToast(msg, type=''){
   const t=document.getElementById('toast');
@@ -1847,12 +2035,223 @@ function showToast(msg, type=''){
   clearTimeout(_tt); _tt=setTimeout(()=>t.className='toast',2600);
 }
 
+// ══════════════════════════════════════
+// ☁️ 구글 시트 연동
+// ══════════════════════════════════════
+const GS_URL_KEY = 'myharu_gs_url';
+
+function getGsUrl() { return localStorage.getItem(GS_URL_KEY) || ''; }
+
+function saveGsUrl() {
+  const url = document.getElementById('gs-url-input').value.trim();
+  if (!url) { showToast('URL을 입력해주세요', 'err'); return; }
+  localStorage.setItem(GS_URL_KEY, url);
+  updateGsStatusBar(true, url);
+  showToast('✅ URL 저장됐어요!', 'ok');
+}
+
+function updateGsStatusBar(connected, url) {
+  const dot  = document.getElementById('gs-dot');
+  const text = document.getElementById('gs-status-text');
+  if (connected && url) {
+    dot.style.background  = '#2e7d32';
+    text.textContent = '연동됨 — ' + url.slice(0, 50) + '...';
+  } else {
+    dot.style.background  = '#9e9e9e';
+    text.textContent = '연동 안 됨';
+  }
+}
+
+function callGS(action, params) {
+  const url = getGsUrl();
+  if (!url) { showToast('먼저 URL을 저장해주세요', 'err'); return Promise.reject('no url'); }
+  const body = JSON.stringify({ action, ...params });
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body
+  }).then(r => r.json());
+}
+
+// 시트 → 앱 동기화
+async function syncFromSheet() {
+  const url = getGsUrl();
+  if (!url) { showToast('먼저 URL을 저장해주세요', 'err'); return; }
+  showToast('불러오는 중...', '');
+  try {
+    const res = await fetch(url + '?action=getAllData').then(r => r.json());
+    if (!res) { showToast('데이터를 받지 못했어요', 'err'); return; }
+
+    // 일정 동기화
+    if (res.schedules && res.schedules.length) {
+      const merged = mergeById(schedules, res.schedules, '_rowIndex');
+      schedules = merged;
+      save(KEYS.schedules, schedules);
+    }
+    // 일기 동기화
+    if (res.diaries && res.diaries.length) {
+      const merged = mergeById(diaries, res.diaries, '_rowIndex');
+      diaries = merged;
+      save(KEYS.diaries, diaries);
+    }
+    // 말씀 동기화
+    if (res.wordEntries && res.wordEntries.length) {
+      const merged = mergeById(words, res.wordEntries, '_rowIndex');
+      words = merged;
+      save(KEYS.words, words);
+    }
+    // 체크리스트
+    if (res.checklistToday && res.checklistToday.length) {
+      const today = localDateStr(new Date());
+      if (!checks[today]) checks[today] = [];
+      res.checklistToday.forEach(item => {
+        const exists = checks[today].find(c => c._rowIndex === item._rowIndex);
+        if (!exists) {
+          checks[today].push({
+            id: genId(),
+            _rowIndex: item._rowIndex,
+            content: item.title,
+            time: item.time || '',
+            done: item.done,
+            source: item.source || '시트'
+          });
+        }
+      });
+      save(KEYS.checks, checks);
+    }
+
+    renderCalendar();
+    renderDayPanel(selectedDate);
+    renderScheduleList();
+    renderDiaryList();
+    renderWordList();
+    showToast('✅ 시트에서 불러왔어요!', 'ok');
+  } catch(e) {
+    showToast('오류: ' + e.message, 'err');
+  }
+}
+
+// 앱 → 시트 전체 올리기 (일정/일기/말씀)
+async function syncToSheet() {
+  const url = getGsUrl();
+  if (!url) { showToast('먼저 URL을 저장해주세요', 'err'); return; }
+  if (!confirm('앱의 모든 데이터를 시트로 올릴까요?\n시트에 없는 항목이 추가됩니다.')) return;
+  showToast('올리는 중...', '');
+  try {
+    // 시트에 없는 항목만 추가 (새로 만든 항목 = _rowIndex 없음)
+    const newScheds = schedules.filter(s => !s._rowIndex);
+    for (const s of newScheds) {
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'addSchedule', ...s })
+      });
+    }
+    const newDiaries = diaries.filter(d => !d._rowIndex);
+    for (const d of newDiaries) {
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'addDiary', ...d })
+      });
+    }
+    const newWords = words.filter(w => !w._rowIndex);
+    for (const w of newWords) {
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'addWord', ...w })
+      });
+    }
+    showToast('✅ 시트로 올렸어요!', 'ok');
+  } catch(e) {
+    showToast('오류: ' + e.message, 'err');
+  }
+}
+
+// 병합 헬퍼: 기존 로컬 데이터 + 시트 데이터 (중복 제거)
+function mergeById(local, remote, key) {
+  const map = {};
+  local.forEach(item => { if (item[key]) map[item[key]] = item; });
+  remote.forEach(item => {
+    if (!map[item[key]]) map[item[key]] = item;
+  });
+  // _rowIndex 없는 로컬 전용 항목도 유지
+  const noKey = local.filter(item => !item[key]);
+  return [...Object.values(map), ...noKey];
+}
+
+// 설정 탭 열릴 때 URL 복원
+function initGsSettings() {
+  const url = getGsUrl();
+  if (url) {
+    document.getElementById('gs-url-input').value = url;
+    updateGsStatusBar(true, url);
+  }
+}
+
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('/service-worker.js')
-      .catch(err=>console.log('SW 오류:',err));
+    navigator.serviceWorker.register('/service-worker.js').catch(err=>console.log('SW 오류:',err));
   });
 }
 </script>
+<!-- 체크리스트 추가 모달 -->
+<div class="modal-overlay" id="check-modal">
+  <div class="modal-sheet">
+    <div class="modal-header">
+      <span class="modal-title">✅ 할 일 추가</span>
+      <button class="modal-close" onclick="closeModal('check-modal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">할 일 내용</label>
+      <input type="text" id="check-content-input" placeholder="할 일을 입력하세요" class="form-input">
+    </div>
+    <div class="form-group">
+      <label class="form-label">시간 (선택)</label>
+      <input type="time" id="check-time-input" class="form-input">
+    </div>
+    <button class="btn-save" onclick="saveCheck()">추가</button>
+  </div>
+</div>
+
+<!-- 미루기 모달 -->
+<div class="modal-overlay" id="postpone-modal">
+  <div class="modal-sheet">
+    <div class="modal-header">
+      <span class="modal-title">⏩ 미루기 / 복사</span>
+      <button class="modal-close" onclick="closeModal('postpone-modal')">✕</button>
+    </div>
+    <div style="font-size:14px;color:var(--ink2);background:var(--surface2);padding:10px 12px;border-radius:10px;margin-bottom:16px" id="postpone-item-name"></div>
+
+    <div class="postpone-option" onclick="postponeToTomorrow()">
+      <div class="postpone-icon">📅</div>
+      <div>
+        <div class="postpone-title">내일로 미루기</div>
+        <div class="postpone-desc">오늘 목록에서 사라지고 내일로 이동합니다</div>
+      </div>
+    </div>
+
+    <div class="postpone-section">
+      <div class="postpone-label">📅 날짜 지정해서 미루기</div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input type="date" id="postpone-to-date" class="form-input" style="flex:1">
+        <button class="btn-blue" onclick="postponeToDate()">이동</button>
+      </div>
+    </div>
+
+    <div class="postpone-section" style="border:1.5px solid var(--green);border-radius:12px;padding:12px">
+      <div class="postpone-label" style="color:var(--green)">📋 이 할 일 복사하기</div>
+      <div style="font-size:12px;color:var(--ink3);margin-bottom:8px">원본은 그대로 두고 같은 할 일을 지정한 날짜에 추가합니다</div>
+      <div style="display:flex;gap:8px">
+        <input type="date" id="postpone-copy-date" class="form-input" style="flex:1">
+        <button class="btn-green" onclick="copyToDate()">복사</button>
+      </div>
+    </div>
+
+    <button class="btn-cancel" onclick="closeModal('postpone-modal')">취소</button>
+  </div>
+</div>
+
 </body>
 </html>
