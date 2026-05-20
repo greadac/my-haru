@@ -852,7 +852,7 @@ select {
     <div class="modal-title" id="word-modal-title">말씀 묵상</div>
     <label>날짜</label>
     <input type="date" id="wm-date">
-    <label>읽은 범위</label>
+    <label>읽은 범위 <span style="color:var(--ink4);font-weight:400">(선택)</span></label>
     <div style="display:flex;gap:8px;align-items:center">
       <select id="wm-book" style="flex:2"></select>
       <input type="number" id="wm-from" placeholder="장" min="1" style="flex:1;text-align:center">
@@ -867,10 +867,64 @@ select {
     <textarea id="wm-prayer" placeholder="오늘의 기도..." style="min-height:80px"></textarea>
     <div class="btn-row">
       <button class="btn btn-ghost" onclick="closeModal('word-modal')">취소</button>
+      <button class="btn btn-ghost" onclick="previewWord()" style="background:rgba(74,20,140,0.1);color:#4a148c">📸 미리보기</button>
       <button class="btn btn-primary" onclick="saveWord()">저장</button>
     </div>
     <div style="margin-top:8px" id="word-delete-wrap">
       <button class="btn btn-danger" onclick="deleteWord()">🗑️ 삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 말씀일기 미리보기 모달 ══ -->
+<div class="modal-overlay" id="word-preview-modal" onclick="closeModal('word-preview-modal',event)">
+  <div class="modal" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div class="modal-title" style="margin-bottom:0">📸 SNS 미리보기</div>
+      <button class="modal-close" onclick="closeModal('word-preview-modal')">✕</button>
+    </div>
+    <!-- 캡처 대상 카드 -->
+    <div id="word-preview-card" style="
+      background: linear-gradient(145deg, #2d1b4e 0%, #1a0a30 100%);
+      border-radius: 20px;
+      padding: 28px 24px;
+      color: #fff;
+      font-family: inherit;
+      position: relative;
+      overflow: hidden;
+    ">
+      <!-- 배경 장식 -->
+      <div style="position:absolute;top:-20px;right:-20px;font-size:120px;opacity:0.06;pointer-events:none">✝️</div>
+      <!-- 날짜 -->
+      <div id="pv-date" style="font-size:12px;opacity:0.6;margin-bottom:4px;letter-spacing:1px"></div>
+      <!-- 읽은 범위 -->
+      <div id="pv-range" style="font-size:15px;font-weight:700;color:#c9a8ff;margin-bottom:20px"></div>
+      <!-- 말씀 구절 -->
+      <div id="pv-verse-wrap" style="margin-bottom:18px">
+        <div style="font-size:10px;opacity:0.5;margin-bottom:6px;letter-spacing:1px">📖 말씀</div>
+        <div id="pv-verse" style="font-size:14px;line-height:1.8;opacity:0.95;font-style:italic;border-left:3px solid #9c6fff;padding-left:12px"></div>
+      </div>
+      <!-- 묵상 -->
+      <div id="pv-meditation-wrap" style="margin-bottom:18px">
+        <div style="font-size:10px;opacity:0.5;margin-bottom:6px;letter-spacing:1px">✨ 묵상</div>
+        <div id="pv-meditation" style="font-size:13px;line-height:1.8;opacity:0.9"></div>
+      </div>
+      <!-- 기도 -->
+      <div id="pv-prayer-wrap">
+        <div style="font-size:10px;opacity:0.5;margin-bottom:6px;letter-spacing:1px">🙏 기도</div>
+        <div id="pv-prayer" style="font-size:13px;line-height:1.8;opacity:0.9"></div>
+      </div>
+      <!-- 하단 서명 -->
+      <div style="margin-top:24px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:11px;opacity:0.4">나의 하루 · 말씀일기</div>
+        <div style="font-size:11px;opacity:0.4">@greada_2</div>
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--ink4);text-align:center;margin-top:10px">위 카드를 길게 눌러 이미지로 저장하세요</p>
+    <div class="btn-row" style="margin-top:12px">
+      <button class="btn btn-ghost" onclick="closeModal('word-preview-modal')">닫기</button>
+      <button class="btn btn-primary" onclick="saveWordAndClose()">저장하기</button>
     </div>
   </div>
 </div>
@@ -1528,7 +1582,48 @@ function renderDiaryList(){
 function populateBookSel(selId, testament){
   const sel=document.getElementById(selId);
   const books=testament==='all'?ALL_BOOKS:(BIBLE[testament]||ALL_BOOKS);
-  sel.innerHTML=books.map(b=>`<option value="${b.n}">${b.n}</option>`).join('');
+  sel.innerHTML=`<option value="">오늘의 말씀</option>`+books.map(b=>`<option value="${b.n}">${b.n}</option>`).join('');
+}
+
+function previewWord() {
+  const date       = document.getElementById('wm-date').value;
+  const book       = document.getElementById('wm-book').value;
+  const from       = document.getElementById('wm-from').value;
+  const to         = document.getElementById('wm-to').value;
+  const verse      = document.getElementById('wm-verse').value.trim();
+  const meditation = document.getElementById('wm-meditation').value.trim();
+  const prayer     = document.getElementById('wm-prayer').value.trim();
+
+  let range = book ? book+(from?` ${from}장`:'')+(to&&to!==from?`~${to}장`:'') : '오늘의 말씀';
+
+  // 날짜 포맷
+  const d = new Date(date);
+  const dateStr = date ? `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일` : '';
+
+  document.getElementById('pv-date').textContent = dateStr;
+  document.getElementById('pv-range').textContent = range;
+
+  // 말씀
+  const verseWrap = document.getElementById('pv-verse-wrap');
+  verseWrap.style.display = verse ? 'block' : 'none';
+  document.getElementById('pv-verse').textContent = verse;
+
+  // 묵상
+  const meditationWrap = document.getElementById('pv-meditation-wrap');
+  meditationWrap.style.display = meditation ? 'block' : 'none';
+  document.getElementById('pv-meditation').textContent = meditation;
+
+  // 기도
+  const prayerWrap = document.getElementById('pv-prayer-wrap');
+  prayerWrap.style.display = prayer ? 'block' : 'none';
+  document.getElementById('pv-prayer').textContent = prayer;
+
+  document.getElementById('word-preview-modal').classList.add('open');
+}
+
+function saveWordAndClose() {
+  closeModal('word-preview-modal');
+  saveWord();
 }
 
 function openWordModal(id, dateDefault){
@@ -1538,7 +1633,7 @@ function openWordModal(id, dateDefault){
   if(id){
     const w=words.find(x=>x.id===id); if(!w) return;
     document.getElementById('wm-date').value       = w.date||'';
-    document.getElementById('wm-book').value       = w.book||ALL_BOOKS[0].n;
+    document.getElementById('wm-book').value       = w.book||'';
     document.getElementById('wm-from').value       = w.from||'';
     document.getElementById('wm-to').value         = w.to||'';
     document.getElementById('wm-verse').value      = w.verse||'';
@@ -1546,6 +1641,7 @@ function openWordModal(id, dateDefault){
     document.getElementById('wm-prayer').value     = w.prayer||'';
   } else {
     document.getElementById('wm-date').value       = dateDefault||selectedDate;
+    document.getElementById('wm-book').value       = '';
     document.getElementById('wm-from').value       = '';
     document.getElementById('wm-to').value         = '';
     document.getElementById('wm-verse').value      = '';
@@ -1561,7 +1657,7 @@ function saveWord(){
   const book = document.getElementById('wm-book').value;
   const from = document.getElementById('wm-from').value;
   const to   = document.getElementById('wm-to').value;
-  let range  = book+(from?` ${from}장`:'')+(to&&to!==from?`~${to}장`:'');
+  let range  = book ? book+(from?` ${from}장`:'')+(to&&to!==from?`~${to}장`:'') : '오늘의 말씀';
 
   const item={
     id: editingId.word||genId(), date, book, from, to, range,
