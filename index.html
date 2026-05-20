@@ -1770,7 +1770,7 @@ function closeModal(id, e){
 // 데이터 내보내기 / 불러오기
 // ══════════════════════════════════════
 function exportData(){
-  const data={schedules,diaries,words,sentences,plan,diet:dietRows,exportedAt:new Date().toISOString()};
+  const data={schedules,diaries,words,sentences,plan,diet:dietRows,bookmarks,exportedAt:new Date().toISOString()};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -1792,9 +1792,11 @@ function importData(e){
       sentences=data.sentences||[]; save(KEYS.sentences,sentences);
       plan     =data.plan     ||{}; save(KEYS.plan,plan);
       if(data.diet){ dietRows=data.diet; save(KEYS.diet,dietRows); }
+      if(data.bookmarks){ bookmarks=data.bookmarks; localStorage.setItem(KEYS.bookmarks,JSON.stringify(bookmarks)); }
       renderCalendar(); renderDayPanel(selectedDate);
       renderScheduleList(); renderDiaryList(); renderWordList(); renderSentList(); renderPlan();
       if(currentTab==='diet') initDietTab();
+      if(currentTab==='bookmark') renderBookmarks();
       showToast('📥 불러오기 완료!','ok');
     }catch{ showToast('파일 형식 오류','err'); }
   };
@@ -2255,10 +2257,10 @@ async function syncBookmarksFromSheet() {
   if (!url) { showToast('먼저 시트 URL을 저장해주세요', 'err'); return; }
   showToast('불러오는 중...', '');
   try {
-    // getAllData에 포함되어 있으면 그걸 쓰고, 없으면 개별 요청
-    const res = await fetch(url + '?action=getAllData').then(r => r.json());
-    const items = res.bookmarks || (await fetch(url + '?action=getBookmarks').then(r => r.json()).then(r => r.items)) || [];
-    if (!items.length) { showToast('불러올 즐겨찾기가 없어요', ''); renderBookmarks(); return; }
+    const res = await fetch(url + '?action=getBookmarks', { cache: 'no-store' }).then(r => r.json());
+    console.log('bookmark res:', JSON.stringify(res));
+    const items = res.items || [];
+    if (!items.length) { showToast('시트에 즐겨찾기가 없어요', ''); return; }
     const localMap = {};
     bookmarks.forEach(b => { localMap[b.id] = b; });
     items.forEach(b => { if (b.id) localMap[b.id] = b; });
