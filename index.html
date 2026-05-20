@@ -2255,16 +2255,17 @@ async function syncBookmarksFromSheet() {
   if (!url) { showToast('먼저 시트 URL을 저장해주세요', 'err'); return; }
   showToast('불러오는 중...', '');
   try {
-    const res = await fetch(url + '?action=getBookmarks').then(r => r.json());
-    if (!res.items) { showToast('데이터를 받지 못했어요', 'err'); return; }
-    // 로컬과 병합 (id 기준, 시트 우선)
+    // getAllData에 포함되어 있으면 그걸 쓰고, 없으면 개별 요청
+    const res = await fetch(url + '?action=getAllData').then(r => r.json());
+    const items = res.bookmarks || (await fetch(url + '?action=getBookmarks').then(r => r.json()).then(r => r.items)) || [];
+    if (!items.length) { showToast('불러올 즐겨찾기가 없어요', ''); renderBookmarks(); return; }
     const localMap = {};
     bookmarks.forEach(b => { localMap[b.id] = b; });
-    res.items.forEach(b => { if (b.id) localMap[b.id] = b; });
+    items.forEach(b => { if (b.id) localMap[b.id] = b; });
     bookmarks = Object.values(localMap);
     localStorage.setItem(KEYS.bookmarks, JSON.stringify(bookmarks));
     renderBookmarks();
-    showToast(`☁️ ${res.items.length}개 불러왔어요!`, 'ok');
+    showToast(`☁️ ${items.length}개 불러왔어요!`, 'ok');
   } catch(e) { showToast('오류: ' + e.message, 'err'); }
 }
 
