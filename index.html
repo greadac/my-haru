@@ -2711,15 +2711,6 @@ async function syncToSheet() {
       await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
         body: JSON.stringify({ action:'saveDietRow', ...r }) });
     }
-    // 체크리스트 - 모든 날짜
-    const allChecks = [];
-    Object.entries(checks).forEach(([date, items]) => {
-      items.forEach(c => { if (c.content) allChecks.push({ date, title: c.content, time: c.time||'', done: c.done ? '✅' : '' }); });
-    });
-    for (const c of allChecks) {
-      await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
-        body: JSON.stringify({ action:'addChecklist', ...c }) });
-    }
     showToast('✅ 시트로 올렸어요!', 'ok');
   } catch(e) {
     showToast('오류: ' + e.message, 'err');
