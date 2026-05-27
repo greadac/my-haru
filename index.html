@@ -2186,7 +2186,7 @@ async function syncDietFromSheet() {
   }
 }
 
-function saveDietEntry() {
+async function saveDietEntry() {
   const btn = document.getElementById('diet-save-btn');
   btn.disabled = true; btn.textContent = '저장 중...';
   const row = dietRows[dietCurIdx];
@@ -2211,7 +2211,23 @@ function saveDietEntry() {
   const toSave = dietRows.filter(r => r.weight!==null || r.breakfast || r.lunch || r.dinner || r.water!==null || r.exercise || r.memo);
   save(KEYS.diet, toSave);
 
-  showToast('✅ 저장 완료!', 'ok');
+  // 구글 시트에도 저장 (URL 있을 때만)
+  const url = getGsUrl();
+  if (url) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'saveDietRow', ...row })
+      }).then(r => r.json());
+      showToast(res.success ? '✅ 저장 완료! (시트 반영됨)' : '✅ 로컬 저장됨 (시트 오류)', res.success ? 'ok' : '');
+    } catch(e) {
+      showToast('✅ 로컬 저장됨 (시트 연결 실패)', '');
+    }
+  } else {
+    showToast('✅ 저장 완료!', 'ok');
+  }
+
   btn.disabled = false; btn.textContent = '💾 저장하기';
   renderDiet();
   if(dietChartOpen) renderDietChart();
