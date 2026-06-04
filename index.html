@@ -630,13 +630,9 @@ select {
 <div class="page" id="page-settings">
 
   <div class="card">
-    <div class="card-title">🤖 AI 설정 (하루기록 자동 분류)</div>
-    <p style="font-size:11px;color:var(--ink3);margin-bottom:8px">Anthropic API 키를 입력하면 활동 내용을 AI가 자동으로 카테고리 분류합니다.</p>
-    <div style="display:flex;gap:8px;margin-bottom:8px">
-      <input type="password" id="ai-key-input" placeholder="sk-ant-..." style="flex:1;font-size:12px" class="form-input">
-      <button class="btn-primary-sm" onclick="saveApiKey()">저장</button>
-    </div>
-    <div id="ai-key-status" style="font-size:11px;color:var(--ink3)"></div>
+    <div class="card-title">🤖 AI 설정 (하루기록)</div>
+    <p style="font-size:11px;color:var(--ink3);margin-bottom:8px">카테고리 자동 분류 · AI 회고는 GAS를 통해 동작해요.<br>GAS URL이 등록되어 있으면 별도 설정 불필요합니다.</p>
+    <div id="ai-key-status" style="font-size:12px;color:var(--ink3);padding:8px 10px;background:var(--surface2);border-radius:8px"></div>
   </div>
 
   <!-- 구글 시트 연동 카드 -->
@@ -1063,10 +1059,9 @@ select {
 
 <!-- ══ 도움말 탭 ══ -->
 <!-- ══ 즐겨찾기 탭 ══ -->
-<!-- ══════════════════════════════════════ 📊 하루기록 ══ -->
+<!-- ══ 📊 하루기록 ══ -->
 <div class="page" id="page-record">
-
-  <!-- 날짜 + 탭 전환 -->
+  <!-- 날짜 이동 -->
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
     <button class="icon-btn" onclick="recMoveDate(-1)">‹</button>
     <input type="date" id="rec-date" class="form-input" style="flex:1;font-size:14px;text-align:center">
@@ -1074,49 +1069,44 @@ select {
     <button class="btn-primary-sm" onclick="switchRecordTab('stats')" style="background:var(--blue);white-space:nowrap">📊 통계</button>
   </div>
 
-  <!-- 기록 탭 -->
+  <!-- 기록 섹션 -->
   <div id="rec-section-log">
-
-    <!-- 입력 카드 -->
     <div class="card" style="margin-bottom:12px">
       <div class="card-title">✏️ 기록 추가</div>
       <p style="font-size:11px;color:var(--ink3);margin-bottom:10px;line-height:1.7">
-        <b>09:00 ~ 10:30 공부</b> 또는<br>
-        <b>11:00 ~ 18:00 동창 모임 / 김철수, 박영희</b><br>
-        <span style="color:var(--ink4)">슬래시(/) 뒤에 만난 사람을 쉼표로 구분해 적어요</span>
+        시작·종료 시간을 입력하고 내용을 적어요<br>
+        <b>동창 모임 / 김철수, 박영희</b> — 슬래시(/) 뒤는 만난 사람
       </p>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input type="time" id="rec-time-start" class="form-input" style="width:90px;padding:8px 6px;font-size:13px">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+        <input type="time" id="rec-time-start" class="form-input" style="flex:1;font-size:13px">
         <span style="color:var(--ink3);font-size:13px;flex-shrink:0">~</span>
-        <input type="time" id="rec-time-end" class="form-input" style="width:90px;padding:8px 6px;font-size:13px">
+        <input type="time" id="rec-time-end" class="form-input" style="flex:1;font-size:13px">
       </div>
-      <div style="display:flex;gap:8px;margin-top:8px">
+      <div style="display:flex;gap:8px">
         <input type="text" id="rec-activity" class="form-input" style="flex:1"
           placeholder="공부  또는  동창 모임 / 김철수, 박영희"
           onkeydown="if(event.key==='Enter')addActivityRecord()">
-        <button class="btn-primary-sm" onclick="addActivityRecord()" style="height:40px;padding:0 14px;flex-shrink:0">추가</button>
+        <button class="btn-primary-sm" onclick="addActivityRecord()" style="height:40px;padding:0 16px;flex-shrink:0">추가</button>
       </div>
       <div id="rec-ai-tag" style="display:none;font-size:12px;color:var(--accent);background:rgba(139,94,60,0.08);border-radius:8px;padding:8px 10px;margin-top:8px">
-        🤖 AI 분류 중...
+        🤖 분류 중...
       </div>
     </div>
 
-    <!-- 타임라인 -->
     <div class="card" style="margin-bottom:12px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <div class="card-title" style="margin-bottom:0">📋 오늘의 타임라인</div>
         <span id="rec-total-time" style="font-size:12px;color:var(--ink3)"></span>
       </div>
-      <div id="rec-list" style="display:flex;flex-direction:column;gap:6px">
-        <div style="text-align:center;padding:24px;color:var(--ink4);font-size:13px">아직 기록이 없어요<br><span style="font-size:11px">위에서 시간과 내용을 입력하고 추가해보세요</span></div>
+      <div id="rec-list">
+        <div style="text-align:center;padding:24px;color:var(--ink4);font-size:13px">아직 기록이 없어요</div>
       </div>
     </div>
 
-    <!-- 하루 돌아보기 -->
     <div class="card">
       <div class="card-title">🪞 오늘 하루 돌아보기</div>
       <p style="font-size:12px;color:var(--ink3);margin-bottom:10px">기록을 바탕으로 AI가 오늘 하루를 짧게 정리해드려요.</p>
-      <button class="export-btn" onclick="recReflect()" style="margin-bottom:0">
+      <button class="export-btn" onclick="recReflect()">
         <span class="export-icon">✨</span>
         <div class="export-info">
           <div class="export-name">AI 회고 생성</div>
@@ -1127,15 +1117,14 @@ select {
     </div>
   </div>
 
-  <!-- 통계 탭 -->
+  <!-- 통계 섹션 -->
   <div id="rec-section-stats" style="display:none">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <button class="icon-btn" onclick="changeStatMonth(-1)">‹</button>
       <div id="rec-stat-month" style="font-size:15px;font-weight:700;color:var(--ink)"></div>
       <button class="icon-btn" onclick="changeStatMonth(1)">›</button>
     </div>
-    <button class="btn-primary-sm" onclick="switchRecordTab('log')" style="width:100%;margin-bottom:14px;background:var(--surface2);color:var(--ink2)">← 기록으로 돌아가기</button>
-
+    <button class="btn-primary-sm" onclick="switchRecordTab('log')" style="width:100%;margin-bottom:14px;background:var(--surface2);color:var(--ink2)">← 기록으로</button>
     <div class="card" style="margin-bottom:12px">
       <div class="card-title">⏱ 카테고리별 시간</div>
       <div id="rec-stat-cats" style="display:flex;flex-direction:column;gap:10px;margin-top:8px"></div>
@@ -1235,7 +1224,7 @@ function buildChapterList(testament) {
 // ══════════════════════════════════════
 // 데이터 저장소 (localStorage)
 // ══════════════════════════════════════
-const KEYS = { schedules:'myharu_schedules', diaries:'myharu_diaries', words:'myharu_words', sentences:'myharu_sentences', plan:'myharu_plan', diet:'myharu_diet', tabSettings:'myharu_tabSettings', dietStart:'myharu_dietStart', checks:'myharu_checks', bookmarks:'myharu_bookmarks', records:'myharu_records', apiKey:'myharu_apikey' };
+const KEYS = { schedules:'myharu_schedules', diaries:'myharu_diaries', words:'myharu_words', sentences:'myharu_sentences', plan:'myharu_plan', diet:'myharu_diet', tabSettings:'myharu_tabSettings', dietStart:'myharu_dietStart', checks:'myharu_checks', bookmarks:'myharu_bookmarks', records:'myharu_records' };
 
 function load(key) { try { return JSON.parse(localStorage.getItem(key)||'[]'); } catch{ return []; } }
 function loadObj(key) { try { return JSON.parse(localStorage.getItem(key)||'{}'); } catch{ return {}; } }
@@ -1340,8 +1329,8 @@ window.onload = () => {
   ['sm-date','dm-date','wm-date'].forEach(id => document.getElementById(id).value = today);
 
   // 하루기록 날짜 초기화
-  const recDate = document.getElementById('rec-date');
-  if (recDate) recDate.value = today;
+  const recDateEl = document.getElementById('rec-date');
+  if (recDateEl) recDateEl.value = today;
 
   // 책 목록 채우기
   populateBookSel('wm-book', 'all');
@@ -1377,7 +1366,7 @@ function switchTab(tab) {
 
   if (tab === 'diet') initDietTab();
   if (tab === 'bookmark') renderBookmarks();
-  if (tab === 'settings') { initGsSettings(); initAiKeyStatus(); }
+  if (tab === 'settings') { initGsSettings(); initAiStatus(); }
   if (tab === 'record') initRecordTab();
 }
 
@@ -2723,24 +2712,13 @@ async function syncFromSheet() {
     if (res.recordEntries && res.recordEntries.length) {
       const localRec = loadRecords();
       res.recordEntries.forEach(entry => {
-        const d = entry.date;
-        if (!d) return;
-        if (!localRec[d]) localRec[d] = { activities: [], people: [] };
-        // 활동: _sheetRow 기준 중복 방지
+        const d = entry.date; if (!d) return;
+        if (!localRec[d]) localRec[d] = { activities:[], people:[] };
         const existRows = localRec[d].activities.map(a => a._sheetRow).filter(Boolean);
         if (!existRows.includes(entry._sheetRow)) {
-          localRec[d].activities.push({
-            id: entry.id || genId(),
-            content: entry.content,
-            minutes: entry.minutes,
-            category: entry.category,
-            _sheetRow: entry._sheetRow
-          });
+          localRec[d].activities.push({ id:entry.id||genId(), content:entry.content, startTime:entry.startTime, endTime:entry.endTime, minutes:entry.minutes, category:entry.category, _sheetRow:entry._sheetRow });
         }
-        // 만난 사람 병합
-        (entry.people || []).forEach(name => {
-          if (!localRec[d].people.includes(name)) localRec[d].people.push(name);
-        });
+        (entry.people||[]).forEach(name => { if (!localRec[d].people.includes(name)) localRec[d].people.push(name); });
       });
       saveRecords(localRec);
     }
@@ -2786,32 +2764,12 @@ async function syncToSheet() {
       await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
         body: JSON.stringify({ action:'saveDietRow', ...r }) });
     }
-    // 하루기록 (시트에 없는 신규 항목만)
+    // 하루기록 (새 항목만)
     const recData = loadRecords();
     for (const [dateKey, dayData] of Object.entries(recData)) {
-      const newActs = (dayData.activities || []).filter(a => !a._sheetRow);
-      for (const act of newActs) {
+      for (const act of (dayData.activities||[]).filter(a => !a._sheetRow)) {
         await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
-          body: JSON.stringify({
-            action: 'addRecord',
-            date: dateKey,
-            content: act.content,
-            minutes: act.minutes,
-            category: act.category,
-            id: act.id,
-            people: dateKey === Object.keys(recData)[0] ? (dayData.people || []) : []
-          })
-        });
-      }
-      // 만난 사람만 업데이트 (활동 없어도)
-      if (newActs.length === 0 && (dayData.people || []).length > 0) {
-        await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
-          body: JSON.stringify({
-            action: 'updateRecordPeople',
-            date: dateKey,
-            people: dayData.people
-          })
-        });
+          body: JSON.stringify({ action:'addRecord', date:dateKey, content:act.content, startTime:act.startTime, endTime:act.endTime, minutes:act.minutes, category:act.category, id:act.id, people:dayData.people||[] }) });
       }
     }
     showToast('✅ 시트로 올렸어요!', 'ok');
@@ -2884,6 +2842,303 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/service-worker.js').catch(err=>console.log('SW 오류:',err));
   });
 }
+
+// ══════════════════════════════════════
+// 📊 하루기록
+// ══════════════════════════════════════
+
+const CAT_LIST   = ['업무','친교','공부','충전','운동','가족'];
+const CAT_COLORS = { '업무':'#4a6882','친교':'#7a5080','공부':'#5a7a52','충전':'#c4a035','운동':'#9a4a3a','가족':'#8b5e3c','기타':'#8a7d68' };
+const CAT_EMOJI  = { '업무':'💼','친교':'🤝','공부':'📚','충전':'☕','운동':'💪','가족':'🏠','기타':'📌' };
+
+let recStatYear  = new Date().getFullYear();
+let recStatMonth = new Date().getMonth();
+let recSection   = 'log';
+
+function loadRecords() { try { return JSON.parse(localStorage.getItem(KEYS.records)||'{}'); } catch { return {}; } }
+function saveRecords(d) { localStorage.setItem(KEYS.records, JSON.stringify(d)); }
+
+function initRecordTab() {
+  const el = document.getElementById('rec-date');
+  if (el && !el.value) el.value = localDateStr(new Date());
+  switchRecordTab('log');
+  renderRecordList();
+}
+
+function initAiStatus() {
+  const el = document.getElementById('ai-key-status');
+  if (!el) return;
+  const url = getGsUrl();
+  el.textContent = url ? '✅ GAS URL 등록됨 — AI 기능 사용 가능' : '⚠️ GAS URL 없음 — 설정에서 등록해주세요';
+}
+
+function switchRecordTab(s) {
+  recSection = s;
+  document.getElementById('rec-section-log').style.display   = s === 'log'   ? '' : 'none';
+  document.getElementById('rec-section-stats').style.display = s === 'stats' ? '' : 'none';
+  if (s === 'stats') renderRecordStats();
+}
+
+function recMoveDate(delta) {
+  const el   = document.getElementById('rec-date');
+  const base = el.value || localDateStr(new Date());
+  const d    = new Date(base + 'T00:00:00');
+  d.setDate(d.getDate() + delta);
+  el.value = localDateStr(d);
+  renderRecordList();
+  const r = document.getElementById('rec-reflect-result');
+  if (r) r.style.display = 'none';
+}
+
+// 입력 파싱: "동창 모임 / 김철수, 박영희" → {content, people}
+function parseRecInput(raw) {
+  const idx = raw.indexOf('/');
+  if (idx === -1) return { content: raw.trim(), people: [] };
+  return {
+    content: raw.slice(0, idx).trim(),
+    people:  raw.slice(idx+1).split(',').map(n => n.trim()).filter(Boolean)
+  };
+}
+
+function timeToMin(t) { if (!t) return null; const [h,m] = t.split(':').map(Number); return h*60+m; }
+function minToStr(m)  { if (!m||m<=0) return '0분'; return m<60 ? m+'분' : Math.floor(m/60)+'시간'+(m%60?' '+m%60+'분':''); }
+
+// 활동 추가
+async function addActivityRecord() {
+  const startVal = document.getElementById('rec-time-start').value;
+  const endVal   = document.getElementById('rec-time-end').value;
+  const rawInput = document.getElementById('rec-activity').value.trim();
+  const dateEl   = document.getElementById('rec-date');
+  if (!dateEl.value) dateEl.value = localDateStr(new Date());
+  const dateVal  = dateEl.value;
+
+  if (!startVal || !endVal) { showToast('시작·종료 시간을 입력해주세요', 'err'); return; }
+  if (!rawInput)            { showToast('내용을 입력해주세요', 'err'); return; }
+
+  const startMin = timeToMin(startVal);
+  const endMin   = timeToMin(endVal);
+  if (endMin <= startMin) { showToast('종료 시간이 시작보다 늦어야 해요', 'err'); return; }
+  const minutes = endMin - startMin;
+
+  const { content, people } = parseRecInput(rawInput);
+
+  // AI 카테고리 분류 (GAS 중계)
+  const aiTag = document.getElementById('rec-ai-tag');
+  aiTag.style.display = 'block';
+  aiTag.textContent   = '🤖 AI가 카테고리를 분류 중...';
+
+  let category = '기타';
+  const gsUrl  = getGsUrl();
+  if (gsUrl) {
+    try {
+      const res  = await fetch(gsUrl, { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({ action:'classifyActivity', content }) });
+      const data = await res.json();
+      if (data.success && CAT_LIST.includes(data.category)) category = data.category;
+      aiTag.textContent = `✅ ${CAT_EMOJI[category]} ${category}`;
+    } catch(e) { aiTag.textContent = '⚠️ 분류 실패 → 기타'; }
+  } else {
+    aiTag.textContent = '⚠️ GAS URL 없음 → 기타로 저장';
+  }
+  setTimeout(() => { aiTag.style.display = 'none'; }, 1500);
+
+  // 저장
+  const records = loadRecords();
+  if (!records[dateVal]) records[dateVal] = { activities:[], people:[] };
+  const newId = genId();
+  records[dateVal].activities.push({ id:newId, content, startTime:startVal, endTime:endVal, minutes, category });
+  people.forEach(name => { if (!records[dateVal].people.includes(name)) records[dateVal].people.push(name); });
+  saveRecords(records);
+
+  // GAS 저장
+  if (gsUrl) {
+    fetch(gsUrl, { method:'POST', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({ action:'addRecord', date:dateVal, content, startTime:startVal, endTime:endVal, minutes, category, id:newId, people:records[dateVal].people })
+    }).then(r=>r.json()).then(res => {
+      if (res.success && res._sheetRow) {
+        const rec = loadRecords();
+        const act = rec[dateVal]?.activities?.find(a => a.id === newId);
+        if (act) { act._sheetRow = res._sheetRow; saveRecords(rec); }
+      }
+    }).catch(()=>{});
+  }
+
+  // 입력 초기화 (종료시간 → 다음 시작시간)
+  document.getElementById('rec-activity').value   = '';
+  document.getElementById('rec-time-start').value = endVal;
+  document.getElementById('rec-time-end').value   = '';
+  renderRecordList();
+  const r = document.getElementById('rec-reflect-result');
+  if (r) r.style.display = 'none';
+  showToast('기록했습니다 ' + CAT_EMOJI[category], 'ok');
+}
+
+// 타임라인 렌더
+function renderRecordList() {
+  const dateEl = document.getElementById('rec-date');
+  if (!dateEl) return;
+  const dateVal    = dateEl.value || localDateStr(new Date());
+  const container  = document.getElementById('rec-list');
+  const totalEl    = document.getElementById('rec-total-time');
+  const records    = loadRecords();
+  const dayData    = records[dateVal] || { activities:[], people:[] };
+  const activities = dayData.activities.slice().sort((a,b) => (a.startTime||'').localeCompare(b.startTime||''));
+  const people     = dayData.people || [];
+
+  if (!activities.length) {
+    container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ink4);font-size:13px">아직 기록이 없어요</div>';
+    if (totalEl) totalEl.textContent = '';
+    return;
+  }
+
+  const totalMin = activities.reduce((s,a) => s + (a.minutes||0), 0);
+  if (totalEl) totalEl.textContent = '총 ' + minToStr(totalMin);
+
+  const peopleTags = people.length ? `
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--surface3)">
+      ${people.map(name => `
+        <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(106,80,128,0.10);border:1px solid rgba(106,80,128,0.2);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--purple)">
+          👤 ${name}
+          <span onclick="recRemovePerson('${dateVal}','${name}')" style="cursor:pointer;color:var(--ink4);margin-left:2px">✕</span>
+        </span>`).join('')}
+    </div>` : '';
+
+  container.innerHTML = activities.map(a => `
+    <div style="display:flex;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:10px;border-left:4px solid ${CAT_COLORS[a.category]||CAT_COLORS['기타']};margin-bottom:6px">
+      <div style="flex-shrink:0;text-align:center;min-width:52px">
+        <div style="font-size:11px;font-weight:700;color:var(--ink2)">${a.startTime||''}</div>
+        <div style="font-size:10px;color:var(--ink4)">↓</div>
+        <div style="font-size:11px;font-weight:700;color:var(--ink2)">${a.endTime||''}</div>
+        <div style="font-size:10px;color:var(--ink3);margin-top:2px">${minToStr(a.minutes)}</div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center">
+        <div style="font-size:13px;font-weight:600;color:var(--ink)">${a.content}</div>
+        <div style="font-size:11px;color:${CAT_COLORS[a.category]||CAT_COLORS['기타']};margin-top:3px">${CAT_EMOJI[a.category]||'📌'} ${a.category}</div>
+      </div>
+      <span onclick="deleteActivityRecord('${dateVal}','${a.id}')" style="cursor:pointer;color:var(--ink4);font-size:15px;flex-shrink:0;align-self:center">🗑</span>
+    </div>`).join('') + peopleTags;
+}
+
+function recRemovePerson(dateVal, name) {
+  const records = loadRecords();
+  if (!records[dateVal]) return;
+  records[dateVal].people = records[dateVal].people.filter(p => p !== name);
+  saveRecords(records);
+  renderRecordList();
+}
+
+function deleteActivityRecord(dateVal, id) {
+  if (!confirm('삭제할까요?')) return;
+  const records = loadRecords();
+  if (!records[dateVal]) return;
+  records[dateVal].activities = records[dateVal].activities.filter(a => a.id !== id);
+  saveRecords(records);
+  renderRecordList();
+  showToast('삭제됐습니다', 'ok');
+}
+
+// AI 회고 (GAS 중계)
+async function recReflect() {
+  const dateVal    = document.getElementById('rec-date').value || localDateStr(new Date());
+  const records    = loadRecords();
+  const dayData    = records[dateVal] || { activities:[], people:[] };
+  const activities = dayData.activities.slice().sort((a,b) => (a.startTime||'').localeCompare(b.startTime||''));
+  const people     = dayData.people || [];
+
+  if (!activities.length) { showToast('먼저 기록을 입력해주세요', 'err'); return; }
+
+  const gsUrl = getGsUrl();
+  if (!gsUrl) { showToast('설정에서 GAS URL을 먼저 등록해주세요', 'err'); return; }
+
+  const resultEl = document.getElementById('rec-reflect-result');
+  resultEl.style.display = 'block';
+  resultEl.textContent   = '✨ AI가 오늘 하루를 정리하고 있어요...';
+
+  const timelineText = activities.map(a => `${a.startTime}~${a.endTime} ${a.content} (${a.category}, ${minToStr(a.minutes)})`).join('\n');
+  const peopleText   = people.length ? '만난 사람: ' + people.join(', ') : '오늘 만난 사람 없음';
+
+  try {
+    const res  = await fetch(gsUrl, { method:'POST', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({ action:'getReflection', date:dateVal, timeline:timelineText, people:peopleText }) });
+    const data = await res.json();
+    resultEl.textContent = data.success ? data.result : '⚠️ ' + (data.message || '오류가 발생했어요.');
+  } catch(e) {
+    resultEl.textContent = '⚠️ 오류가 발생했어요.';
+  }
+}
+
+// 날짜 변경 이벤트
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('rec-date');
+  if (el) el.addEventListener('change', () => {
+    renderRecordList();
+    const r = document.getElementById('rec-reflect-result');
+    if (r) r.style.display = 'none';
+  });
+});
+
+// 통계
+function changeStatMonth(delta) {
+  recStatMonth += delta;
+  if (recStatMonth < 0)  { recStatMonth = 11; recStatYear--; }
+  if (recStatMonth > 11) { recStatMonth = 0;  recStatYear++; }
+  renderRecordStats();
+}
+
+function renderRecordStats() {
+  const monthEl = document.getElementById('rec-stat-month');
+  if (monthEl) monthEl.textContent = `${recStatYear}년 ${recStatMonth+1}월`;
+
+  const records = loadRecords();
+  const prefix  = `${recStatYear}-${String(recStatMonth+1).padStart(2,'0')}`;
+  const catTotals = {}; CAT_LIST.forEach(c => catTotals[c]=0); catTotals['기타']=0;
+  const peopleCounts = {};
+
+  Object.keys(records).filter(d => d.startsWith(prefix)).forEach(dk => {
+    (records[dk].activities||[]).forEach(a => { catTotals[a.category||'기타'] = (catTotals[a.category||'기타']||0) + (a.minutes||0); });
+    (records[dk].people||[]).forEach(name => { peopleCounts[name] = (peopleCounts[name]||0) + 1; });
+  });
+
+  const totalMin = Object.values(catTotals).reduce((s,v)=>s+v,0);
+  const catEl    = document.getElementById('rec-stat-cats');
+  if (catEl) {
+    const cats = [...CAT_LIST,'기타'].filter(c => catTotals[c] > 0).sort((a,b) => catTotals[b]-catTotals[a]);
+    catEl.innerHTML = cats.length ? cats.map(cat => {
+      const min = catTotals[cat];
+      const pct = totalMin ? Math.round(min/totalMin*100) : 0;
+      return `<div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:13px;font-weight:600;color:var(--ink2)">${CAT_EMOJI[cat]} ${cat}</span>
+          <span style="font-size:12px;color:var(--ink3)">${minToStr(min)} (${pct}%)</span>
+        </div>
+        <div style="height:8px;background:var(--surface3);border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${CAT_COLORS[cat]||CAT_COLORS['기타']};border-radius:4px"></div>
+        </div></div>`;
+    }).join('') : '<div style="text-align:center;color:var(--ink4);font-size:13px;padding:16px">이 달의 기록이 없어요</div>';
+  }
+
+  const peopleEl = document.getElementById('rec-stat-people');
+  if (peopleEl) {
+    const sorted = Object.entries(peopleCounts).sort((a,b)=>b[1]-a[1]);
+    const maxCnt = sorted[0]?.[1] || 1;
+    peopleEl.innerHTML = sorted.length ? sorted.map(([name,cnt],i) => `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:10px">
+        <span style="font-size:14px;font-weight:800;color:var(--ink4);width:20px;text-align:center">${i+1}</span>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-size:13px;font-weight:600;color:var(--ink)">👤 ${name}</span>
+            <span style="font-size:12px;color:var(--ink3)">${cnt}회</span>
+          </div>
+          <div style="height:6px;background:var(--surface3);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${Math.round(cnt/maxCnt*100)}%;background:var(--purple);border-radius:3px"></div>
+          </div>
+        </div>
+      </div>`).join('') : '<div style="text-align:center;color:var(--ink4);font-size:13px;padding:16px">이 달의 기록이 없어요</div>';
+  }
+}
+
+// syncFromSheet / syncToSheet에 하루기록 연동
+const _origSyncFrom = typeof syncFromSheet === 'function' ? syncFromSheet : null;
+
 </script>
 <!-- 체크리스트 추가 모달 -->
 <div class="modal-overlay" id="check-modal" onclick="closeModal('check-modal',event)">
@@ -2944,407 +3199,6 @@ if('serviceWorker' in navigator){
     <button class="btn-cancel" onclick="closeModal('postpone-modal')">취소</button>
   </div>
 </div>
-
-<!-- ══════════════════════════════════════ 📊 하루기록 JS ══ -->
-<script>
-// ── 데이터 구조 ──
-// records: { 'YYYY-MM-DD': { activities:[{id,content,minutes,category}], people:[name,...] } }
-
-let recCurrentSection = 'log';
-let recStatYear = new Date().getFullYear();
-let recStatMonth = new Date().getMonth(); // 0-based
-
-const CAT_LIST = ['업무','친교','공부','충전','운동','가족'];
-const CAT_COLORS = {
-  '업무': '#4a6882',
-  '친교': '#7a5080',
-  '공부': '#5a7a52',
-  '충전': '#c4a035',
-  '운동': '#9a4a3a',
-  '가족': '#8b5e3c',
-  '기타': '#8a7d68'
-};
-const CAT_EMOJI = {
-  '업무':'💼', '친교':'🤝', '공부':'📚', '충전':'☕', '운동':'💪', '가족':'🏠', '기타':'📌'
-};
-
-function loadRecords() {
-  try { return JSON.parse(localStorage.getItem(KEYS.records) || '{}'); } catch { return {}; }
-}
-function saveRecords(data) {
-  localStorage.setItem(KEYS.records, JSON.stringify(data));
-}
-function getApiKey() {
-  return localStorage.getItem(KEYS.apiKey) || '';
-}
-
-function initRecordTab() {
-  const today = localDateStr(new Date());
-  const recDate = document.getElementById('rec-date');
-  recDate.value = today;
-  switchRecordTab('log');
-  renderRecordList();
-}
-
-function recMoveDate(delta) {
-  const recDate = document.getElementById('rec-date');
-  const base = recDate.value || localDateStr(new Date());
-  const d = new Date(base + 'T00:00:00');
-  d.setDate(d.getDate() + delta);
-  recDate.value = localDateStr(d);
-  renderRecordList();
-  const reflectEl = document.getElementById('rec-reflect-result');
-  if (reflectEl) reflectEl.style.display = 'none';
-}
-
-function switchRecordTab(section) {
-  recCurrentSection = section;
-  document.getElementById('rec-section-log').style.display = section === 'log' ? '' : 'none';
-  document.getElementById('rec-section-stats').style.display = section === 'stats' ? '' : 'none';
-  if (section === 'stats') renderRecordStats();
-}
-
-// ── 입력 파싱 ──
-// "공부" → { content:'공부', people:[] }
-// "동창 모임 / 김철수, 박영희" → { content:'동창 모임', people:['김철수','박영희'] }
-function parseRecordInput(raw) {
-  const slashIdx = raw.indexOf('/');
-  if (slashIdx === -1) return { content: raw.trim(), people: [] };
-  const content = raw.slice(0, slashIdx).trim();
-  const people  = raw.slice(slashIdx + 1).split(',').map(n => n.trim()).filter(Boolean);
-  return { content, people };
-}
-
-// HH:MM → 분 (0~1439)
-function timeToMin(t) {
-  if (!t) return null;
-  const [h, m] = t.split(':').map(Number);
-  return h * 60 + m;
-}
-// 분 → "H시간 M분" 또는 "M분"
-function minToStr(m) {
-  if (m <= 0) return '0분';
-  if (m < 60) return m + '분';
-  return Math.floor(m/60) + '시간' + (m%60 ? ' ' + m%60 + '분' : '');
-}
-
-// ── 활동 추가 ──
-async function addActivityRecord() {
-  const startVal = document.getElementById('rec-time-start').value;
-  const endVal   = document.getElementById('rec-time-end').value;
-  const rawInput = document.getElementById('rec-activity').value.trim();
-  let dateVal    = document.getElementById('rec-date').value;
-
-  // 날짜 없으면 오늘로 자동 세팅
-  if (!dateVal) {
-    dateVal = localDateStr(new Date());
-    document.getElementById('rec-date').value = dateVal;
-  }
-
-  if (!startVal || !endVal) { showToast('시작·종료 시간을 입력해주세요', 'err'); return; }
-  if (!rawInput)            { showToast('내용을 입력해주세요', 'err'); return; }
-
-  const startMin = timeToMin(startVal);
-  const endMin   = timeToMin(endVal);
-  if (endMin <= startMin) { showToast('종료 시간이 시작 시간보다 늦어야 해요', 'err'); return; }
-  const minutes = endMin - startMin;
-
-  const { content, people } = parseRecordInput(rawInput);
-
-  // AI 카테고리 분류
-  const aiTag = document.getElementById('rec-ai-tag');
-  aiTag.style.display = 'block';
-  aiTag.textContent = '🤖 AI가 카테고리를 분류 중...';
-
-  let category = '기타';
-  const gsUrl = getGsUrl();
-  if (gsUrl) {
-    try {
-      const res = await fetch(gsUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'classifyActivity', content: content })
-      });
-      const data = await res.json();
-      if (data.success) {
-        category = CAT_LIST.includes(data.category) ? data.category : '기타';
-        aiTag.textContent = `✅ ${CAT_EMOJI[category]} ${category}`;
-      } else {
-        aiTag.textContent = '⚠️ 분류 실패 → 기타';
-      }
-      setTimeout(() => { aiTag.style.display = 'none'; }, 1500);
-    } catch(e) {
-      aiTag.textContent = '⚠️ 분류 실패 → 기타';
-      setTimeout(() => { aiTag.style.display = 'none'; }, 1500);
-    }
-  } else {
-    aiTag.textContent = '⚠️ GAS URL 없음 → 기타로 저장';
-    setTimeout(() => { aiTag.style.display = 'none'; }, 2000);
-  }
-
-  // 저장
-  const records = loadRecords();
-  if (!records[dateVal]) records[dateVal] = { activities: [], people: [] };
-
-  const newId = genId();
-  records[dateVal].activities.push({ id: newId, content, startTime: startVal, endTime: endVal, minutes, category });
-
-  // 만난 사람 병합
-  people.forEach(name => {
-    if (!records[dateVal].people.includes(name)) records[dateVal].people.push(name);
-  });
-
-  saveRecords(records);
-
-  // GAS 실시간 저장
-  const gsUrl = getGsUrl();
-  if (gsUrl) {
-    fetch(gsUrl, { method:'POST', headers:{'Content-Type':'text/plain'},
-      body: JSON.stringify({ action:'addRecord', date:dateVal, content, startTime:startVal, endTime:endVal, minutes, category, id:newId, people:records[dateVal].people })
-    }).then(r=>r.json()).then(res => {
-      if (res.success && res._sheetRow) {
-        const rec = loadRecords();
-        const act = rec[dateVal]?.activities?.find(a => a.id === newId);
-        if (act) { act._sheetRow = res._sheetRow; saveRecords(rec); }
-      }
-    }).catch(()=>{});
-  }
-
-  // 입력 초기화
-  document.getElementById('rec-activity').value = '';
-  // 시작 시간을 방금 종료 시간으로 세팅 (연속 입력 편의)
-  document.getElementById('rec-time-start').value = endVal;
-  document.getElementById('rec-time-end').value = '';
-
-  renderRecordList();
-  document.getElementById('rec-reflect-result').style.display = 'none';
-  showToast('기록했습니다 ' + CAT_EMOJI[category], 'ok');
-}
-
-// ── 타임라인 렌더 ──
-function renderRecordList() {
-  const dateVal   = document.getElementById('rec-date')?.value;
-  const container = document.getElementById('rec-list');
-  const totalEl   = document.getElementById('rec-total-time');
-  if (!container || !dateVal) return;
-
-  const records    = loadRecords();
-  const dayData    = records[dateVal];
-  const activities = (dayData?.activities || []).slice().sort((a,b) => (a.startTime||'').localeCompare(b.startTime||''));
-  const people     = dayData?.people || [];
-
-  if (!activities.length) {
-    container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ink4);font-size:13px">아직 기록이 없어요<br><span style="font-size:11px">위에서 시간과 내용을 입력하고 추가해보세요</span></div>';
-    if (totalEl) totalEl.textContent = '';
-    return;
-  }
-
-  const totalMin = activities.reduce((s,a) => s + (a.minutes||0), 0);
-  if (totalEl) totalEl.textContent = '총 ' + minToStr(totalMin);
-
-  // 만난 사람 태그
-  const peopleTags = people.length
-    ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--surface3)">
-        ${people.map(name => `
-          <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(106,80,128,0.10);border:1px solid rgba(106,80,128,0.2);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--purple)">
-            👤 ${name}
-            <span onclick="recRemovePerson('${dateVal}','${name}')" style="cursor:pointer;color:var(--ink4);margin-left:2px">✕</span>
-          </span>`).join('')}
-      </div>` : '';
-
-  container.innerHTML = activities.map(a => `
-    <div style="display:flex;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:10px;border-left:4px solid ${CAT_COLORS[a.category]||CAT_COLORS['기타']}">
-      <div style="flex-shrink:0;text-align:center;min-width:52px">
-        <div style="font-size:11px;font-weight:700;color:var(--ink2)">${a.startTime||''}</div>
-        <div style="font-size:10px;color:var(--ink4);margin:1px 0">↓</div>
-        <div style="font-size:11px;font-weight:700;color:var(--ink2)">${a.endTime||''}</div>
-        <div style="font-size:10px;color:var(--ink3);margin-top:2px">${minToStr(a.minutes)}</div>
-      </div>
-      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center">
-        <div style="font-size:13px;font-weight:600;color:var(--ink)">${a.content}</div>
-        <div style="font-size:11px;color:${CAT_COLORS[a.category]||CAT_COLORS['기타']};margin-top:3px">${CAT_EMOJI[a.category]||'📌'} ${a.category}</div>
-      </div>
-      <span onclick="deleteActivityRecord('${dateVal}','${a.id}')" style="cursor:pointer;color:var(--ink4);font-size:15px;flex-shrink:0;align-self:center">🗑</span>
-    </div>`).join('') + peopleTags;
-}
-
-function recRemovePerson(dateVal, name) {
-  const records = loadRecords();
-  if (!records[dateVal]) return;
-  records[dateVal].people = records[dateVal].people.filter(p => p !== name);
-  saveRecords(records);
-  renderRecordList();
-}
-
-function deleteActivityRecord(dateVal, id) {
-  if (!confirm('삭제할까요?')) return;
-  const records = loadRecords();
-  if (!records[dateVal]) return;
-  records[dateVal].activities = records[dateVal].activities.filter(a => a.id !== id);
-  saveRecords(records);
-  renderRecordList();
-  document.getElementById('rec-reflect-result').style.display = 'none';
-  showToast('삭제됐습니다', 'ok');
-}
-
-// ── AI 회고 ──
-async function recReflect() {
-  const dateVal = document.getElementById('rec-date').value;
-  const records = loadRecords();
-  const dayData = records[dateVal];
-  const activities = (dayData?.activities || []).slice().sort((a,b) => (a.startTime||'').localeCompare(b.startTime||''));
-  const people = dayData?.people || [];
-
-  if (!activities.length) { showToast('먼저 기록을 입력해주세요', 'err'); return; }
-
-  const gsUrl = getGsUrl();
-  if (!gsUrl) { showToast('설정에서 GAS URL을 먼저 저장해주세요', 'err'); return; }
-
-  const resultEl = document.getElementById('rec-reflect-result');
-  resultEl.style.display = 'block';
-  resultEl.textContent = '✨ AI가 오늘 하루를 정리하고 있어요...';
-
-  const timelineText = activities.map(a =>
-    `${a.startTime}~${a.endTime} ${a.content} (${a.category}, ${minToStr(a.minutes)})`
-  ).join('\n');
-  const peopleText = people.length ? '만난 사람: ' + people.join(', ') : '오늘 만난 사람 없음';
-
-  try {
-    const res = await fetch(gsUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        action: 'getReflection',
-        date: dateVal,
-        timeline: timelineText,
-        people: peopleText
-      })
-    });
-    const data = await res.json();
-    if (data.success) {
-      resultEl.textContent = data.result;
-    } else {
-      resultEl.textContent = '⚠️ ' + (data.message || '회고를 생성하지 못했어요.');
-    }
-  } catch(e) {
-    resultEl.textContent = '⚠️ 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
-  }
-}
-
-// ── 날짜 변경 이벤트 ──
-window.addEventListener('load', () => {
-  const recDateEl = document.getElementById('rec-date');
-  if (recDateEl) {
-    recDateEl.addEventListener('change', () => {
-      renderRecordList();
-      document.getElementById('rec-reflect-result').style.display = 'none';
-    });
-  }
-});
-
-// ── API 키 관리 ──
-function saveApiKey() {
-  const key = document.getElementById('ai-key-input')?.value?.trim();
-  if (!key) { showToast('API 키를 입력해주세요', 'err'); return; }
-  localStorage.setItem(KEYS.apiKey, key);
-  const statusEl = document.getElementById('ai-key-status');
-  if (statusEl) statusEl.textContent = '✅ API 키 등록됨';
-  document.getElementById('ai-key-input').value = '';
-  showToast('API 키 저장됐습니다', 'ok');
-}
-
-function initAiKeyStatus() {
-  const key = getApiKey();
-  const statusEl = document.getElementById('ai-key-status');
-  if (statusEl) statusEl.textContent = key ? '✅ API 키 등록됨' : '⚠️ API 키 없음 (자동 분류 비활성)';
-  const inputEl = document.getElementById('ai-key-input');
-  if (inputEl) inputEl.placeholder = key ? '새 키로 교체하려면 입력하세요' : 'sk-ant-...';
-}
-
-// ── 통계 ──
-function changeStatMonth(delta) {
-  recStatMonth += delta;
-  if (recStatMonth < 0) { recStatMonth = 11; recStatYear--; }
-  if (recStatMonth > 11) { recStatMonth = 0; recStatYear++; }
-  renderRecordStats();
-}
-
-function renderRecordStats() {
-  const monthLabel = document.getElementById('rec-stat-month');
-  if (monthLabel) monthLabel.textContent = `${recStatYear}년 ${recStatMonth+1}월`;
-
-  const records = loadRecords();
-  const prefix = `${recStatYear}-${String(recStatMonth+1).padStart(2,'0')}`;
-
-  // 카테고리별 집계
-  const catTotals = {};
-  CAT_LIST.forEach(c => catTotals[c] = 0);
-  catTotals['기타'] = 0;
-  const peopleCounts = {};
-
-  Object.keys(records).filter(d => d.startsWith(prefix)).forEach(dateKey => {
-    const day = records[dateKey];
-    (day.activities || []).forEach(a => {
-      const c = a.category || '기타';
-      catTotals[c] = (catTotals[c] || 0) + (a.minutes || 0);
-    });
-    (day.people || []).forEach(name => {
-      peopleCounts[name] = (peopleCounts[name] || 0) + 1;
-    });
-  });
-
-  const totalMin = Object.values(catTotals).reduce((s,v) => s+v, 0);
-
-  // 카테고리 바 렌더
-  const catContainer = document.getElementById('rec-stat-cats');
-  if (catContainer) {
-    const allCats = [...CAT_LIST, '기타'].filter(c => catTotals[c] > 0);
-    if (!allCats.length) {
-      catContainer.innerHTML = '<div style="text-align:center;color:var(--ink4);font-size:13px;padding:16px">이 달의 기록이 없어요</div>';
-    } else {
-      catContainer.innerHTML = allCats.sort((a,b) => catTotals[b]-catTotals[a]).map(cat => {
-        const min = catTotals[cat];
-        const pct = totalMin ? Math.round(min/totalMin*100) : 0;
-        const timeStr = min < 60 ? `${min}분` : `${Math.floor(min/60)}시간${min%60 ? ' '+min%60+'분' : ''}`;
-        return `
-          <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-              <span style="font-size:13px;font-weight:600;color:var(--ink2)">${CAT_EMOJI[cat]} ${cat}</span>
-              <span style="font-size:12px;color:var(--ink3)">${timeStr} (${pct}%)</span>
-            </div>
-            <div style="height:8px;background:var(--surface3);border-radius:4px;overflow:hidden">
-              <div style="height:100%;width:${pct}%;background:${CAT_COLORS[cat]||CAT_COLORS['기타']};border-radius:4px;transition:width 0.5s"></div>
-            </div>
-          </div>`;
-      }).join('');
-    }
-  }
-
-  // 사람 랭킹 렌더
-  const peopleContainer = document.getElementById('rec-stat-people');
-  if (peopleContainer) {
-    const sorted = Object.entries(peopleCounts).sort((a,b) => b[1]-a[1]);
-    if (!sorted.length) {
-      peopleContainer.innerHTML = '<div style="text-align:center;color:var(--ink4);font-size:13px;padding:16px">이 달의 기록이 없어요</div>';
-    } else {
-      const maxCount = sorted[0][1];
-      peopleContainer.innerHTML = sorted.map(([name, cnt], i) => `
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:10px">
-          <span style="font-size:16px;font-weight:800;color:var(--ink4);width:20px;text-align:center">${i+1}</span>
-          <div style="flex:1">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-              <span style="font-size:13px;font-weight:600;color:var(--ink)">👤 ${name}</span>
-              <span style="font-size:12px;color:var(--ink3)">${cnt}회</span>
-            </div>
-            <div style="height:6px;background:var(--surface3);border-radius:3px;overflow:hidden">
-              <div style="height:100%;width:${Math.round(cnt/maxCount*100)}%;background:var(--purple);border-radius:3px"></div>
-            </div>
-          </div>
-        </div>`).join('');
-    }
-  }
-}
-</script>
 
 </body>
 </html>
