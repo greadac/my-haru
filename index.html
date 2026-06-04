@@ -2977,18 +2977,20 @@ function getApiKey() {
 function initRecordTab() {
   const today = localDateStr(new Date());
   const recDate = document.getElementById('rec-date');
-  if (!recDate.value) recDate.value = today;
+  recDate.value = today;
   switchRecordTab('log');
   renderRecordList();
 }
 
 function recMoveDate(delta) {
   const recDate = document.getElementById('rec-date');
-  const d = new Date(recDate.value);
+  const base = recDate.value || localDateStr(new Date());
+  const d = new Date(base + 'T00:00:00');
   d.setDate(d.getDate() + delta);
   recDate.value = localDateStr(d);
   renderRecordList();
-  document.getElementById('rec-reflect-result').style.display = 'none';
+  const reflectEl = document.getElementById('rec-reflect-result');
+  if (reflectEl) reflectEl.style.display = 'none';
 }
 
 function switchRecordTab(section) {
