@@ -1066,71 +1066,80 @@ select {
 <!-- ══════════════════════════════════════ 📊 하루기록 ══ -->
 <div class="page" id="page-record">
 
-  <!-- 날짜 선택 -->
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-    <input type="date" id="rec-date" class="form-input" style="flex:1;font-size:14px">
-    <button class="btn-primary-sm" onclick="switchRecordTab('log')">오늘 기록</button>
-    <button class="btn-primary-sm" onclick="switchRecordTab('stats')" style="background:var(--blue)">통계</button>
+  <!-- 날짜 + 탭 전환 -->
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <button class="icon-btn" onclick="recMoveDate(-1)">‹</button>
+    <input type="date" id="rec-date" class="form-input" style="flex:1;font-size:14px;text-align:center">
+    <button class="icon-btn" onclick="recMoveDate(1)">›</button>
+    <button class="btn-primary-sm" onclick="switchRecordTab('stats')" style="background:var(--blue);white-space:nowrap">📊 통계</button>
   </div>
 
   <!-- 기록 탭 -->
   <div id="rec-section-log">
-    <!-- 활동 추가 카드 -->
+
+    <!-- 입력 카드 -->
     <div class="card" style="margin-bottom:12px">
-      <div class="card-title">⏱ 활동 추가</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div>
-          <label style="font-size:12px;color:var(--ink3);margin-bottom:4px;display:block">무엇을 했나요?</label>
-          <input type="text" id="rec-activity" class="form-input" placeholder="예: 팀장님과 업무 회의, 헬스장, 성경 공부...">
-        </div>
-        <div style="display:flex;gap:8px;align-items:flex-end">
-          <div style="flex:1">
-            <label style="font-size:12px;color:var(--ink3);margin-bottom:4px;display:block">시간 (분)</label>
-            <input type="number" id="rec-minutes" class="form-input" placeholder="60" min="5" step="5">
-          </div>
-          <button class="btn-primary-sm" onclick="addActivityRecord()" style="height:40px;padding:0 18px">추가</button>
-        </div>
-        <div id="rec-ai-tag" style="display:none;font-size:12px;color:var(--accent);background:rgba(139,94,60,0.08);border-radius:8px;padding:8px 10px">
-          🤖 AI 분류 중...
-        </div>
+      <div class="card-title">✏️ 기록 추가</div>
+      <p style="font-size:11px;color:var(--ink3);margin-bottom:10px;line-height:1.7">
+        <b>09:00 ~ 10:30 공부</b> 또는<br>
+        <b>11:00 ~ 18:00 동창 모임 / 김철수, 박영희</b><br>
+        <span style="color:var(--ink4)">슬래시(/) 뒤에 만난 사람을 쉼표로 구분해 적어요</span>
+      </p>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="time" id="rec-time-start" class="form-input" style="width:90px;padding:8px 6px;font-size:13px">
+        <span style="color:var(--ink3);font-size:13px;flex-shrink:0">~</span>
+        <input type="time" id="rec-time-end" class="form-input" style="width:90px;padding:8px 6px;font-size:13px">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input type="text" id="rec-activity" class="form-input" style="flex:1"
+          placeholder="공부  또는  동창 모임 / 김철수, 박영희"
+          onkeydown="if(event.key==='Enter')addActivityRecord()">
+        <button class="btn-primary-sm" onclick="addActivityRecord()" style="height:40px;padding:0 14px;flex-shrink:0">추가</button>
+      </div>
+      <div id="rec-ai-tag" style="display:none;font-size:12px;color:var(--accent);background:rgba(139,94,60,0.08);border-radius:8px;padding:8px 10px;margin-top:8px">
+        🤖 AI 분류 중...
       </div>
     </div>
 
-    <!-- 만난 사람 카드 -->
+    <!-- 타임라인 -->
     <div class="card" style="margin-bottom:12px">
-      <div class="card-title">👥 만난 사람</div>
-      <div style="display:flex;gap:8px">
-        <input type="text" id="rec-person" class="form-input" placeholder="이름 입력" style="flex:1" onkeydown="if(event.key==='Enter')addPersonRecord()">
-        <button class="btn-primary-sm" onclick="addPersonRecord()" style="height:40px;padding:0 14px">추가</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="card-title" style="margin-bottom:0">📋 오늘의 타임라인</div>
+        <span id="rec-total-time" style="font-size:12px;color:var(--ink3)"></span>
       </div>
-      <div id="rec-person-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px"></div>
+      <div id="rec-list" style="display:flex;flex-direction:column;gap:6px">
+        <div style="text-align:center;padding:24px;color:var(--ink4);font-size:13px">아직 기록이 없어요<br><span style="font-size:11px">위에서 시간과 내용을 입력하고 추가해보세요</span></div>
+      </div>
     </div>
 
-    <!-- 오늘 기록 목록 -->
+    <!-- 하루 돌아보기 -->
     <div class="card">
-      <div class="card-title">📋 오늘의 기록</div>
-      <div id="rec-list" style="display:flex;flex-direction:column;gap:8px">
-        <div style="text-align:center;padding:24px;color:var(--ink4);font-size:13px">아직 기록이 없어요</div>
-      </div>
+      <div class="card-title">🪞 오늘 하루 돌아보기</div>
+      <p style="font-size:12px;color:var(--ink3);margin-bottom:10px">기록을 바탕으로 AI가 오늘 하루를 짧게 정리해드려요.</p>
+      <button class="export-btn" onclick="recReflect()" style="margin-bottom:0">
+        <span class="export-icon">✨</span>
+        <div class="export-info">
+          <div class="export-name">AI 회고 생성</div>
+          <div class="export-desc">시간 배분 · 만남 · 한마디 코멘트</div>
+        </div>
+      </button>
+      <div id="rec-reflect-result" style="display:none;margin-top:12px;padding:14px;background:var(--surface2);border-radius:12px;font-size:13px;color:var(--ink2);line-height:1.9;white-space:pre-wrap"></div>
     </div>
   </div>
 
   <!-- 통계 탭 -->
   <div id="rec-section-stats" style="display:none">
-    <!-- 월 선택 -->
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <button class="icon-btn" onclick="changeStatMonth(-1)">‹</button>
-      <div id="rec-stat-month" style="font-size:15px;font-weight:700;color:var(--ink)">2026년 6월</div>
+      <div id="rec-stat-month" style="font-size:15px;font-weight:700;color:var(--ink)"></div>
       <button class="icon-btn" onclick="changeStatMonth(1)">›</button>
     </div>
+    <button class="btn-primary-sm" onclick="switchRecordTab('log')" style="width:100%;margin-bottom:14px;background:var(--surface2);color:var(--ink2)">← 기록으로 돌아가기</button>
 
-    <!-- 카테고리별 시간 -->
     <div class="card" style="margin-bottom:12px">
       <div class="card-title">⏱ 카테고리별 시간</div>
       <div id="rec-stat-cats" style="display:flex;flex-direction:column;gap:10px;margin-top:8px"></div>
     </div>
-
-    <!-- 사람 만남 랭킹 -->
     <div class="card">
       <div class="card-title">👥 많이 만난 사람</div>
       <div id="rec-stat-people" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
@@ -2971,7 +2980,15 @@ function initRecordTab() {
   if (!recDate.value) recDate.value = today;
   switchRecordTab('log');
   renderRecordList();
-  renderPersonTags();
+}
+
+function recMoveDate(delta) {
+  const recDate = document.getElementById('rec-date');
+  const d = new Date(recDate.value);
+  d.setDate(d.getDate() + delta);
+  recDate.value = localDateStr(d);
+  renderRecordList();
+  document.getElementById('rec-reflect-result').style.display = 'none';
 }
 
 function switchRecordTab(section) {
@@ -2981,16 +2998,49 @@ function switchRecordTab(section) {
   if (section === 'stats') renderRecordStats();
 }
 
+// ── 입력 파싱 ──
+// "공부" → { content:'공부', people:[] }
+// "동창 모임 / 김철수, 박영희" → { content:'동창 모임', people:['김철수','박영희'] }
+function parseRecordInput(raw) {
+  const slashIdx = raw.indexOf('/');
+  if (slashIdx === -1) return { content: raw.trim(), people: [] };
+  const content = raw.slice(0, slashIdx).trim();
+  const people  = raw.slice(slashIdx + 1).split(',').map(n => n.trim()).filter(Boolean);
+  return { content, people };
+}
+
+// HH:MM → 분 (0~1439)
+function timeToMin(t) {
+  if (!t) return null;
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+// 분 → "H시간 M분" 또는 "M분"
+function minToStr(m) {
+  if (m <= 0) return '0분';
+  if (m < 60) return m + '분';
+  return Math.floor(m/60) + '시간' + (m%60 ? ' ' + m%60 + '분' : '');
+}
+
 // ── 활동 추가 ──
 async function addActivityRecord() {
-  const content = document.getElementById('rec-activity').value.trim();
-  const minutes = parseInt(document.getElementById('rec-minutes').value);
-  if (!content) { showToast('활동 내용을 입력해주세요', 'err'); return; }
-  if (!minutes || minutes < 1) { showToast('시간(분)을 입력해주세요', 'err'); return; }
+  const startVal = document.getElementById('rec-time-start').value;
+  const endVal   = document.getElementById('rec-time-end').value;
+  const rawInput = document.getElementById('rec-activity').value.trim();
+  const dateVal  = document.getElementById('rec-date').value;
 
-  const dateVal = document.getElementById('rec-date').value;
-  if (!dateVal) { showToast('날짜를 선택해주세요', 'err'); return; }
+  if (!startVal || !endVal) { showToast('시작·종료 시간을 입력해주세요', 'err'); return; }
+  if (!rawInput)            { showToast('내용을 입력해주세요', 'err'); return; }
+  if (!dateVal)             { showToast('날짜를 선택해주세요', 'err'); return; }
 
+  const startMin = timeToMin(startVal);
+  const endMin   = timeToMin(endVal);
+  if (endMin <= startMin) { showToast('종료 시간이 시작 시간보다 늦어야 해요', 'err'); return; }
+  const minutes = endMin - startMin;
+
+  const { content, people } = parseRecordInput(rawInput);
+
+  // AI 카테고리 분류
   const aiTag = document.getElementById('rec-ai-tag');
   aiTag.style.display = 'block';
   aiTag.textContent = '🤖 AI가 카테고리를 분류 중...';
@@ -3004,133 +3054,117 @@ async function addActivityRecord() {
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
-          max_tokens: 50,
-          system: `다음 활동 내용을 보고 아래 카테고리 중 하나로만 답하세요. 반드시 정확히 하나의 단어만 답하세요.\n카테고리: 업무, 친교, 공부, 충전, 운동, 가족, 기타\n\n기준:\n- 업무: 회의, 업무, 일, 직장, 강의, 수업 준비 등\n- 친교: 친구, 지인, 모임, 식사, 술자리, 만남 등\n- 공부: 독서, 강의 듣기, 공부, 학습, 자격증 등\n- 충전: 휴식, 낮잠, 드라마, 유튜브, 게임, 쇼핑 등\n- 운동: 헬스, 달리기, 산책, 수영, 운동 등\n- 가족: 가족 관련 활동, 부모님, 자녀, 배우자 등\n- 기타: 위에 해당 없는 것`,
+          max_tokens: 20,
+          system: `활동 내용을 보고 카테고리 하나만 단어로 답하세요. 반드시 아래 중 하나만:\n업무, 친교, 공부, 충전, 운동, 가족, 기타\n기준: 업무(회의/직장/강의준비), 친교(친구/모임/식사/만남), 공부(독서/학습/자격증), 충전(휴식/드라마/유튜브/게임), 운동(헬스/달리기/산책), 가족(부모님/자녀/배우자), 기타(해당없음)`,
           messages: [{ role: 'user', content: content }]
         })
       });
       const data = await res.json();
       const raw = data.content?.[0]?.text?.trim() || '기타';
       category = CAT_LIST.includes(raw) ? raw : '기타';
-      aiTag.textContent = `🤖 AI 분류: ${CAT_EMOJI[category]} ${category}`;
-      setTimeout(() => { aiTag.style.display = 'none'; }, 2000);
+      aiTag.textContent = `✅ ${CAT_EMOJI[category]} ${category}`;
+      setTimeout(() => { aiTag.style.display = 'none'; }, 1500);
     } catch(e) {
-      aiTag.textContent = '⚠️ AI 분류 실패 → 기타로 저장';
-      setTimeout(() => { aiTag.style.display = 'none'; }, 2000);
+      aiTag.textContent = '⚠️ 분류 실패 → 기타';
+      setTimeout(() => { aiTag.style.display = 'none'; }, 1500);
     }
   } else {
-    aiTag.textContent = '⚠️ API 키 없음 → 수동 분류 필요 (설정에서 입력)';
-    setTimeout(() => { aiTag.style.display = 'none'; }, 3000);
+    aiTag.textContent = '⚠️ API 키 없음 → 기타로 저장';
+    setTimeout(() => { aiTag.style.display = 'none'; }, 2000);
   }
 
+  // 저장
   const records = loadRecords();
   if (!records[dateVal]) records[dateVal] = { activities: [], people: [] };
-  records[dateVal].activities.push({
-    id: genId(), content, minutes, category
+
+  const newId = genId();
+  records[dateVal].activities.push({ id: newId, content, startTime: startVal, endTime: endVal, minutes, category });
+
+  // 만난 사람 병합
+  people.forEach(name => {
+    if (!records[dateVal].people.includes(name)) records[dateVal].people.push(name);
   });
+
   saveRecords(records);
 
   // GAS 실시간 저장
   const gsUrl = getGsUrl();
   if (gsUrl) {
     fetch(gsUrl, { method:'POST', headers:{'Content-Type':'text/plain'},
-      body: JSON.stringify({
-        action: 'addRecord',
-        date: dateVal,
-        content,
-        minutes,
-        category,
-        id: records[dateVal].activities[records[dateVal].activities.length-1].id,
-        people: records[dateVal].people || []
-      })
-    }).then(r => r.json()).then(res => {
+      body: JSON.stringify({ action:'addRecord', date:dateVal, content, startTime:startVal, endTime:endVal, minutes, category, id:newId, people:records[dateVal].people })
+    }).then(r=>r.json()).then(res => {
       if (res.success && res._sheetRow) {
-        // sheetRow 저장
         const rec = loadRecords();
-        const act = rec[dateVal].activities.find(a => a.id === records[dateVal].activities[records[dateVal].activities.length-1].id);
+        const act = rec[dateVal]?.activities?.find(a => a.id === newId);
         if (act) { act._sheetRow = res._sheetRow; saveRecords(rec); }
       }
-    }).catch(() => {});
+    }).catch(()=>{});
   }
 
+  // 입력 초기화
   document.getElementById('rec-activity').value = '';
-  document.getElementById('rec-minutes').value = '';
+  // 시작 시간을 방금 종료 시간으로 세팅 (연속 입력 편의)
+  document.getElementById('rec-time-start').value = endVal;
+  document.getElementById('rec-time-end').value = '';
+
   renderRecordList();
+  document.getElementById('rec-reflect-result').style.display = 'none';
   showToast('기록했습니다 ' + CAT_EMOJI[category], 'ok');
 }
 
-// ── 만난 사람 ──
-function addPersonRecord() {
-  const name = document.getElementById('rec-person').value.trim();
-  if (!name) return;
-  const dateVal = document.getElementById('rec-date').value;
-  if (!dateVal) { showToast('날짜를 선택해주세요', 'err'); return; }
-
-  const records = loadRecords();
-  if (!records[dateVal]) records[dateVal] = { activities: [], people: [] };
-  if (!records[dateVal].people.includes(name)) {
-    records[dateVal].people.push(name);
-    saveRecords(records);
-    renderPersonTags();
-    showToast(`${name} 추가`, 'ok');
-  } else {
-    showToast('이미 추가됐어요', 'err');
-  }
-  document.getElementById('rec-person').value = '';
-}
-
-function removePerson(dateVal, name) {
-  const records = loadRecords();
-  if (!records[dateVal]) return;
-  records[dateVal].people = records[dateVal].people.filter(p => p !== name);
-  saveRecords(records);
-  renderPersonTags();
-}
-
-function renderPersonTags() {
-  const dateVal = document.getElementById('rec-date')?.value;
-  const container = document.getElementById('rec-person-tags');
-  if (!container || !dateVal) return;
-  const records = loadRecords();
-  const people = records[dateVal]?.people || [];
-  if (!people.length) {
-    container.innerHTML = '<span style="font-size:12px;color:var(--ink4)">만난 사람을 추가해보세요</span>';
-    return;
-  }
-  container.innerHTML = people.map(name => `
-    <span style="display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--surface3);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--ink2)">
-      👤 ${name}
-      <span onclick="removePerson('${dateVal}','${name}')" style="cursor:pointer;color:var(--ink4);margin-left:2px">✕</span>
-    </span>`).join('');
-}
-
-// ── 기록 목록 렌더 ──
+// ── 타임라인 렌더 ──
 function renderRecordList() {
-  const dateVal = document.getElementById('rec-date')?.value;
+  const dateVal   = document.getElementById('rec-date')?.value;
   const container = document.getElementById('rec-list');
+  const totalEl   = document.getElementById('rec-total-time');
   if (!container || !dateVal) return;
 
-  const records = loadRecords();
-  const dayData = records[dateVal];
-  const activities = dayData?.activities || [];
+  const records    = loadRecords();
+  const dayData    = records[dateVal];
+  const activities = (dayData?.activities || []).slice().sort((a,b) => (a.startTime||'').localeCompare(b.startTime||''));
+  const people     = dayData?.people || [];
 
   if (!activities.length) {
-    container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ink4);font-size:13px">아직 기록이 없어요</div>';
+    container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ink4);font-size:13px">아직 기록이 없어요<br><span style="font-size:11px">위에서 시간과 내용을 입력하고 추가해보세요</span></div>';
+    if (totalEl) totalEl.textContent = '';
     return;
   }
 
   const totalMin = activities.reduce((s,a) => s + (a.minutes||0), 0);
-  container.innerHTML = `
-    <div style="font-size:12px;color:var(--ink3);text-align:right;margin-bottom:4px">총 ${Math.floor(totalMin/60)}시간 ${totalMin%60}분</div>
-    ${activities.map(a => `
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:10px;border-left:4px solid ${CAT_COLORS[a.category]||CAT_COLORS['기타']}">
-        <span style="font-size:18px">${CAT_EMOJI[a.category]||'📌'}</span>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.content}</div>
-          <div style="font-size:11px;color:var(--ink3);margin-top:2px">${a.category} · ${a.minutes < 60 ? a.minutes+'분' : Math.floor(a.minutes/60)+'시간'+(a.minutes%60 ? ' '+a.minutes%60+'분' : '')}</div>
-        </div>
-        <span onclick="deleteActivityRecord('${dateVal}','${a.id}')" style="cursor:pointer;color:var(--ink4);font-size:16px;flex-shrink:0">🗑</span>
-      </div>`).join('')}`;
+  if (totalEl) totalEl.textContent = '총 ' + minToStr(totalMin);
+
+  // 만난 사람 태그
+  const peopleTags = people.length
+    ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--surface3)">
+        ${people.map(name => `
+          <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(106,80,128,0.10);border:1px solid rgba(106,80,128,0.2);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--purple)">
+            👤 ${name}
+            <span onclick="recRemovePerson('${dateVal}','${name}')" style="cursor:pointer;color:var(--ink4);margin-left:2px">✕</span>
+          </span>`).join('')}
+      </div>` : '';
+
+  container.innerHTML = activities.map(a => `
+    <div style="display:flex;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:10px;border-left:4px solid ${CAT_COLORS[a.category]||CAT_COLORS['기타']}">
+      <div style="flex-shrink:0;text-align:center;min-width:52px">
+        <div style="font-size:11px;font-weight:700;color:var(--ink2)">${a.startTime||''}</div>
+        <div style="font-size:10px;color:var(--ink4);margin:1px 0">↓</div>
+        <div style="font-size:11px;font-weight:700;color:var(--ink2)">${a.endTime||''}</div>
+        <div style="font-size:10px;color:var(--ink3);margin-top:2px">${minToStr(a.minutes)}</div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center">
+        <div style="font-size:13px;font-weight:600;color:var(--ink)">${a.content}</div>
+        <div style="font-size:11px;color:${CAT_COLORS[a.category]||CAT_COLORS['기타']};margin-top:3px">${CAT_EMOJI[a.category]||'📌'} ${a.category}</div>
+      </div>
+      <span onclick="deleteActivityRecord('${dateVal}','${a.id}')" style="cursor:pointer;color:var(--ink4);font-size:15px;flex-shrink:0;align-self:center">🗑</span>
+    </div>`).join('') + peopleTags;
+}
+
+function recRemovePerson(dateVal, name) {
+  const records = loadRecords();
+  if (!records[dateVal]) return;
+  records[dateVal].people = records[dateVal].people.filter(p => p !== name);
+  saveRecords(records);
+  renderRecordList();
 }
 
 function deleteActivityRecord(dateVal, id) {
@@ -3140,16 +3174,65 @@ function deleteActivityRecord(dateVal, id) {
   records[dateVal].activities = records[dateVal].activities.filter(a => a.id !== id);
   saveRecords(records);
   renderRecordList();
+  document.getElementById('rec-reflect-result').style.display = 'none';
   showToast('삭제됐습니다', 'ok');
 }
 
-// ── 날짜 변경 시 다시 렌더 (window.onload 이후 등록) ──
+// ── AI 회고 ──
+async function recReflect() {
+  const dateVal = document.getElementById('rec-date').value;
+  const records = loadRecords();
+  const dayData = records[dateVal];
+  const activities = (dayData?.activities || []).slice().sort((a,b) => (a.startTime||'').localeCompare(b.startTime||''));
+  const people = dayData?.people || [];
+
+  if (!activities.length) { showToast('먼저 기록을 입력해주세요', 'err'); return; }
+
+  const apiKey = getApiKey();
+  if (!apiKey) { showToast('설정에서 API 키를 입력해주세요', 'err'); return; }
+
+  const resultEl = document.getElementById('rec-reflect-result');
+  resultEl.style.display = 'block';
+  resultEl.textContent = '✨ AI가 오늘 하루를 정리하고 있어요...';
+
+  const timelineText = activities.map(a =>
+    `${a.startTime}~${a.endTime} ${a.content} (${a.category}, ${minToStr(a.minutes)})`
+  ).join('\n');
+  const peopleText = people.length ? '만난 사람: ' + people.join(', ') : '오늘 만난 사람 없음';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        system: `당신은 따뜻하고 진솔한 하루 회고를 도와주는 조력자입니다. 
+사용자의 하루 타임라인을 보고 아래 형식으로 짧고 따뜻하게 회고를 작성해주세요.
+
+형식:
+⏱ 시간 배분: 카테고리별로 가장 많이 쓴 시간 2~3개 언급
+👥 오늘의 만남: 만난 사람과 관련된 한마디 (없으면 생략)
+💬 한마디: 오늘 하루에 대한 진심 어린 코멘트 한두 문장
+
+200자 이내로, 존댓말로 써주세요.`,
+        messages: [{ role: 'user', content: `날짜: ${dateVal}\n\n타임라인:\n${timelineText}\n\n${peopleText}` }]
+      })
+    });
+    const data = await res.json();
+    resultEl.textContent = data.content?.[0]?.text?.trim() || '회고를 생성하지 못했어요.';
+  } catch(e) {
+    resultEl.textContent = '⚠️ 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
+  }
+}
+
+// ── 날짜 변경 이벤트 ──
 window.addEventListener('load', () => {
   const recDateEl = document.getElementById('rec-date');
   if (recDateEl) {
     recDateEl.addEventListener('change', () => {
       renderRecordList();
-      renderPersonTags();
+      document.getElementById('rec-reflect-result').style.display = 'none';
     });
   }
 });
