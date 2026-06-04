@@ -2706,6 +2706,31 @@ async function syncFromSheet() {
       words = merged;
       save(KEYS.words, words);
     }
+    // 하루기록 동기화
+    if (res.recordEntries && res.recordEntries.length) {
+      const localRec = loadRecords();
+      res.recordEntries.forEach(entry => {
+        const d = entry.date;
+        if (!d) return;
+        if (!localRec[d]) localRec[d] = { activities: [], people: [] };
+        // 활동: _sheetRow 기준 중복 방지
+        const existRows = localRec[d].activities.map(a => a._sheetRow).filter(Boolean);
+        if (!existRows.includes(entry._sheetRow)) {
+          localRec[d].activities.push({
+            id: entry.id || genId(),
+            content: entry.content,
+            minutes: entry.minutes,
+            category: entry.category,
+            _sheetRow: entry._sheetRow
+          });
+        }
+        // 만난 사람 병합
+        (entry.people || []).forEach(name => {
+          if (!localRec[d].people.includes(name)) localRec[d].people.push(name);
+        });
+      });
+      saveRecords(localRec);
+    }
     renderCalendar();
     renderDayPanel(selectedDate);
     renderScheduleList();
@@ -2747,6 +2772,34 @@ async function syncToSheet() {
     for (const r of dietData) {
       await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
         body: JSON.stringify({ action:'saveDietRow', ...r }) });
+    }
+    // 하루기록 (시트에 없는 신규 항목만)
+    const recData = loadRecords();
+    for (const [dateKey, dayData] of Object.entries(recData)) {
+      const newActs = (dayData.activities || []).filter(a => !a._sheetRow);
+      for (const act of newActs) {
+        await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
+          body: JSON.stringify({
+            action: 'addRecord',
+            date: dateKey,
+            content: act.content,
+            minutes: act.minutes,
+            category: act.category,
+            id: act.id,
+            people: dateKey === Object.keys(recData)[0] ? (dayData.people || []) : []
+          })
+        });
+      }
+      // 만난 사람만 업데이트 (활동 없어도)
+      if (newActs.length === 0 && (dayData.people || []).length > 0) {
+        await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
+          body: JSON.stringify({
+            action: 'updateRecordPeople',
+            date: dateKey,
+            people: dayData.people
+          })
+        });
+      }
     }
     showToast('✅ 시트로 올렸어요!', 'ok');
   } catch(e) {
@@ -2976,6 +3029,29 @@ async function addActivityRecord() {
     id: genId(), content, minutes, category
   });
   saveRecords(records);
+
+  // GAS 실시간 저장
+  const gsUrl = getGsUrl();
+  if (gsUrl) {
+    fetch(gsUrl, { method:'POST', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({
+        action: 'addRecord',
+        date: dateVal,
+        content,
+        minutes,
+        category,
+        id: records[dateVal].activities[records[dateVal].activities.length-1].id,
+        people: records[dateVal].people || []
+      })
+    }).then(r => r.json()).then(res => {
+      if (res.success && res._sheetRow) {
+        // sheetRow 저장
+        const rec = loadRecords();
+        const act = rec[dateVal].activities.find(a => a.id === records[dateVal].activities[records[dateVal].activities.length-1].id);
+        if (act) { act._sheetRow = res._sheetRow; saveRecords(rec); }
+      }
+    }).catch(() => {});
+  }
 
   document.getElementById('rec-activity').value = '';
   document.getElementById('rec-minutes').value = '';
