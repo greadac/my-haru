@@ -1339,6 +1339,10 @@ window.onload = () => {
   // 폼 기본값
   ['sm-date','dm-date','wm-date'].forEach(id => document.getElementById(id).value = today);
 
+  // 하루기록 날짜 초기화
+  const recDate = document.getElementById('rec-date');
+  if (recDate) recDate.value = today;
+
   // 책 목록 채우기
   populateBookSel('wm-book', 'all');
   populateBookSel('p-book', 'old');
@@ -3029,11 +3033,16 @@ async function addActivityRecord() {
   const startVal = document.getElementById('rec-time-start').value;
   const endVal   = document.getElementById('rec-time-end').value;
   const rawInput = document.getElementById('rec-activity').value.trim();
-  const dateVal  = document.getElementById('rec-date').value;
+  let dateVal    = document.getElementById('rec-date').value;
+
+  // 날짜 없으면 오늘로 자동 세팅
+  if (!dateVal) {
+    dateVal = localDateStr(new Date());
+    document.getElementById('rec-date').value = dateVal;
+  }
 
   if (!startVal || !endVal) { showToast('시작·종료 시간을 입력해주세요', 'err'); return; }
   if (!rawInput)            { showToast('내용을 입력해주세요', 'err'); return; }
-  if (!dateVal)             { showToast('날짜를 선택해주세요', 'err'); return; }
 
   const startMin = timeToMin(startVal);
   const endMin   = timeToMin(endVal);
