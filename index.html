@@ -629,12 +629,6 @@ select {
 <!-- ══ 설정 탭 ══ -->
 <div class="page" id="page-settings">
 
-  <div class="card">
-    <div class="card-title">🤖 AI 설정 (하루기록)</div>
-    <p style="font-size:11px;color:var(--ink3);margin-bottom:8px">카테고리 자동 분류 · AI 회고는 GAS를 통해 동작해요.<br>GAS URL이 등록되어 있으면 별도 설정 불필요합니다.</p>
-    <div id="ai-key-status" style="font-size:12px;color:var(--ink3);padding:8px 10px;background:var(--surface2);border-radius:8px"></div>
-  </div>
-
   <!-- 구글 시트 연동 카드 -->
   <div class="card">
     <div class="card-title">☁️ GOOGLE SHEETS 연동</div>
@@ -1103,18 +1097,6 @@ select {
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">🪞 오늘 하루 돌아보기</div>
-      <p style="font-size:12px;color:var(--ink3);margin-bottom:10px">기록을 바탕으로 AI가 오늘 하루를 짧게 정리해드려요.</p>
-      <button class="export-btn" onclick="recReflect()">
-        <span class="export-icon">✨</span>
-        <div class="export-info">
-          <div class="export-name">AI 회고 생성</div>
-          <div class="export-desc">시간 배분 · 만남 · 한마디 코멘트</div>
-        </div>
-      </button>
-      <div id="rec-reflect-result" style="display:none;margin-top:12px;padding:14px;background:var(--surface2);border-radius:12px;font-size:13px;color:var(--ink2);line-height:1.9;white-space:pre-wrap"></div>
-    </div>
   </div>
 
   <!-- 통계 섹션 -->
@@ -1366,7 +1348,7 @@ function switchTab(tab) {
 
   if (tab === 'diet') initDietTab();
   if (tab === 'bookmark') renderBookmarks();
-  if (tab === 'settings') { initGsSettings(); initAiStatus(); }
+  if (tab === 'settings') initGsSettings();
   if (tab === 'record') initRecordTab();
 }
 
