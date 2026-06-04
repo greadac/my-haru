@@ -3046,30 +3046,28 @@ async function addActivityRecord() {
   aiTag.textContent = '🤖 AI가 카테고리를 분류 중...';
 
   let category = '기타';
-  const apiKey = getApiKey();
-  if (apiKey) {
+  const gsUrl = getGsUrl();
+  if (gsUrl) {
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch(gsUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 20,
-          system: `활동 내용을 보고 카테고리 하나만 단어로 답하세요. 반드시 아래 중 하나만:\n업무, 친교, 공부, 충전, 운동, 가족, 기타\n기준: 업무(회의/직장/강의준비), 친교(친구/모임/식사/만남), 공부(독서/학습/자격증), 충전(휴식/드라마/유튜브/게임), 운동(헬스/달리기/산책), 가족(부모님/자녀/배우자), 기타(해당없음)`,
-          messages: [{ role: 'user', content: content }]
-        })
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'classifyActivity', content: content })
       });
       const data = await res.json();
-      const raw = data.content?.[0]?.text?.trim() || '기타';
-      category = CAT_LIST.includes(raw) ? raw : '기타';
-      aiTag.textContent = `✅ ${CAT_EMOJI[category]} ${category}`;
+      if (data.success) {
+        category = CAT_LIST.includes(data.category) ? data.category : '기타';
+        aiTag.textContent = `✅ ${CAT_EMOJI[category]} ${category}`;
+      } else {
+        aiTag.textContent = '⚠️ 분류 실패 → 기타';
+      }
       setTimeout(() => { aiTag.style.display = 'none'; }, 1500);
     } catch(e) {
       aiTag.textContent = '⚠️ 분류 실패 → 기타';
       setTimeout(() => { aiTag.style.display = 'none'; }, 1500);
     }
   } else {
-    aiTag.textContent = '⚠️ API 키 없음 → 기타로 저장';
+    aiTag.textContent = '⚠️ GAS URL 없음 → 기타로 저장';
     setTimeout(() => { aiTag.style.display = 'none'; }, 2000);
   }
 
