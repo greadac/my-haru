@@ -3188,8 +3188,8 @@ async function recReflect() {
 
   if (!activities.length) { showToast('먼저 기록을 입력해주세요', 'err'); return; }
 
-  const apiKey = getApiKey();
-  if (!apiKey) { showToast('설정에서 API 키를 입력해주세요', 'err'); return; }
+  const gsUrl = getGsUrl();
+  if (!gsUrl) { showToast('설정에서 GAS URL을 먼저 저장해주세요', 'err'); return; }
 
   const resultEl = document.getElementById('rec-reflect-result');
   resultEl.style.display = 'block';
@@ -3201,26 +3201,22 @@ async function recReflect() {
   const peopleText = people.length ? '만난 사람: ' + people.join(', ') : '오늘 만난 사람 없음';
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch(gsUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 400,
-        system: `당신은 따뜻하고 진솔한 하루 회고를 도와주는 조력자입니다. 
-사용자의 하루 타임라인을 보고 아래 형식으로 짧고 따뜻하게 회고를 작성해주세요.
-
-형식:
-⏱ 시간 배분: 카테고리별로 가장 많이 쓴 시간 2~3개 언급
-👥 오늘의 만남: 만난 사람과 관련된 한마디 (없으면 생략)
-💬 한마디: 오늘 하루에 대한 진심 어린 코멘트 한두 문장
-
-200자 이내로, 존댓말로 써주세요.`,
-        messages: [{ role: 'user', content: `날짜: ${dateVal}\n\n타임라인:\n${timelineText}\n\n${peopleText}` }]
+        action: 'getReflection',
+        date: dateVal,
+        timeline: timelineText,
+        people: peopleText
       })
     });
     const data = await res.json();
-    resultEl.textContent = data.content?.[0]?.text?.trim() || '회고를 생성하지 못했어요.';
+    if (data.success) {
+      resultEl.textContent = data.result;
+    } else {
+      resultEl.textContent = '⚠️ ' + (data.message || '회고를 생성하지 못했어요.');
+    }
   } catch(e) {
     resultEl.textContent = '⚠️ 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
   }
