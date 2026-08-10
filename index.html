@@ -534,11 +534,7 @@ select {
 
 <div class="tabs" id="main-tabs">
   <div class="tab active" data-tab="cal" onclick="switchTab('cal')"><span class="tab-icon">🗓</span>달력</div>
-  <div class="tab" data-tab="diary" onclick="switchTab('diary')"><span class="tab-icon">📓</span>일기</div>
   <div class="tab" data-tab="word" onclick="switchTab('word')"><span class="tab-icon">✝️</span>말씀</div>
-  <div class="tab" data-tab="diet" onclick="switchTab('diet')"><span class="tab-icon">🥗</span>건강</div>
-  <div class="tab" data-tab="record" onclick="switchTab('record')"><span class="tab-icon">📊</span>하루기록</div>
-  <div class="tab" data-tab="bookmark" onclick="switchTab('bookmark')"><span class="tab-icon">🔖</span>즐겨찾기</div>
   <div class="tab" data-tab="settings" onclick="switchTab('settings')"><span class="tab-icon">⚙️</span>설정</div>
 </div>
 
@@ -558,13 +554,6 @@ select {
     </div>
   </div>
   <div id="day-panel"></div>
-</div>
-
-
-
-<!-- ══ 일기 탭 ══ -->
-<div class="page" id="page-diary">
-  <div id="diary-list"></div>
 </div>
 
 <!-- ══ 말씀 탭 ══ -->
@@ -664,20 +653,8 @@ select {
     </p>
     <div style="display:flex;flex-direction:column;gap:10px">
       <label style="display:flex;align-items:center;justify-content:space-between;margin:0;font-size:0.92rem;color:var(--ink2);font-weight:600">
-        <span>📓 일기 탭</span>
-        <div class="toggle-switch" id="toggle-diary" onclick="toggleTabVisibility('diary')"><div class="toggle-knob"></div></div>
-      </label>
-      <label style="display:flex;align-items:center;justify-content:space-between;margin:0;font-size:0.92rem;color:var(--ink2);font-weight:600">
         <span>✝️ 말씀 탭</span>
         <div class="toggle-switch" id="toggle-word" onclick="toggleTabVisibility('word')"><div class="toggle-knob"></div></div>
-      </label>
-      <label style="display:flex;align-items:center;justify-content:space-between;margin:0;font-size:0.92rem;color:var(--ink2);font-weight:600">
-        <span>🥗 건강 탭</span>
-        <div class="toggle-switch" id="toggle-diet" onclick="toggleTabVisibility('diet')"><div class="toggle-knob"></div></div>
-      </label>
-      <label style="display:flex;align-items:center;justify-content:space-between;margin:0;font-size:0.92rem;color:var(--ink2);font-weight:600">
-        <span>📊 하루기록 탭</span>
-        <div class="toggle-switch" id="toggle-record" onclick="toggleTabVisibility('record')"><div class="toggle-knob"></div></div>
       </label>
     </div>
   </div>
@@ -706,9 +683,10 @@ select {
   <div class="card">
     <div class="card-title">ℹ️ 앱 정보</div>
     <p style="font-size:0.82rem;color:var(--ink3);line-height:1.8">
-      나의 하루 다이어리 v1.1<br>
-      일정 · 일기 · 말씀묵상 · 건강 통합 기록 앱<br>
-      <span style="color:var(--ink4);font-size:0.76rem">데이터: 브라우저 localStorage 저장</span>
+      나의 하루 다이어리 v1.2<br>
+      일정 · 말씀묵상 통합 기록 앱<br>
+      <span style="color:var(--ink4);font-size:0.76rem">데이터: 브라우저 localStorage 저장</span><br>
+      <span style="color:var(--ink4);font-size:0.76rem">제작자 인스타 @greada_2</span>
     </p>
   </div>
 
@@ -723,7 +701,7 @@ select {
         <div>
           <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">📱 앱 소개</div>
           <p style="font-size:0.82rem;color:var(--ink2);line-height:1.8">
-            <b>나의 하루</b>는 일정·일기·말씀묵상·건강을 한 곳에서 기록하는 개인 다이어리 앱입니다.<br>
+            <b>나의 하루</b>는 일정과 말씀묵상을 한 곳에서 기록하는 개인 다이어리 앱입니다.<br>
             모든 데이터는 이 기기의 브라우저에만 저장되며, 외부 서버로 전송되지 않습니다.
           </p>
         </div>
@@ -737,36 +715,12 @@ select {
           </p>
         </div>
         <div>
-          <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">📓 일기 탭</div>
-          <p style="font-size:0.82rem;color:var(--ink2);line-height:1.9">
-            • 날짜별로 일기를 작성합니다.<br>
-            • 제목·내용·기분을 기록할 수 있습니다.<br>
-            • 우측 하단 ✏️ 버튼으로 새 일기를 작성합니다.
-          </p>
-        </div>
-        <div>
           <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">✝️ 말씀 탭</div>
           <p style="font-size:0.82rem;color:var(--ink2);line-height:1.9">
             • <b>묵상 목록</b>: 성경 말씀 묵상을 날짜별로 기록합니다.<br>
             • <b>문장수집</b>: 마음에 닿은 문장을 모아둡니다.<br>
             • <b>통독표</b>: 시작일·위치·하루 분량을 설정하면 자동으로 통독 계획표를 생성합니다.<br>
             • 성경은 가톨릭 성경(73권) 기준입니다.
-          </p>
-        </div>
-        <div>
-          <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">🥗 건강 탭</div>
-          <p style="font-size:0.82rem;color:var(--ink2);line-height:1.9">
-            • 날짜 탭을 선택해 해당 날의 기록을 입력합니다.<br>
-            • 기상 몸무게·식사·물 섭취량·운동·메모를 기록합니다.<br>
-            • 📊 차트 보기로 몸무게 변화 추이를 그래프로 확인할 수 있습니다.
-          </p>
-        </div>
-        <div>
-          <div style="font-size:0.88rem;font-weight:700;color:var(--ink1);margin-bottom:4px">🔖 즐겨찾기 탭</div>
-          <p style="font-size:0.82rem;color:var(--ink2);line-height:1.9">
-            • 자주 가는 사이트를 바로가기로 추가합니다.<br>
-            • 카테고리별로 그룹핑되며 검색도 가능합니다.<br>
-            • 아이콘에 마우스 올리면 ✏️ 수정 버튼이 나타납니다.
           </p>
         </div>
         <div>
@@ -817,35 +771,6 @@ select {
     </div>
     <div style="margin-top:8px" id="sched-delete-wrap">
       <button class="btn btn-danger" onclick="deleteSchedule()">🗑️ 삭제</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ 일기 추가/수정 모달 ══ -->
-<div class="modal-overlay" id="diary-modal" onclick="closeModal('diary-modal',event)">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="diary-modal-title">일기 작성</div>
-    <label>날짜</label>
-    <input type="date" id="dm-date">
-    <label>제목</label>
-    <input type="text" id="dm-title" placeholder="오늘의 제목">
-    <label>내용</label>
-    <textarea id="dm-content" placeholder="오늘 하루를 기록하세요..." style="min-height:130px"></textarea>
-    <label>기분</label>
-    <select id="dm-mood">
-      <option value="😊 좋음">😊 좋음</option>
-      <option value="😐 보통">😐 보통</option>
-      <option value="😔 나쁨">😔 나쁨</option>
-      <option value="😤 화남">😤 화남</option>
-      <option value="😴 피곤">😴 피곤</option>
-    </select>
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="closeModal('diary-modal')">취소</button>
-      <button class="btn btn-primary" onclick="saveDiary()">저장</button>
-    </div>
-    <div style="margin-top:8px" id="diary-delete-wrap">
-      <button class="btn btn-danger" onclick="deleteDiary()">🗑️ 삭제</button>
     </div>
   </div>
 </div>
@@ -969,196 +894,6 @@ select {
   </div>
 </div>
 
-<!-- ══ 건강 탭 ══ -->
-<div class="page" id="page-diet">
-
-  <!-- 시작일 설정 카드 -->
-  <div class="card" id="diet-startdate-card" style="margin-bottom:14px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0">
-      <div>
-        <div class="card-title" style="margin-bottom:2px">📅 기록 시작일</div>
-        <div id="diet-startdate-display" style="font-size:0.82rem;color:var(--ink3)">설정되지 않음</div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-sm btn-ghost" style="background:rgba(52,168,83,0.12);color:var(--green)" onclick="syncDietFromSheet()">☁️ 시트</button>
-        <button class="btn btn-sm btn-ghost" onclick="toggleStartDateEdit()">✏️ 변경</button>
-      </div>
-    </div>
-    <div id="diet-startdate-edit" style="display:none;margin-top:12px">
-      <input type="date" id="diet-startdate-input">
-      <div class="btn-row" style="margin-top:10px">
-        <button class="btn btn-ghost" onclick="toggleStartDateEdit()">취소</button>
-        <button class="btn btn-primary" onclick="saveStartDate()">저장</button>
-      </div>
-    </div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
-    <div class="card" style="padding:14px;text-align:center;margin-bottom:0">
-      <div style="font-size:0.72rem;color:var(--ink3);margin-bottom:4px">현재</div>
-      <div style="font-size:1.3rem;font-weight:700;color:var(--accent)" id="diet-cur">--</div>
-      <div style="font-size:0.7rem;color:var(--ink3)">kg</div>
-    </div>
-    <div class="card" style="padding:14px;text-align:center;margin-bottom:0">
-      <div style="font-size:0.72rem;color:var(--ink3);margin-bottom:4px">최저</div>
-      <div style="font-size:1.3rem;font-weight:700;color:var(--green)" id="diet-min">--</div>
-      <div style="font-size:0.7rem;color:var(--ink3)">kg</div>
-    </div>
-    <div class="card" style="padding:14px;text-align:center;margin-bottom:0">
-      <div style="font-size:0.72rem;color:var(--ink3);margin-bottom:4px">총 변화</div>
-      <div style="font-size:1.3rem;font-weight:700" id="diet-diff-stat">--</div>
-      <div style="font-size:0.7rem;color:var(--ink3)">kg</div>
-    </div>
-  </div>
-
-  <div class="card" id="diet-chart-card" style="display:none;margin-bottom:14px">
-    <div class="card-title">몸무게 변화 추이</div>
-    <div style="position:relative;height:180px"><canvas id="dietChart"></canvas></div>
-  </div>
-  <button class="btn btn-ghost" id="diet-chart-btn" style="margin-bottom:14px;font-size:0.88rem" onclick="toggleDietChart()">📊 차트 보기</button>
-
-  <div id="diet-date-scroll" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:14px"></div>
-
-  <div class="card" id="diet-entry-card">
-    <div class="card-title" id="diet-entry-label">날짜</div>
-    <label>⚖️ 기상 몸무게 (kg)</label>
-    <div style="display:flex;gap:8px;align-items:center">
-      <input type="number" id="diet-weight" step="0.1" min="30" max="200" placeholder="예: 62.5" style="flex:1">
-      <div id="diet-diff-badge" style="min-width:64px;text-align:center;padding:12px 8px;border-radius:10px;background:var(--surface2);color:var(--ink3);font-size:0.9rem;font-weight:700">--</div>
-    </div>
-    <label style="margin-top:16px">🍽️ 식사 기록</label>
-    <div style="position:relative;margin-bottom:8px">
-      <span style="position:absolute;top:13px;left:13px;font-size:0.75rem;color:var(--ink3);pointer-events:none;z-index:1">6~12시</span>
-      <input type="text" id="diet-breakfast" placeholder="아침 식사 내용" style="padding-left:54px">
-    </div>
-    <div style="position:relative;margin-bottom:8px">
-      <span style="position:absolute;top:13px;left:13px;font-size:0.75rem;color:var(--ink3);pointer-events:none;z-index:1">12~18시</span>
-      <input type="text" id="diet-lunch" placeholder="점심 식사 내용" style="padding-left:60px">
-    </div>
-    <div style="position:relative">
-      <span style="position:absolute;top:13px;left:13px;font-size:0.75rem;color:var(--ink3);pointer-events:none;z-index:1">18~23시</span>
-      <input type="text" id="diet-dinner" placeholder="저녁 식사 내용" style="padding-left:60px">
-    </div>
-    <label style="margin-top:16px">💧 물 섭취량 (L)</label>
-    <input type="number" id="diet-water" step="0.1" min="0" max="10" placeholder="예: 1.5">
-    <label style="margin-top:16px">🏃 운동</label>
-    <input type="text" id="diet-exercise" placeholder="예: 걷기 30분, 홈트">
-    <label style="margin-top:16px">📝 메모</label>
-    <textarea id="diet-memo" style="min-height:68px" placeholder="오늘 몸 상태, 다짐 등..."></textarea>
-    <div style="margin-top:18px">
-      <button class="btn btn-primary" id="diet-save-btn" onclick="saveDietEntry()">💾 저장하기</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ 도움말 탭 ══ -->
-<!-- ══ 즐겨찾기 탭 ══ -->
-<!-- ══ 📊 하루기록 ══ -->
-<div class="page" id="page-record">
-  <!-- 날짜 이동 -->
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-    <button class="icon-btn" onclick="recMoveDate(-1)">‹</button>
-    <input type="date" id="rec-date" class="form-input" style="flex:1;font-size:14px;text-align:center">
-    <button class="icon-btn" onclick="recMoveDate(1)">›</button>
-    <button class="btn-primary-sm" onclick="switchRecordTab('stats')" style="background:var(--blue);white-space:nowrap">📊 통계</button>
-  </div>
-
-  <!-- 기록 섹션 -->
-  <div id="rec-section-log">
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-title">✏️ 기록 추가</div>
-      <p style="font-size:11px;color:var(--ink3);margin-bottom:10px;line-height:1.7">
-        시작·종료 시간을 입력하고 내용을 적어요<br>
-        <b>동창 모임 / 김철수, 박영희</b> — 슬래시(/) 뒤는 만난 사람
-      </p>
-      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-        <input type="time" id="rec-time-start" class="form-input" style="flex:1;font-size:13px">
-        <span style="color:var(--ink3);font-size:13px;flex-shrink:0">~</span>
-        <input type="time" id="rec-time-end" class="form-input" style="flex:1;font-size:13px">
-      </div>
-      <div style="display:flex;gap:8px">
-        <input type="text" id="rec-activity" class="form-input" style="flex:1"
-          placeholder="공부  또는  동창 모임 / 김철수, 박영희"
-          onkeydown="if(event.key==='Enter')addActivityRecord()">
-        <button class="btn-primary-sm" onclick="addActivityRecord()" style="height:40px;padding:0 16px;flex-shrink:0">추가</button>
-      </div>
-      <div id="rec-ai-tag" style="display:none;font-size:12px;color:var(--accent);background:rgba(139,94,60,0.08);border-radius:8px;padding:8px 10px;margin-top:8px">
-        🤖 분류 중...
-      </div>
-    </div>
-
-    <div class="card" style="margin-bottom:12px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div class="card-title" style="margin-bottom:0">📋 오늘의 타임라인</div>
-        <span id="rec-total-time" style="font-size:12px;color:var(--ink3)"></span>
-      </div>
-      <div id="rec-list">
-        <div style="text-align:center;padding:24px;color:var(--ink4);font-size:13px">아직 기록이 없어요</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- 통계 섹션 -->
-  <div id="rec-section-stats" style="display:none">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <button class="icon-btn" onclick="changeStatMonth(-1)">‹</button>
-      <div id="rec-stat-month" style="font-size:15px;font-weight:700;color:var(--ink)"></div>
-      <button class="icon-btn" onclick="changeStatMonth(1)">›</button>
-    </div>
-    <button class="btn-primary-sm" onclick="switchRecordTab('log')" style="width:100%;margin-bottom:14px;background:var(--surface2);color:var(--ink2)">← 기록으로</button>
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-title">⏱ 카테고리별 시간</div>
-      <div id="rec-stat-cats" style="display:flex;flex-direction:column;gap:10px;margin-top:8px"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">👥 많이 만난 사람</div>
-      <div id="rec-stat-people" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
-    </div>
-  </div>
-</div>
-
-<div class="page" id="page-bookmark">
-  <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center">
-    <div style="flex:1;position:relative">
-      <span style="position:absolute;top:50%;left:13px;transform:translateY(-50%);font-size:15px;pointer-events:none">🔍</span>
-      <input type="text" id="bm-search" placeholder="사이트 검색..." class="form-input" style="padding-left:38px" oninput="renderBookmarks()">
-    </div>
-    <button class="btn btn-sm btn-ghost" style="background:rgba(52,168,83,0.12);color:var(--green);white-space:nowrap" onclick="syncBookmarksFromSheet()">☁️</button>
-    <button class="btn btn-primary" style="white-space:nowrap;padding:12px 16px" onclick="openBookmarkModal(null)">+ 추가</button>
-  </div>
-  <div id="bm-grid"></div>
-</div>
-
-  <div class="modal-overlay" id="bm-modal" onclick="closeModal('bm-modal',event)">
-  <div class="modal-sheet">
-    <div class="modal-header">
-      <span class="modal-title" id="bm-modal-title">🔖 즐겨찾기 추가</span>
-      <button class="modal-close" onclick="closeModal('bm-modal')">✕</button>
-    </div>
-    <div class="form-group">
-      <label class="form-label">사이트 이름</label>
-      <input type="text" id="bm-name-input" placeholder="예: 네이버" class="form-input">
-    </div>
-    <div class="form-group">
-      <label class="form-label">URL</label>
-      <input type="url" id="bm-url-input" placeholder="https://..." class="form-input">
-    </div>
-    <div class="form-group">
-      <label class="form-label">이모지 아이콘 <span style="color:var(--ink4);font-weight:400">(선택)</span></label>
-      <input type="text" id="bm-icon-input" placeholder="예: 🏠 📰 🎵" class="form-input" maxlength="4">
-    </div>
-    <div class="form-group">
-      <label class="form-label">카테고리 <span style="color:var(--ink4);font-weight:400">(선택)</span></label>
-      <input type="text" id="bm-cat-input" placeholder="예: 뉴스, 쇼핑, 업무" class="form-input">
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn-save" id="bm-save-btn" onclick="saveBookmark()" style="flex:1">추가</button>
-      <button id="bm-delete-btn" onclick="deleteBookmark()" style="display:none;background:var(--err,#e53935);color:#fff;border:none;border-radius:12px;padding:14px 18px;font-size:15px;cursor:pointer">🗑️</button>
-    </div>
-  </div>
-</div>
-
 <!-- FAB -->
 <button class="fab" id="fab-btn" onclick="fabAction()">+</button>
 
@@ -1206,14 +941,13 @@ function buildChapterList(testament) {
 // ══════════════════════════════════════
 // 데이터 저장소 (localStorage)
 // ══════════════════════════════════════
-const KEYS = { schedules:'myharu_schedules', diaries:'myharu_diaries', words:'myharu_words', sentences:'myharu_sentences', plan:'myharu_plan', diet:'myharu_diet', tabSettings:'myharu_tabSettings', dietStart:'myharu_dietStart', checks:'myharu_checks', bookmarks:'myharu_bookmarks', records:'myharu_records' };
+const KEYS = { schedules:'myharu_schedules', words:'myharu_words', sentences:'myharu_sentences', plan:'myharu_plan', tabSettings:'myharu_tabSettings', checks:'myharu_checks' };
 
 function load(key) { try { return JSON.parse(localStorage.getItem(key)||'[]'); } catch{ return []; } }
 function loadObj(key) { try { return JSON.parse(localStorage.getItem(key)||'{}'); } catch{ return {}; } }
 function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
 
 let schedules = load(KEYS.schedules);
-let diaries   = load(KEYS.diaries);
 let words     = load(KEYS.words);
 let sentences = load(KEYS.sentences);
 let plan      = loadObj(KEYS.plan);
@@ -1224,12 +958,11 @@ function genId() { return Date.now().toString(36) + Math.random().toString(36).s
 // id 없는 기존 데이터 보정 (시트에서 불러온 항목 대응)
 (function fixMissingIds() {
   let changed = false;
-  [schedules, diaries, words, sentences].forEach(arr => {
+  [schedules, words, sentences].forEach(arr => {
     arr.forEach(item => { if (!item.id) { item.id = genId(); changed = true; } });
   });
   if (changed) {
     save(KEYS.schedules, schedules);
-    save(KEYS.diaries, diaries);
     save(KEYS.words, words);
     save(KEYS.sentences, sentences);
   }
@@ -1250,7 +983,7 @@ let selectedDate = todayStr;
 let currentTab = 'cal';
 let schedFilter = '전체';
 let wordTab = 'list';
-let editingId = { sched:null, diary:null, word:null, sent:null };
+let editingId = { sched:null, word:null, sent:null };
 let detailType = null, detailId = null;
 
 // ── 일정 상세보기 ──────────────────────────────────────────
@@ -1308,11 +1041,7 @@ window.onload = () => {
     now.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
 
   // 폼 기본값
-  ['sm-date','dm-date','wm-date'].forEach(id => document.getElementById(id).value = today);
-
-  // 하루기록 날짜 초기화
-  const recDateEl = document.getElementById('rec-date');
-  if (recDateEl) recDateEl.value = today;
+  ['sm-date','wm-date'].forEach(id => document.getElementById(id).value = today);
 
   // 책 목록 채우기
   populateBookSel('wm-book', 'all');
@@ -1321,7 +1050,6 @@ window.onload = () => {
   renderCalendar();
   renderDayPanel(selectedDate);
   renderScheduleList();
-  renderDiaryList();
   renderWordList();
   renderSentList();
   renderPlan();
@@ -1342,14 +1070,11 @@ function switchTab(tab) {
   document.getElementById('page-'+tab).classList.add('active');
 
   const fab = document.getElementById('fab-btn');
-  const fabMap = {cal:'+', diary:'✏️', word:'✝️', diet:'', bookmark:'', settings:'', record:''};
+  const fabMap = {cal:'+', word:'✝️', settings:''};
   fab.textContent = fabMap[tab] !== undefined ? fabMap[tab] : '+';
-  fab.style.display = (tab === 'settings' || tab === 'bookmark' || tab === 'record') ? 'none' : 'flex';
+  fab.style.display = (tab === 'settings') ? 'none' : 'flex';
 
-  if (tab === 'diet') initDietTab();
-  if (tab === 'bookmark') renderBookmarks();
   if (tab === 'settings') initGsSettings();
-  if (tab === 'record') initRecordTab();
 }
 
 function switchWordTab(tab) {
@@ -1364,7 +1089,6 @@ function switchWordTab(tab) {
 function fabAction() {
   const today = localDateStr(new Date());
   if(currentTab==='cal') openSchedModal(null, selectedDate);
-  else if(currentTab==='diary') openDiaryModal(null, today);
   else if(currentTab==='word') {
     if(wordTab==='sent') openSentModal(null);
     else openWordModal(null, today);
@@ -1398,14 +1122,12 @@ function renderCalendar() {
     num.className='day-num'; num.textContent=d; cell.appendChild(num);
 
     const hasSched = schedules.some(s=>s.date===dateStr);
-    const hasDiary = diaries.some(d2=>d2.date===dateStr);
     const hasWord  = words.some(w=>w.date===dateStr);
     const hasCheck = checks[dateStr]&&checks[dateStr].length>0;
-    if(hasSched||hasDiary||hasWord||hasCheck){
+    if(hasSched||hasWord||hasCheck){
       const dots=document.createElement('div'); dots.className='dot-row';
       if(hasCheck){const dt=document.createElement('span');dt.className='dot dot-schedule';dt.style.background='var(--green)';dots.appendChild(dt);}
       if(hasSched){const dt=document.createElement('span');dt.className='dot dot-schedule';dots.appendChild(dt);}
-      if(hasDiary){const dt=document.createElement('span');dt.className='dot dot-diary';dots.appendChild(dt);}
       if(hasWord) {const dt=document.createElement('span');dt.className='dot dot-word'; dots.appendChild(dt);}
       cell.appendChild(dots);
     }
@@ -1435,13 +1157,12 @@ function renderDayPanel(dateStr){
 
   const dayScheds=schedules.filter(s=>s.date===dateStr)
     .sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
-  const dayDiaries=diaries.filter(d2=>d2.date===dateStr);
   const dayWords=words.filter(w=>w.date===dateStr);
 
   const dayChecks = checks[dateStr] || [];
   const doneCount = dayChecks.filter(c=>c.done).length;
 
-  if(!dayScheds.length&&!dayDiaries.length&&!dayWords.length&&!dayChecks.length){
+  if(!dayScheds.length&&!dayWords.length&&!dayChecks.length){
     el.innerHTML=`<div class="empty"><div class="icon">🌿</div><p>${label}<br>기록이 없습니다</p>
       <button class="btn-add-check" onclick="openCheckAdd('${dateStr}')">+ 할 일 추가</button></div>`;
     return;
@@ -1494,14 +1215,6 @@ function renderDayPanel(dateStr){
           </div>
         </div>
         <span style="font-size:18px;color:var(--ink3);padding-left:6px">›</span>
-      </div>`).join('');
-  }
-  if(dayDiaries.length){
-    html+=`<div class="section-label">📓 일기</div>`;
-    html+=dayDiaries.map(d2=>`
-      <div class="diary-item" onclick="openDiaryModal('${d2.id}')">
-        <div class="di-title">${d2.title||'제목 없음'}<span class="mood-badge">${d2.mood||''}</span></div>
-        <div class="di-preview">${d2.content||''}</div>
       </div>`).join('');
   }
   if(dayWords.length){
@@ -1588,64 +1301,6 @@ function renderScheduleList(){
 function setSchedFilter(f){
   schedFilter=f;
   renderScheduleList();
-}
-
-// ══════════════════════════════════════
-// 일기 CRUD
-// ══════════════════════════════════════
-function openDiaryModal(id, dateDefault){
-  editingId.diary=id;
-  document.getElementById('diary-modal-title').textContent = id?'일기 수정':'일기 작성';
-  document.getElementById('diary-delete-wrap').style.display = id?'block':'none';
-  if(id){
-    const d=diaries.find(x=>x.id===id); if(!d) return;
-    document.getElementById('dm-date').value    = d.date||'';
-    document.getElementById('dm-title').value   = d.title||'';
-    document.getElementById('dm-content').value = d.content||'';
-    document.getElementById('dm-mood').value    = d.mood||'😐 보통';
-  } else {
-    document.getElementById('dm-date').value    = dateDefault||selectedDate;
-    document.getElementById('dm-title').value   = '';
-    document.getElementById('dm-content').value = '';
-    document.getElementById('dm-mood').value    = '😊 좋음';
-  }
-  document.getElementById('diary-modal').classList.add('open');
-}
-
-function saveDiary(){
-  const date    = document.getElementById('dm-date').value;
-  const content = document.getElementById('dm-content').value.trim();
-  if(!date||!content){ showToast('날짜와 내용을 입력하세요','err'); return; }
-  const item={
-    id: editingId.diary||genId(), date,
-    title:   document.getElementById('dm-title').value.trim(),
-    content, mood: document.getElementById('dm-mood').value
-  };
-  if(editingId.diary){ const idx=diaries.findIndex(x=>x.id===editingId.diary); if(idx>=0) diaries[idx]=item; }
-  else diaries.push(item);
-  save(KEYS.diaries,diaries);
-  closeModal('diary-modal'); showToast('📓 일기 저장!','ok');
-  renderCalendar(); renderDayPanel(date); renderDiaryList();
-}
-
-function deleteDiary(){
-  if(!editingId.diary||!confirm('삭제할까요?')) return;
-  diaries=diaries.filter(x=>x.id!==editingId.diary);
-  save(KEYS.diaries,diaries); closeModal('diary-modal');
-  showToast('삭제됐습니다','ok');
-  renderCalendar(); renderDayPanel(selectedDate); renderDiaryList();
-}
-
-function renderDiaryList(){
-  const el=document.getElementById('diary-list');
-  const sorted=[...diaries].sort((a,b)=>b.date.localeCompare(a.date));
-  if(!sorted.length){ el.innerHTML='<div class="empty"><div class="icon">📖</div><p>아직 일기가 없어요</p></div>'; return; }
-  el.innerHTML=sorted.map(d=>`
-    <div class="diary-item" onclick="openDiaryModal('${d.id}')">
-      <div class="di-date">${d.date}</div>
-      <div class="di-title">${d.title||'제목 없음'}<span class="mood-badge">${d.mood||''}</span></div>
-      <div class="di-preview">${d.content||''}</div>
-    </div>`).join('');
 }
 
 // ══════════════════════════════════════
@@ -1938,7 +1593,7 @@ function closeModal(id, e){
 // 데이터 내보내기 / 불러오기
 // ══════════════════════════════════════
 function exportData(){
-  const data={schedules,diaries,words,sentences,plan,diet:dietRows,bookmarks,exportedAt:new Date().toISOString()};
+  const data={schedules,words,sentences,plan,exportedAt:new Date().toISOString()};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -1955,16 +1610,11 @@ function importData(e){
       const data=JSON.parse(ev.target.result);
       if(!confirm('현재 데이터를 덮어씁니다. 계속할까요?')) return;
       schedules=data.schedules||[]; save(KEYS.schedules,schedules);
-      diaries  =data.diaries  ||[]; save(KEYS.diaries,diaries);
       words    =data.words    ||[]; save(KEYS.words,words);
       sentences=data.sentences||[]; save(KEYS.sentences,sentences);
       plan     =data.plan     ||{}; save(KEYS.plan,plan);
-      if(data.diet){ dietRows=data.diet; save(KEYS.diet,dietRows); }
-      if(data.bookmarks){ bookmarks=data.bookmarks; localStorage.setItem(KEYS.bookmarks,JSON.stringify(bookmarks)); }
       renderCalendar(); renderDayPanel(selectedDate);
-      renderScheduleList(); renderDiaryList(); renderWordList(); renderSentList(); renderPlan();
-      if(currentTab==='diet') initDietTab();
-      if(currentTab==='bookmark') renderBookmarks();
+      renderScheduleList(); renderWordList(); renderSentList(); renderPlan();
       showToast('📥 불러오기 완료!','ok');
     }catch{ showToast('파일 형식 오류','err'); }
   };
@@ -1976,7 +1626,7 @@ function importData(e){
 // ══════════════════════════════════════
 // 탭 표시 설정
 // ══════════════════════════════════════
-const TOGGLEABLE_TABS = ['diary','word','diet','record'];
+const TOGGLEABLE_TABS = ['word'];
 let tabSettings = (() => {
   try { return JSON.parse(localStorage.getItem(KEYS.tabSettings)||'{}'); } catch{ return {}; }
 })();
@@ -2003,316 +1653,11 @@ function toggleTabVisibility(name) {
 }
 
 function getTabLabel(name) {
-  return {diary:'일기', word:'말씀', diet:'건강', record:'하루기록'}[name] || name;
-}
-
-// ══════════════════════════════════════
-// 🥗 건강 탭 (localStorage 기반)
-// ══════════════════════════════════════
-let dietRows     = [];
-let dietCurIdx   = 0;
-let dietChartInst = null;
-let dietChartOpen = false;
-let dietInitialized = false;
-let dietStartDate = localStorage.getItem(KEYS.dietStart) || '';
-
-function buildDietRows() {
-  const saved = (() => { try { return JSON.parse(localStorage.getItem(KEYS.diet)||'[]'); } catch{ return []; } })();
-  const savedMap = {};
-  saved.forEach(r => savedMap[r.date] = r);
-  const rows = [];
-  const today = new Date(); today.setHours(0,0,0,0);
-
-  // 시작일 결정: 설정값이 있으면 사용, 없으면 오늘 기준 -15일
-  let start;
-  if(dietStartDate) {
-    start = new Date(dietStartDate); start.setHours(0,0,0,0);
-    // 시작일이 오늘보다 미래면 오늘로 대체
-    if(start > today) start = new Date(today);
-  } else {
-    start = new Date(today); start.setDate(start.getDate() - 15);
-  }
-
-  // 시작일 ~ 오늘 + 7일
-  const end = new Date(today); end.setDate(end.getDate() + 7);
-
-  for(let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
-    const ds = localDateStr(new Date(d));
-    rows.push(savedMap[ds] || { date:ds, weight:null, breakfast:'', lunch:'', dinner:'', water:null, exercise:'', memo:'' });
-  }
-
-  // diff 계산
-  for(let i=1;i<rows.length;i++){
-    if(rows[i].weight!==null && rows[i-1].weight!==null)
-      rows[i].diff = rows[i].weight - rows[i-1].weight;
-    else rows[i].diff = null;
-  }
-  rows[0].diff = null;
-  return rows;
-}
-
-function initDietTab() {
-  dietRows = buildDietRows();
-  renderStartDateDisplay();
-  const todayDs = localDateStr(new Date());
-  dietCurIdx = dietRows.findIndex(r => r.date === todayDs);
-  if(dietCurIdx < 0) dietCurIdx = Math.max(0, dietRows.length - 8); // 오늘 없으면 마지막에서 7일 전
-  renderDiet();
-  dietInitialized = true;
-}
-
-// ── 시작일 설정 ──
-function renderStartDateDisplay() {
-  const el = document.getElementById('diet-startdate-display');
-  if(!dietStartDate) {
-    el.textContent = '설정되지 않음 (기본: 오늘 기준 15일 전)';
-  } else {
-    const d = new Date(dietStartDate);
-    const DOW = ['일','월','화','수','목','금','토'];
-    el.textContent = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 (${DOW[d.getDay()]})`;
-  }
-}
-
-function toggleStartDateEdit() {
-  const editEl = document.getElementById('diet-startdate-edit');
-  const isOpen = editEl.style.display !== 'none';
-  editEl.style.display = isOpen ? 'none' : 'block';
-  if(!isOpen) {
-    document.getElementById('diet-startdate-input').value = dietStartDate || localDateStr(new Date());
-  }
-}
-
-function saveStartDate() {
-  const val = document.getElementById('diet-startdate-input').value;
-  if(!val) { showToast('날짜를 선택해주세요', 'err'); return; }
-  dietStartDate = val;
-  localStorage.setItem(KEYS.dietStart, val);
-  toggleStartDateEdit();
-  // 날짜 범위 재생성
-  dietRows = buildDietRows();
-  renderStartDateDisplay();
-  const todayDs = localDateStr(new Date());
-  dietCurIdx = dietRows.findIndex(r => r.date === todayDs);
-  if(dietCurIdx < 0) dietCurIdx = Math.max(0, dietRows.length - 8);
-  renderDiet();
-  showToast('✅ 시작일 저장!', 'ok');
+  return {word:'말씀'}[name] || name;
 }
 
 
-function renderDiet() {
-  renderStartDateDisplay();
-  renderDietSummary();
-  renderDietDateTabs();
-  renderDietEntry();
-  if(dietChartOpen) renderDietChart();
-}
 
-function renderDietSummary() {
-  const weights = dietRows.filter(r => r.weight !== null).map(r => r.weight);
-  const cur  = dietRows[dietCurIdx]?.weight;
-  const min  = weights.length ? Math.min(...weights) : null;
-  const first = weights[0], last = weights[weights.length-1];
-  const diff = weights.length >= 2 ? last - first : null;
-
-  document.getElementById('diet-cur').textContent = cur !== null && cur !== undefined ? cur.toFixed(1) : '--';
-  document.getElementById('diet-min').textContent = min !== null ? min.toFixed(1) : '--';
-  const diffEl = document.getElementById('diet-diff-stat');
-  if(diff !== null){
-    const sign = diff > 0 ? '+' : '';
-    diffEl.textContent = sign + diff.toFixed(1);
-    diffEl.style.color = diff > 0 ? 'var(--red)' : 'var(--green)';
-  } else { diffEl.textContent='--'; diffEl.style.color='var(--ink3)'; }
-}
-
-function renderDietDateTabs() {
-  const DOW = ['일','월','화','수','목','금','토'];
-  const container = document.getElementById('diet-date-scroll');
-  container.innerHTML = dietRows.map((row, i) => {
-    const d = new Date(row.date);
-    const day = d.getDate(), dow = DOW[d.getDay()];
-    const isActive = i === dietCurIdx, hasData = row.weight !== null;
-    const bg = isActive ? 'var(--accent)' : 'var(--surface)';
-    const border = isActive ? 'var(--accent)' : hasData ? 'rgba(139,94,60,0.3)' : 'var(--surface3)';
-    const textCol = isActive ? '#fff' : hasData ? 'var(--accent)' : 'var(--ink)';
-    const dimCol  = isActive ? 'rgba(255,255,255,0.75)' : 'var(--ink3)';
-    return `<div onclick="selectDietDate(${i})" style="flex:0 0 auto;min-width:52px;border-radius:10px;padding:8px 10px;text-align:center;cursor:pointer;border:1.5px solid ${border};background:${bg}">
-      <div style="font-size:0.7rem;color:${dimCol}">${dow}</div>
-      <div style="font-size:1rem;font-weight:700;color:${textCol}">${day}</div>
-    </div>`;
-  }).join('');
-  setTimeout(() => {
-    const tabs = container.querySelectorAll('div');
-    if(tabs[dietCurIdx]) tabs[dietCurIdx].scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
-  }, 80);
-}
-
-function renderDietEntry() {
-  const row = dietRows[dietCurIdx];
-  const d = new Date(row.date);
-  const DOW = ['일','월','화','수','목','금','토'];
-  document.getElementById('diet-entry-label').textContent = `📅 ${d.getMonth()+1}월 ${d.getDate()}일 (${DOW[d.getDay()]})`;
-  document.getElementById('diet-weight').value    = row.weight    !== null ? row.weight    : '';
-  document.getElementById('diet-breakfast').value = row.breakfast || '';
-  document.getElementById('diet-lunch').value     = row.lunch     || '';
-  document.getElementById('diet-dinner').value    = row.dinner    || '';
-  document.getElementById('diet-water').value     = row.water     !== null ? row.water     : '';
-  document.getElementById('diet-exercise').value  = row.exercise  || '';
-  document.getElementById('diet-memo').value      = row.memo      || '';
-
-  const badge = document.getElementById('diet-diff-badge');
-  const diff = row.diff;
-  if(diff !== null && !isNaN(diff)){
-    const sign = diff > 0 ? '+' : '';
-    badge.textContent      = sign + diff.toFixed(1);
-    badge.style.background = diff > 0 ? 'rgba(154,74,58,0.15)' : 'rgba(90,122,82,0.15)';
-    badge.style.color      = diff > 0 ? 'var(--red)' : 'var(--green)';
-  } else {
-    badge.textContent='--'; badge.style.background='var(--surface2)'; badge.style.color='var(--ink3)';
-  }
-}
-
-function selectDietDate(i) {
-  dietCurIdx = i;
-  renderDietDateTabs();
-  renderDietEntry();
-}
-
-function toggleDietChart() {
-  dietChartOpen = !dietChartOpen;
-  document.getElementById('diet-chart-card').style.display = dietChartOpen ? 'block' : 'none';
-  document.getElementById('diet-chart-btn').textContent    = dietChartOpen ? '📊 차트 닫기' : '📊 차트 보기';
-  if(dietChartOpen) renderDietChart();
-}
-
-function renderDietChart() {
-  // Chart.js 동적 로드
-  function doChart() {
-    const ctx = document.getElementById('dietChart');
-    if(!ctx) return;
-    const withW = dietRows.filter(r => r.weight !== null);
-    if(!withW.length){ return; }
-    const labels = withW.map(r => { const d=new Date(r.date); return `${d.getMonth()+1}/${d.getDate()}`; });
-    const values = withW.map(r => r.weight);
-    if(dietChartInst){ dietChartInst.destroy(); dietChartInst=null; }
-    dietChartInst = new Chart(ctx, {
-      type:'line',
-      data:{ labels, datasets:[{ data:values, borderColor:'var(--accent)', backgroundColor:'rgba(139,94,60,0.1)', borderWidth:2.5, pointRadius:5, pointBackgroundColor:'var(--accent)', tension:0.35, fill:true }] },
-      options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>c.parsed.y.toFixed(1)+' kg'}} }, scales:{ x:{ticks:{color:'var(--ink3)',font:{size:11},maxTicksLimit:10},grid:{color:'rgba(44,36,22,0.07)'}}, y:{ticks:{color:'var(--ink3)',font:{size:11},callback:v=>v+'kg'},grid:{color:'rgba(44,36,22,0.07)'}} } }
-    });
-  }
-  if(typeof Chart !== 'undefined') { doChart(); return; }
-  const s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
-  s.onload = doChart;
-  document.head.appendChild(s);
-}
-
-// ── 시트 → 건강 탭 동기화 ─────────────────────────────────
-async function syncDietFromSheet() {
-  const url = getGsUrl();
-  if (!url) { showToast('먼저 시트 URL을 저장해주세요', 'err'); return; }
-  showToast('시트에서 불러오는 중...', '');
-  try {
-    const res = await fetch(url + '?action=getDiet').then(r => r.json());
-    if (!res || !res.exists) { showToast('다이어트 시트가 없어요', 'err'); return; }
-    if (!res.rows || !res.rows.length) { showToast('데이터가 없어요', 'err'); return; }
-
-    const saved = (() => { try { return JSON.parse(localStorage.getItem(KEYS.diet)||'[]'); } catch { return []; } })();
-    const localMap = {};
-    saved.forEach(r => { localMap[r.date] = r; });
-
-    res.rows.forEach(r => {
-      if (!r.date) return;
-      const local = localMap[r.date] || {};
-      localMap[r.date] = {
-        date:      r.date,
-        weight:    r.weight !== null && r.weight !== '' ? Number(r.weight) : (local.weight ?? null),
-        breakfast: r.breakfast || local.breakfast || '',
-        lunch:     r.lunch     || local.lunch     || '',
-        dinner:    r.dinner    || local.dinner    || '',
-        water:     r.water !== null && r.water !== '' ? Number(r.water) : (local.water ?? null),
-        exercise:  r.exercise  || local.exercise  || '',
-        memo:      r.memo      || local.memo      || ''
-      };
-    });
-
-    // 시작일 자동 설정 (처음 불러올 때만)
-    const sortedDates = Object.keys(localMap).sort();
-    if (sortedDates.length && !dietStartDate) {
-      dietStartDate = sortedDates[0];
-      localStorage.setItem(KEYS.dietStart, dietStartDate);
-    }
-
-    const toSave = Object.values(localMap).filter(r =>
-      r.weight !== null || r.breakfast || r.lunch || r.dinner || r.water !== null || r.exercise || r.memo
-    );
-    save(KEYS.diet, toSave);
-
-    dietRows = buildDietRows();
-    renderStartDateDisplay();
-    const todayDs = localDateStr(new Date());
-    dietCurIdx = dietRows.findIndex(r => r.date === todayDs);
-    if (dietCurIdx < 0) dietCurIdx = Math.max(0, dietRows.length - 8);
-    renderDiet();
-
-    showToast(`☁️ ${res.rows.length}개 데이터를 불러왔어요!`, 'ok');
-  } catch(e) {
-    showToast('오류: ' + e.message, 'err');
-  }
-}
-
-async function saveDietEntry() {
-  const btn = document.getElementById('diet-save-btn');
-  btn.disabled = true; btn.textContent = '저장 중...';
-  const row = dietRows[dietCurIdx];
-  const wVal = document.getElementById('diet-weight').value;
-  const waVal = document.getElementById('diet-water').value;
-  row.weight    = wVal  !== '' ? Number(wVal)  : null;
-  row.breakfast = document.getElementById('diet-breakfast').value;
-  row.lunch     = document.getElementById('diet-lunch').value;
-  row.dinner    = document.getElementById('diet-dinner').value;
-  row.water     = waVal !== '' ? Number(waVal) : null;
-  row.exercise  = document.getElementById('diet-exercise').value;
-  row.memo      = document.getElementById('diet-memo').value;
-  // diff 재계산
-  if(dietCurIdx > 0 && row.weight !== null && dietRows[dietCurIdx-1].weight !== null)
-    row.diff = row.weight - dietRows[dietCurIdx-1].weight;
-  else row.diff = null;
-  // 다음 날 diff도 업데이트
-  if(dietCurIdx < dietRows.length-1 && dietRows[dietCurIdx+1].weight !== null && row.weight !== null)
-    dietRows[dietCurIdx+1].diff = dietRows[dietCurIdx+1].weight - row.weight;
-
-  // localStorage에 유효 데이터만 저장
-  const toSave = dietRows.filter(r => r.weight!==null || r.breakfast || r.lunch || r.dinner || r.water!==null || r.exercise || r.memo);
-  save(KEYS.diet, toSave);
-
-  // 구글 시트에도 저장 (URL 있을 때만)
-  const url = getGsUrl();
-  if (url) {
-    try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'saveDietRow', ...row })
-      }).then(r => r.json());
-      showToast(res.success ? '✅ 저장 완료! (시트 반영됨)' : '✅ 로컬 저장됨 (시트 오류)', res.success ? 'ok' : '');
-    } catch(e) {
-      showToast('✅ 로컬 저장됨 (시트 연결 실패)', '');
-    }
-  } else {
-    showToast('✅ 저장 완료!', 'ok');
-  }
-
-  btn.disabled = false; btn.textContent = '💾 저장하기';
-  renderDiet();
-  if(dietChartOpen) renderDietChart();
-}
-
-// ══════════════════════════════════════
-// 🔖 즐겨찾기
-// ══════════════════════════════════════
-let bookmarks = (() => { try { return JSON.parse(localStorage.getItem(KEYS.bookmarks)||'[]'); } catch { return []; } })();
-let bmEditId = null;
 
 function toggleHelp() {
   const el = document.getElementById('help-content');
@@ -2320,139 +1665,6 @@ function toggleHelp() {
   const isOpen = el.style.display !== 'none';
   el.style.display = isOpen ? 'none' : 'block';
   arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
-}
-
-function renderBookmarks() {
-  const el = document.getElementById('bm-grid');
-  if (!el) return;
-  const q = (document.getElementById('bm-search')?.value || '').trim().toLowerCase();
-  let filtered = bookmarks.filter(b =>
-    !q || b.name.toLowerCase().includes(q) || (b.cat||'').toLowerCase().includes(q) || b.url.toLowerCase().includes(q)
-  );
-
-  if (!filtered.length) {
-    el.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="icon">🔖</div><p>${q ? '검색 결과가 없어요' : '즐겨찾기를 추가해보세요'}</p></div>`;
-    return;
-  }
-
-  // 카테고리별 그룹핑
-  const groups = {};
-  filtered.forEach(b => {
-    const cat = b.cat || '기타';
-    if (!groups[cat]) groups[cat] = [];
-    groups[cat].push(b);
-  });
-
-  el.innerHTML = Object.entries(groups).map(([cat, items]) => `
-    <div class="bm-cat-section">
-      <div class="bm-cat-title">${cat}</div>
-      <div class="bm-grid">
-        ${items.map(b => `
-          <div class="bm-item" onclick="openBmUrl('${b.id}')">
-            <button class="bm-edit-btn" onclick="event.stopPropagation();openBookmarkModal('${b.id}')">✏️</button>
-            <div class="bm-icon">${b.icon || '🌐'}</div>
-            <div class="bm-name">${b.name}</div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `).join('');
-}
-
-function openBmUrl(id) {
-  const b = bookmarks.find(x => x.id === id);
-  if (!b) return;
-  let url = b.url;
-  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-  window.open(url, '_blank');
-}
-
-function openBookmarkModal(id) {
-  bmEditId = id;
-  const isEdit = !!id;
-  document.getElementById('bm-modal-title').textContent = isEdit ? '✏️ 즐겨찾기 수정' : '🔖 즐겨찾기 추가';
-  document.getElementById('bm-save-btn').textContent = isEdit ? '저장' : '추가';
-  document.getElementById('bm-delete-btn').style.display = isEdit ? 'block' : 'none';
-  if (isEdit) {
-    const b = bookmarks.find(x => x.id === id);
-    document.getElementById('bm-name-input').value = b?.name || '';
-    document.getElementById('bm-url-input').value  = b?.url  || '';
-    document.getElementById('bm-icon-input').value = b?.icon || '';
-    document.getElementById('bm-cat-input').value  = b?.cat  || '';
-  } else {
-    ['bm-name-input','bm-url-input','bm-icon-input','bm-cat-input'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-  }
-  document.getElementById('bm-modal').classList.add('open');
-}
-
-function saveBookmark() {
-  const name = document.getElementById('bm-name-input').value.trim();
-  const url  = document.getElementById('bm-url-input').value.trim();
-  if (!name) { showToast('이름을 입력하세요', 'err'); return; }
-  if (!url)  { showToast('URL을 입력하세요', 'err'); return; }
-  const item = {
-    id:   bmEditId || genId(),
-    name, url,
-    icon: document.getElementById('bm-icon-input').value.trim() || '🌐',
-    cat:  document.getElementById('bm-cat-input').value.trim() || '기타'
-  };
-  if (bmEditId) {
-    const idx = bookmarks.findIndex(x => x.id === bmEditId);
-    if (idx >= 0) bookmarks[idx] = item;
-  } else {
-    bookmarks.push(item);
-  }
-  localStorage.setItem(KEYS.bookmarks, JSON.stringify(bookmarks));
-  closeModal('bm-modal');
-  renderBookmarks();
-  pushBookmarkToSheet(item);
-  showToast(bmEditId ? '✅ 수정됐어요!' : '🔖 추가됐어요!', 'ok');
-}
-
-function deleteBookmark() {
-  if (!bmEditId) return;
-  if (!confirm('삭제할까요?')) return;
-  bookmarks = bookmarks.filter(x => x.id !== bmEditId);
-  localStorage.setItem(KEYS.bookmarks, JSON.stringify(bookmarks));
-  // 시트에서도 삭제
-  const url = getGsUrl();
-  if (url) fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
-    body: JSON.stringify({ action:'deleteBookmark', id: bmEditId }) }).catch(()=>{});
-  closeModal('bm-modal');
-  renderBookmarks();
-  showToast('삭제됐어요', 'ok');
-}
-
-// 앱 → 시트 (즐겨찾기 추가/수정 시 자동 업로드)
-async function pushBookmarkToSheet(item) {
-  const url = getGsUrl();
-  if (!url) return;
-  try {
-    await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
-      body: JSON.stringify({ action:'addBookmark', ...item }) });
-  } catch(e) {}
-}
-
-// 시트 → 앱 (즐겨찾기 불러오기)
-async function syncBookmarksFromSheet() {
-  const url = getGsUrl();
-  if (!url) { showToast('먼저 시트 URL을 저장해주세요', 'err'); return; }
-  showToast('불러오는 중...', '');
-  try {
-    const res = await fetch(url + '?action=getBookmarks', { cache: 'no-store' }).then(r => r.json());
-    console.log('bookmark res:', JSON.stringify(res));
-    const items = res.items || [];
-    if (!items.length) { showToast('시트에 즐겨찾기가 없어요', ''); return; }
-    const localMap = {};
-    bookmarks.forEach(b => { localMap[b.id] = b; });
-    items.forEach(b => { if (b.id) localMap[b.id] = b; });
-    bookmarks = Object.values(localMap);
-    localStorage.setItem(KEYS.bookmarks, JSON.stringify(bookmarks));
-    renderBookmarks();
-    showToast(`☁️ ${items.length}개 불러왔어요!`, 'ok');
-  } catch(e) { showToast('오류: ' + e.message, 'err'); }
 }
 
 // ══════════════════════════════════════
@@ -2678,36 +1890,15 @@ async function syncFromSheet() {
       schedules = merged;
       save(KEYS.schedules, schedules);
     }
-    // 일기 동기화
-    if (res.diaries && res.diaries.length) {
-      const merged = mergeById(diaries, res.diaries, '_rowIndex');
-      diaries = merged;
-      save(KEYS.diaries, diaries);
-    }
     // 말씀 동기화
     if (res.wordEntries && res.wordEntries.length) {
       const merged = mergeById(words, res.wordEntries, '_rowIndex');
       words = merged;
       save(KEYS.words, words);
     }
-    // 하루기록 동기화
-    if (res.recordEntries && res.recordEntries.length) {
-      const localRec = loadRecords();
-      res.recordEntries.forEach(entry => {
-        const d = entry.date; if (!d) return;
-        if (!localRec[d]) localRec[d] = { activities:[], people:[] };
-        const existRows = localRec[d].activities.map(a => a._sheetRow).filter(Boolean);
-        if (!existRows.includes(entry._sheetRow)) {
-          localRec[d].activities.push({ id:entry.id||genId(), content:entry.content, startTime:entry.startTime, endTime:entry.endTime, minutes:entry.minutes, category:entry.category, _sheetRow:entry._sheetRow });
-        }
-        (entry.people||[]).forEach(name => { if (!localRec[d].people.includes(name)) localRec[d].people.push(name); });
-      });
-      saveRecords(localRec);
-    }
     renderCalendar();
     renderDayPanel(selectedDate);
     renderScheduleList();
-    renderDiaryList();
     renderWordList();
     showToast('✅ 시트에서 불러왔어요!', 'ok');
   } catch(e) {
@@ -2715,7 +1906,7 @@ async function syncFromSheet() {
   }
 }
 
-// 앱 → 시트 전체 올리기 (일정/일기/말씀)
+// 앱 → 시트 전체 올리기 (일정/말씀)
 async function syncToSheet() {
   const url = getGsUrl();
   if (!url) { showToast('먼저 URL을 저장해주세요', 'err'); return; }
@@ -2728,31 +1919,11 @@ async function syncToSheet() {
       await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
         body: JSON.stringify({ action:'addSchedule', ...s }) });
     }
-    // 일기 (새 항목만)
-    const newDiaries = diaries.filter(d => !d._rowIndex);
-    for (const d of newDiaries) {
-      await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
-        body: JSON.stringify({ action:'addDiary', ...d }) });
-    }
     // 말씀일기 (새 항목만)
     const newWords = words.filter(w => !w._rowIndex);
     for (const w of newWords) {
       await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
         body: JSON.stringify({ action:'addWord', ...w }) });
-    }
-    // 건강(다이어트) - 데이터 있는 행 전체
-    const dietData = (() => { try { return JSON.parse(localStorage.getItem(KEYS.diet)||'[]'); } catch { return []; } })();
-    for (const r of dietData) {
-      await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
-        body: JSON.stringify({ action:'saveDietRow', ...r }) });
-    }
-    // 하루기록 (새 항목만)
-    const recData = loadRecords();
-    for (const [dateKey, dayData] of Object.entries(recData)) {
-      for (const act of (dayData.activities||[]).filter(a => !a._sheetRow)) {
-        await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain'},
-          body: JSON.stringify({ action:'addRecord', date:dateKey, content:act.content, startTime:act.startTime, endTime:act.endTime, minutes:act.minutes, category:act.category, id:act.id, people:dayData.people||[] }) });
-      }
     }
     showToast('✅ 시트로 올렸어요!', 'ok');
   } catch(e) {
@@ -2824,302 +1995,6 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/service-worker.js').catch(err=>console.log('SW 오류:',err));
   });
 }
-
-// ══════════════════════════════════════
-// 📊 하루기록
-// ══════════════════════════════════════
-
-const CAT_LIST   = ['업무','친교','공부','충전','운동','가족'];
-const CAT_COLORS = { '업무':'#4a6882','친교':'#7a5080','공부':'#5a7a52','충전':'#c4a035','운동':'#9a4a3a','가족':'#8b5e3c','기타':'#8a7d68' };
-const CAT_EMOJI  = { '업무':'💼','친교':'🤝','공부':'📚','충전':'☕','운동':'💪','가족':'🏠','기타':'📌' };
-
-let recStatYear  = new Date().getFullYear();
-let recStatMonth = new Date().getMonth();
-let recSection   = 'log';
-
-function loadRecords() { try { return JSON.parse(localStorage.getItem(KEYS.records)||'{}'); } catch { return {}; } }
-function saveRecords(d) { localStorage.setItem(KEYS.records, JSON.stringify(d)); }
-
-function initRecordTab() {
-  const el = document.getElementById('rec-date');
-  if (el && !el.value) el.value = localDateStr(new Date());
-  switchRecordTab('log');
-  renderRecordList();
-}
-
-function initAiStatus() {
-  const el = document.getElementById('ai-key-status');
-  if (!el) return;
-  const url = getGsUrl();
-  el.textContent = url ? '✅ GAS URL 등록됨 — AI 기능 사용 가능' : '⚠️ GAS URL 없음 — 설정에서 등록해주세요';
-}
-
-function switchRecordTab(s) {
-  recSection = s;
-  document.getElementById('rec-section-log').style.display   = s === 'log'   ? '' : 'none';
-  document.getElementById('rec-section-stats').style.display = s === 'stats' ? '' : 'none';
-  if (s === 'stats') renderRecordStats();
-}
-
-function recMoveDate(delta) {
-  const el   = document.getElementById('rec-date');
-  const base = el.value || localDateStr(new Date());
-  const d    = new Date(base + 'T00:00:00');
-  d.setDate(d.getDate() + delta);
-  el.value = localDateStr(d);
-  renderRecordList();
-  const r = document.getElementById('rec-reflect-result');
-  if (r) r.style.display = 'none';
-}
-
-// 입력 파싱: "동창 모임 / 김철수, 박영희" → {content, people}
-function parseRecInput(raw) {
-  const idx = raw.indexOf('/');
-  if (idx === -1) return { content: raw.trim(), people: [] };
-  return {
-    content: raw.slice(0, idx).trim(),
-    people:  raw.slice(idx+1).split(',').map(n => n.trim()).filter(Boolean)
-  };
-}
-
-function timeToMin(t) { if (!t) return null; const [h,m] = t.split(':').map(Number); return h*60+m; }
-function minToStr(m)  { if (!m||m<=0) return '0분'; return m<60 ? m+'분' : Math.floor(m/60)+'시간'+(m%60?' '+m%60+'분':''); }
-
-// 활동 추가
-async function addActivityRecord() {
-  const startVal = document.getElementById('rec-time-start').value;
-  const endVal   = document.getElementById('rec-time-end').value;
-  const rawInput = document.getElementById('rec-activity').value.trim();
-  const dateEl   = document.getElementById('rec-date');
-  if (!dateEl.value) dateEl.value = localDateStr(new Date());
-  const dateVal  = dateEl.value;
-
-  if (!startVal || !endVal) { showToast('시작·종료 시간을 입력해주세요', 'err'); return; }
-  if (!rawInput)            { showToast('내용을 입력해주세요', 'err'); return; }
-
-  const startMin = timeToMin(startVal);
-  const endMin   = timeToMin(endVal);
-  if (endMin <= startMin) { showToast('종료 시간이 시작보다 늦어야 해요', 'err'); return; }
-  const minutes = endMin - startMin;
-
-  const { content, people } = parseRecInput(rawInput);
-
-  // AI 카테고리 분류 (GAS 중계)
-  const aiTag = document.getElementById('rec-ai-tag');
-  aiTag.style.display = 'block';
-  aiTag.textContent   = '🤖 AI가 카테고리를 분류 중...';
-
-  let category = '기타';
-  const gsUrl  = getGsUrl();
-  if (gsUrl) {
-    try {
-      const res  = await fetch(gsUrl, { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({ action:'classifyActivity', content }) });
-      const data = await res.json();
-      if (data.success && CAT_LIST.includes(data.category)) category = data.category;
-      aiTag.textContent = `✅ ${CAT_EMOJI[category]} ${category}`;
-    } catch(e) { aiTag.textContent = '⚠️ 분류 실패 → 기타'; }
-  } else {
-    aiTag.textContent = '⚠️ GAS URL 없음 → 기타로 저장';
-  }
-  setTimeout(() => { aiTag.style.display = 'none'; }, 1500);
-
-  // 저장
-  const records = loadRecords();
-  if (!records[dateVal]) records[dateVal] = { activities:[], people:[] };
-  const newId = genId();
-  records[dateVal].activities.push({ id:newId, content, startTime:startVal, endTime:endVal, minutes, category });
-  people.forEach(name => { if (!records[dateVal].people.includes(name)) records[dateVal].people.push(name); });
-  saveRecords(records);
-
-  // GAS 저장
-  if (gsUrl) {
-    fetch(gsUrl, { method:'POST', headers:{'Content-Type':'text/plain'},
-      body: JSON.stringify({ action:'addRecord', date:dateVal, content, startTime:startVal, endTime:endVal, minutes, category, id:newId, people:records[dateVal].people })
-    }).then(r=>r.json()).then(res => {
-      if (res.success && res._sheetRow) {
-        const rec = loadRecords();
-        const act = rec[dateVal]?.activities?.find(a => a.id === newId);
-        if (act) { act._sheetRow = res._sheetRow; saveRecords(rec); }
-      }
-    }).catch(()=>{});
-  }
-
-  // 입력 초기화 (종료시간 → 다음 시작시간)
-  document.getElementById('rec-activity').value   = '';
-  document.getElementById('rec-time-start').value = endVal;
-  document.getElementById('rec-time-end').value   = '';
-  renderRecordList();
-  const r = document.getElementById('rec-reflect-result');
-  if (r) r.style.display = 'none';
-  showToast('기록했습니다 ' + CAT_EMOJI[category], 'ok');
-}
-
-// 타임라인 렌더
-function renderRecordList() {
-  const dateEl = document.getElementById('rec-date');
-  if (!dateEl) return;
-  const dateVal    = dateEl.value || localDateStr(new Date());
-  const container  = document.getElementById('rec-list');
-  const totalEl    = document.getElementById('rec-total-time');
-  const records    = loadRecords();
-  const dayData    = records[dateVal] || { activities:[], people:[] };
-  const activities = dayData.activities.slice().sort((a,b) => (a.startTime||'').localeCompare(b.startTime||''));
-  const people     = dayData.people || [];
-
-  if (!activities.length) {
-    container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ink4);font-size:13px">아직 기록이 없어요</div>';
-    if (totalEl) totalEl.textContent = '';
-    return;
-  }
-
-  const totalMin = activities.reduce((s,a) => s + (a.minutes||0), 0);
-  if (totalEl) totalEl.textContent = '총 ' + minToStr(totalMin);
-
-  const peopleTags = people.length ? `
-    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--surface3)">
-      ${people.map(name => `
-        <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(106,80,128,0.10);border:1px solid rgba(106,80,128,0.2);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--purple)">
-          👤 ${name}
-          <span onclick="recRemovePerson('${dateVal}','${name}')" style="cursor:pointer;color:var(--ink4);margin-left:2px">✕</span>
-        </span>`).join('')}
-    </div>` : '';
-
-  container.innerHTML = activities.map(a => `
-    <div style="display:flex;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:10px;border-left:4px solid ${CAT_COLORS[a.category]||CAT_COLORS['기타']};margin-bottom:6px">
-      <div style="flex-shrink:0;text-align:center;min-width:52px">
-        <div style="font-size:11px;font-weight:700;color:var(--ink2)">${a.startTime||''}</div>
-        <div style="font-size:10px;color:var(--ink4)">↓</div>
-        <div style="font-size:11px;font-weight:700;color:var(--ink2)">${a.endTime||''}</div>
-        <div style="font-size:10px;color:var(--ink3);margin-top:2px">${minToStr(a.minutes)}</div>
-      </div>
-      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center">
-        <div style="font-size:13px;font-weight:600;color:var(--ink)">${a.content}</div>
-        <div style="font-size:11px;color:${CAT_COLORS[a.category]||CAT_COLORS['기타']};margin-top:3px">${CAT_EMOJI[a.category]||'📌'} ${a.category}</div>
-      </div>
-      <span onclick="deleteActivityRecord('${dateVal}','${a.id}')" style="cursor:pointer;color:var(--ink4);font-size:15px;flex-shrink:0;align-self:center">🗑</span>
-    </div>`).join('') + peopleTags;
-}
-
-function recRemovePerson(dateVal, name) {
-  const records = loadRecords();
-  if (!records[dateVal]) return;
-  records[dateVal].people = records[dateVal].people.filter(p => p !== name);
-  saveRecords(records);
-  renderRecordList();
-}
-
-function deleteActivityRecord(dateVal, id) {
-  if (!confirm('삭제할까요?')) return;
-  const records = loadRecords();
-  if (!records[dateVal]) return;
-  records[dateVal].activities = records[dateVal].activities.filter(a => a.id !== id);
-  saveRecords(records);
-  renderRecordList();
-  showToast('삭제됐습니다', 'ok');
-}
-
-// AI 회고 (GAS 중계)
-async function recReflect() {
-  const dateVal    = document.getElementById('rec-date').value || localDateStr(new Date());
-  const records    = loadRecords();
-  const dayData    = records[dateVal] || { activities:[], people:[] };
-  const activities = dayData.activities.slice().sort((a,b) => (a.startTime||'').localeCompare(b.startTime||''));
-  const people     = dayData.people || [];
-
-  if (!activities.length) { showToast('먼저 기록을 입력해주세요', 'err'); return; }
-
-  const gsUrl = getGsUrl();
-  if (!gsUrl) { showToast('설정에서 GAS URL을 먼저 등록해주세요', 'err'); return; }
-
-  const resultEl = document.getElementById('rec-reflect-result');
-  resultEl.style.display = 'block';
-  resultEl.textContent   = '✨ AI가 오늘 하루를 정리하고 있어요...';
-
-  const timelineText = activities.map(a => `${a.startTime}~${a.endTime} ${a.content} (${a.category}, ${minToStr(a.minutes)})`).join('\n');
-  const peopleText   = people.length ? '만난 사람: ' + people.join(', ') : '오늘 만난 사람 없음';
-
-  try {
-    const res  = await fetch(gsUrl, { method:'POST', headers:{'Content-Type':'text/plain'},
-      body: JSON.stringify({ action:'getReflection', date:dateVal, timeline:timelineText, people:peopleText }) });
-    const data = await res.json();
-    resultEl.textContent = data.success ? data.result : '⚠️ ' + (data.message || '오류가 발생했어요.');
-  } catch(e) {
-    resultEl.textContent = '⚠️ 오류가 발생했어요.';
-  }
-}
-
-// 날짜 변경 이벤트
-document.addEventListener('DOMContentLoaded', () => {
-  const el = document.getElementById('rec-date');
-  if (el) el.addEventListener('change', () => {
-    renderRecordList();
-    const r = document.getElementById('rec-reflect-result');
-    if (r) r.style.display = 'none';
-  });
-});
-
-// 통계
-function changeStatMonth(delta) {
-  recStatMonth += delta;
-  if (recStatMonth < 0)  { recStatMonth = 11; recStatYear--; }
-  if (recStatMonth > 11) { recStatMonth = 0;  recStatYear++; }
-  renderRecordStats();
-}
-
-function renderRecordStats() {
-  const monthEl = document.getElementById('rec-stat-month');
-  if (monthEl) monthEl.textContent = `${recStatYear}년 ${recStatMonth+1}월`;
-
-  const records = loadRecords();
-  const prefix  = `${recStatYear}-${String(recStatMonth+1).padStart(2,'0')}`;
-  const catTotals = {}; CAT_LIST.forEach(c => catTotals[c]=0); catTotals['기타']=0;
-  const peopleCounts = {};
-
-  Object.keys(records).filter(d => d.startsWith(prefix)).forEach(dk => {
-    (records[dk].activities||[]).forEach(a => { catTotals[a.category||'기타'] = (catTotals[a.category||'기타']||0) + (a.minutes||0); });
-    (records[dk].people||[]).forEach(name => { peopleCounts[name] = (peopleCounts[name]||0) + 1; });
-  });
-
-  const totalMin = Object.values(catTotals).reduce((s,v)=>s+v,0);
-  const catEl    = document.getElementById('rec-stat-cats');
-  if (catEl) {
-    const cats = [...CAT_LIST,'기타'].filter(c => catTotals[c] > 0).sort((a,b) => catTotals[b]-catTotals[a]);
-    catEl.innerHTML = cats.length ? cats.map(cat => {
-      const min = catTotals[cat];
-      const pct = totalMin ? Math.round(min/totalMin*100) : 0;
-      return `<div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <span style="font-size:13px;font-weight:600;color:var(--ink2)">${CAT_EMOJI[cat]} ${cat}</span>
-          <span style="font-size:12px;color:var(--ink3)">${minToStr(min)} (${pct}%)</span>
-        </div>
-        <div style="height:8px;background:var(--surface3);border-radius:4px;overflow:hidden">
-          <div style="height:100%;width:${pct}%;background:${CAT_COLORS[cat]||CAT_COLORS['기타']};border-radius:4px"></div>
-        </div></div>`;
-    }).join('') : '<div style="text-align:center;color:var(--ink4);font-size:13px;padding:16px">이 달의 기록이 없어요</div>';
-  }
-
-  const peopleEl = document.getElementById('rec-stat-people');
-  if (peopleEl) {
-    const sorted = Object.entries(peopleCounts).sort((a,b)=>b[1]-a[1]);
-    const maxCnt = sorted[0]?.[1] || 1;
-    peopleEl.innerHTML = sorted.length ? sorted.map(([name,cnt],i) => `
-      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:10px">
-        <span style="font-size:14px;font-weight:800;color:var(--ink4);width:20px;text-align:center">${i+1}</span>
-        <div style="flex:1">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <span style="font-size:13px;font-weight:600;color:var(--ink)">👤 ${name}</span>
-            <span style="font-size:12px;color:var(--ink3)">${cnt}회</span>
-          </div>
-          <div style="height:6px;background:var(--surface3);border-radius:3px;overflow:hidden">
-            <div style="height:100%;width:${Math.round(cnt/maxCnt*100)}%;background:var(--purple);border-radius:3px"></div>
-          </div>
-        </div>
-      </div>`).join('') : '<div style="text-align:center;color:var(--ink4);font-size:13px;padding:16px">이 달의 기록이 없어요</div>';
-  }
-}
-
-// syncFromSheet / syncToSheet에 하루기록 연동
-const _origSyncFrom = typeof syncFromSheet === 'function' ? syncFromSheet : null;
 
 </script>
 <!-- 체크리스트 추가 모달 -->
